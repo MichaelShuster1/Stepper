@@ -2,9 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../AdminApp/AdminApp.iml" filepath="$PROJECT_DIR$/../AdminApp/AdminApp.iml" />
       <module fileurl="file://$PROJECT_DIR$/UI/ConsoleUI.iml" filepath="$PROJECT_DIR$/UI/ConsoleUI.iml" />
       <module fileurl="file://$PROJECT_DIR$/GraphicUI/GraphicUI.iml" filepath="$PROJECT_DIR$/GraphicUI/GraphicUI.iml" />
       <module fileurl="file://$PROJECT_DIR$/ServerApp/ServerApp.iml" filepath="$PROJECT_DIR$/ServerApp/ServerApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../UserApp/UserApp.iml" filepath="$PROJECT_DIR$/../UserApp/UserApp.iml" />
       <module fileurl="file://$PROJECT_DIR$/engine/engine.iml" filepath="$PROJECT_DIR$/engine/engine.iml" />
     </modules>
   </component>
