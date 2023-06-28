@@ -17,6 +17,7 @@ import javax.xml.bind.Unmarshaller;
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 
 public class Manager implements EngineApi, Serializable {
@@ -107,26 +108,30 @@ public class Manager implements EngineApi, Serializable {
             if (flowNames.containsKey(flowName)) {
                 throw new FlowNameExistException("The xml file contains two flows with the same name");
             }
-            flowNames.put(flowName,i);
 
-            currentFlow = new Flow(flowName, stFlow.getSTFlowDescription());
-            addFlowOutputs(stFlow);
-            addSteps(stFlow);
-            implementAliasing(stFlow);
-            currentFlow.setInitialValues(getInitialValues(stFlow));
-            currentFlow.customMapping(getCustomMappings(stFlow));
-            currentFlow.automaticMapping();
-            currentFlow.calculateFreeInputs();
-            currentFlow.setFlowOutputs();
-            if(getContinuations(stFlow).size() != 0)
-                continuationMap.put(currentFlow.getName(),getContinuations(stFlow));
-            currentFlow.checkFlowIsValid();
-            statisticsMap.put(currentFlow.getName(), new Statistics());
-            flowList.add(currentFlow);
-            i++;
+            if(flowNames2Index==null || !flowNames2Index.containsKey(flowName)) {
+                flowNames.put(flowName, i);
+                currentFlow = new Flow(flowName, stFlow.getSTFlowDescription());
+                addFlowOutputs(stFlow);
+                addSteps(stFlow);
+                implementAliasing(stFlow);
+                currentFlow.setInitialValues(getInitialValues(stFlow));
+                currentFlow.customMapping(getCustomMappings(stFlow));
+                currentFlow.automaticMapping();
+                currentFlow.calculateFreeInputs();
+                currentFlow.setFlowOutputs();
+                if (getContinuations(stFlow).size() != 0)
+                    continuationMap.put(currentFlow.getName(), getContinuations(stFlow));
+                currentFlow.checkFlowIsValid();
+                statisticsMap.put(currentFlow.getName(), new Statistics());
+                flowList.add(currentFlow);
+                i++;
+            }
         }
         createContinuations(continuationMap,flowList, flowNames);
 
+
+        /*
         flows.clear();
         flowsStatistics.clear();
         flowsHistory.clear();
@@ -137,6 +142,29 @@ public class Manager implements EngineApi, Serializable {
         setFlowsContinuations(continuationMap);
         flowsStatistics = statisticsMap;
         stepsStatistics = HCSteps.getStatisticsMap();
+        */
+
+        currentFlow=null;
+
+        if(flowNames2Index==null) {
+            this.flowNames2Index = flowNames;
+            flows = flowList;
+            setFlowsContinuations(continuationMap);
+            flowsStatistics = statisticsMap;
+            stepsStatistics = HCSteps.getStatisticsMap();
+        }
+        else {
+            i = flows.size();
+            flows.addAll(flowList);
+
+            int newSize = flows.size();
+
+            for (; i < newSize; i++) {
+                flowNames2Index.put(flows.get(i).getName(), i);
+            }
+            setFlowsContinuations(continuationMap);
+            flowsStatistics.putAll(statisticsMap);
+        }
     }
 
     private void setFlowsContinuations(Map<String, List<Continuation>> continuationMap) {
@@ -150,12 +178,25 @@ public class Manager implements EngineApi, Serializable {
             Integer sourceIndex = flowNames.get(name);
             List<Continuation> currContinuationList = mapping.get(name);
             for (Continuation continuation : currContinuationList) {
+                Flow targetFlow,sourceFlow;
                 Integer targetIndex = flowNames.get(continuation.getTargetFlow());
-                if (targetIndex == null)
-                    throw new ContinuationException("The flow \""+name+"\" contains a continuation to a flow that doesn't exists, flow name: " + continuation.getTargetFlow());
 
-                Flow targetFlow = flowList.get(targetIndex);
-                Flow sourceFlow = flowList.get(sourceIndex);
+                if(targetIndex==null) {
+
+                    targetIndex = flowNames2Index.get(continuation.getTargetFlow());
+
+                    if (targetIndex == null)
+                        throw new ContinuationException("The flow \"" + name +
+                                "\" contains a continuation to a flow that doesn't exists, flow name: "
+                                + continuation.getTargetFlow());
+                    else
+                        targetFlow=flows.get(targetIndex);
+                }
+                else
+                    targetFlow = flowList.get(targetIndex);
+
+                sourceFlow = flowList.get(sourceIndex);
+
                 continuation.createContinuation(sourceFlow, targetFlow);
             }
         }
