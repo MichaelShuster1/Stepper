@@ -64,9 +64,11 @@ public class ProgressTracker extends Task<Boolean> {
                     String flowId = flowsId.get(i);
                     FlowExecutionDTO flowExecutionDTO=engine.getHistoryDataOfFlow(flowId);
 
+                    /*
                     if(flowId.equals(currentFlowId)) {
                         Platform.runLater(()->appController.updateProgressFlow(flowExecutionDTO));
                     }
+                     */
 
 
                     if(flowExecutionDTO.getStateAfterRun() != null) {

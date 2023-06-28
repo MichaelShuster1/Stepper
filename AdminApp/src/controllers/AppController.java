@@ -2,7 +2,9 @@ package controllers;
 
 
 import controllers.history.HistoryController;
+import controllers.roles.RolesController;
 import controllers.statistics.StatisticsController;
+import controllers.users.UsersController;
 import dto.FlowExecutionDTO;
 import dto.InputsDTO;
 import enginemanager.EngineApi;
@@ -31,8 +33,21 @@ public class AppController {
 
     @FXML
     private StackPane statisticsComponent;
+
     @FXML
     private StatisticsController statisticsComponentController;
+
+    @FXML
+    private StackPane usersComponent;
+
+    @FXML
+    private UsersController usersComponentController;
+
+    @FXML
+    private StackPane rolesComponent;
+
+    @FXML
+    private RolesController rolesComponentController;
 
     @FXML
     private Button loadXML;
@@ -43,11 +58,6 @@ public class AppController {
     @FXML
     private TabPane tabPaneView;
 
-    @FXML
-    private Tab executionTabView;
-
-    @FXML
-    private ImageView stepperLogo;
 
     private EngineApi engine;
 
@@ -55,7 +65,6 @@ public class AppController {
 
     private Stage primaryStage;
 
-    private boolean tabClicked;
 
 
 
@@ -64,24 +73,9 @@ public class AppController {
     public void initialize() {
         historyComponentController.setAppController(this);
         statisticsComponentController.setAppController(this);
+        usersComponentController.setAppController(this);
+        rolesComponentController.setAppController(this);
         setTab(3);
-        tabClicked=true;
-
-
-        tabPaneView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
-            @Override
-            public void changed(ObservableValue<? extends Tab> observable, Tab oldTab, Tab newTab) {
-                if (newTab != null) {
-                    String tabTitle = newTab.getText();
-                    if(tabTitle.equals("Flows Execution")&&tabClicked) {
-                        if(progressTracker.finishedFollowingLastActivatedFlow())
-                        {
-                        }
-                    }
-                }
-                tabClicked =true;
-            }
-        });
     }
 
 
@@ -175,7 +169,6 @@ public class AppController {
     public void streamFlow(String flowName) {
         progressTracker.resetCurrentFlowId();
         int index =engine.getFlowIndexByName(flowName);
-        tabClicked=false;
         setTab(2);
     }
 
