@@ -59,11 +59,12 @@ public class LoginController {
     @FXML
     void userLogin(ActionEvent event) {
         String userName = userNameField.getText();
+        OkHttpClient client = new OkHttpClient();
         if(true)
-            showMainScreen(userName);
+            showMainScreen(userName,client);
     }
 
-    public void showMainScreen(String userName) {
+    public void showMainScreen(String userName,OkHttpClient client) {
         try {
             URL resource = getClass().getResource("/resources/fxml/MainScreen.fxml");
             FXMLLoader loader = new FXMLLoader();
@@ -88,6 +89,8 @@ public class LoginController {
             mainStage.setTitle("Stepper");
             mainStage.setScene(scene);
             controller.setUserName(userName);
+            controller.setHTTPClient(client);
+            controller.setFlowRefreshActive();
             mainStage.show();
 
             primaryStage.close();

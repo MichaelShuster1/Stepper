@@ -57,6 +57,8 @@ public class DefinitionController {
         selectedFlowDetails.getChildren().add(new Label("No data"));
     }
 
+
+
     public void fillTableData()
     {
         fillTableObservableListWithData();

@@ -235,6 +235,15 @@ public class AppController {
     public void setHTTPClient(OkHttpClient client) {
         this.client = client;
     }
+
+    public OkHttpClient getClient() {
+        return client;
+    }
+
+    public void setFlowRefreshActive() {
+        definitionComponentController.startFlowRefresher();
+    }
+
 }
 
 

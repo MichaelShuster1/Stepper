@@ -3,6 +3,7 @@ package controllers.flowdefinition;
 import controllers.AppController;
 import dto.*;
 import enginemanager.EngineApi;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -24,10 +25,7 @@ import javafx.stage.StageStyle;
 import javafx.util.Callback;
 import javafx.util.Pair;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class DefinitionController {
 
@@ -42,6 +40,9 @@ public class DefinitionController {
 
     private Popup popup;
 
+    private TimerTask flowRefresher;
+
+    Timer timer;
     public void setEngine(EngineApi engine) {
         this.engine = engine;
     }
@@ -57,10 +58,18 @@ public class DefinitionController {
         selectedFlowDetails.getChildren().add(new Label("No data"));
     }
 
-    public void fillTableData()
+    public void startFlowRefresher() {
+        flowRefresher = new flowDefinitionRefresher(this::fillTableData,appController.getClient());
+        timer = new Timer();
+        timer.schedule(flowRefresher, 100, 2000);
+    }
+
+    public void fillTableData(List<AvailableFlowDTO> flowsList)
     {
-        fillTableObservableListWithData();
+        Platform.runLater(() -> {
+        fillTableObservableListWithData(flowsList);
         flowTable.setItems(tvObservableList);
+     });
     }
 
 
@@ -110,10 +119,11 @@ public class DefinitionController {
         flowTable.setPrefHeight(600);
     }
 
-    private void fillTableObservableListWithData() {
+    private void fillTableObservableListWithData(List<AvailableFlowDTO> availableFlows) {
 
-        List<AvailableFlowDTO> availableFlows = engine.getAvailableFlows();
+        //List<AvailableFlowDTO> availableFlows = engine.getAvailableFlows();
         if (availableFlows != null) {
+            tvObservableList.clear();
             tvObservableList.addAll(availableFlows);
             flowTable.setItems(tvObservableList);
         }
