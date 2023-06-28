@@ -10,21 +10,27 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import okhttp3.OkHttpClient;
 import progress.ProgressTracker;
 
 import java.net.URL;
 
 public class LoginController {
 
+
     @FXML
     private TextField userNameField;
 
     @FXML
     private Button loginButton;
+
+    @FXML
+    private Label errorLabel;
 
     private EngineApi engine;
 

@@ -18,6 +18,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import okhttp3.OkHttpClient;
 import progress.ProgressTracker;
 import styles.Styles;
 
@@ -76,6 +77,8 @@ public class AppController {
 
     private boolean tabClicked;
 
+    private OkHttpClient client;
+
 
 
 
@@ -88,7 +91,7 @@ public class AppController {
         styleChoiceView.getItems().addAll(Styles.getStyles());
         styleChoiceView.setValue(Styles.DEFAULT.toString());
         styleChoiceView.setOnAction(e->setStyle());
-        setTab(3);
+        setTab(2);
         tabClicked=true;
 
 
@@ -229,6 +232,9 @@ public class AppController {
         userName.setText(userName.getText() + " " + name);
     }
 
+    public void setHTTPClient(OkHttpClient client) {
+        this.client = client;
+    }
 }
 
 
