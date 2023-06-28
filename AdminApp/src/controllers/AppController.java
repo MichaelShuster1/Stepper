@@ -147,11 +147,16 @@ public class AppController {
                         .build();
 
         Request request = new Request.Builder()
-                .url("http://localhost:8080" + RESOURCE)
+                .url("http://localhost:8080/ServerApp" + RESOURCE)
                 .post(body)
                 .build();
 
+        Call call = okHttpClient.newCall(request);
+
+
+
         try {
+            Response response = call.execute();
             loadedXML.setText("Currently loaded file: " + selectedFile.getAbsolutePath());
             statisticsComponentController.createStatisticsTables();
         }

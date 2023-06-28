@@ -4,9 +4,12 @@ import dto.*;
 import flow.FlowExecution;
 
 import javax.xml.bind.JAXBException;
+import java.io.InputStream;
 import java.util.List;
 
 public interface EngineApi {
+    void loadXmlFile(InputStream inputStream) throws JAXBException;
+
     void loadXmlFile(String path) throws JAXBException;
 
     List<String> getFlowsNames();
