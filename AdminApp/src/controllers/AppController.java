@@ -19,6 +19,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import okhttp3.*;
 import progress.ProgressTracker;
 
 import java.io.File;
@@ -58,12 +59,13 @@ public class AppController {
     @FXML
     private TabPane tabPaneView;
 
-
     private EngineApi engine;
 
     private ProgressTracker progressTracker;
 
     private Stage primaryStage;
+
+    private OkHttpClient okHttpClient;
 
 
 
@@ -76,6 +78,7 @@ public class AppController {
         usersComponentController.setAppController(this);
         rolesComponentController.setAppController(this);
         setTab(3);
+        okHttpClient=new OkHttpClient();
     }
 
 
@@ -136,9 +139,19 @@ public class AppController {
        if(selectedFile == null)
            return;
 
+        String RESOURCE = "/upload-file";
+        RequestBody body =
+                new MultipartBody.Builder()
+                        .addFormDataPart("xmlFile", selectedFile.getName(),
+                                RequestBody.create(selectedFile, MediaType.parse("text/plain")))
+                        .build();
+
+        Request request = new Request.Builder()
+                .url("http://localhost:8080" + RESOURCE)
+                .post(body)
+                .build();
+
         try {
-            engine.loadXmlFile(selectedFile.getAbsolutePath());
-            clearTabs();
             loadedXML.setText("Currently loaded file: " + selectedFile.getAbsolutePath());
             statisticsComponentController.createStatisticsTables();
         }
