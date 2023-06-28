@@ -63,6 +63,11 @@
                         <Insets left="50.0" right="50.0" />
                      </VBox.margin>
                   </Button>
+                  <Label fx:id="errorLabel" textAlignment="CENTER" textFill="RED" wrapText="true">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
                </children>
             </VBox>
          </center>
