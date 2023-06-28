@@ -1,9 +1,6 @@
 package dto;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class StepExecutionDTO implements Serializable {
     String name;

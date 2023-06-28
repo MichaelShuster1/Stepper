@@ -1,7 +1,6 @@
 package dto;
 
 import java.util.List;
-import java.util.Set;
 
 public class FlowDefinitionDTO extends FlowDetailsDTO{
 
