@@ -20,6 +20,7 @@ import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 
+
 public class Manager implements EngineApi, Serializable {
     private List<Flow> flows;
     private Map<String,FlowExecution> flowExecutions;
@@ -28,7 +29,6 @@ public class Manager implements EngineApi, Serializable {
     private Map<String, Statistics> stepsStatistics;
     private Flow currentFlow;
     private ExecutorService threadPool;
-
     private Map<String,Integer> flowNames2Index;
 
 
@@ -131,19 +131,6 @@ public class Manager implements EngineApi, Serializable {
         }
         createContinuations(continuationMap,flowList, flowNames);
 
-
-        /*
-        flows.clear();
-        flowsStatistics.clear();
-        flowsHistory.clear();
-        currentFlow = null;
-
-        this.flowNames2Index = flowNames;
-        flows = flowList;
-        setFlowsContinuations(continuationMap);
-        flowsStatistics = statisticsMap;
-        stepsStatistics = HCSteps.getStatisticsMap();
-        */
 
         currentFlow=null;
 
