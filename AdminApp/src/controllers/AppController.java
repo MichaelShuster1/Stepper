@@ -22,6 +22,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import okhttp3.*;
 import progress.ProgressTracker;
+import utils.Constants;
 
 import java.io.File;
 import java.io.IOException;
@@ -86,6 +87,41 @@ public class AppController {
         this.primaryStage = primaryStage;
         historyComponentController.setStage(primaryStage);
 
+        final String RESOURCE ="/admin";
+        Request request = new Request.Builder()
+                .url(Constants.FULL_SERVER_PATH+RESOURCE)
+                .build();
+
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+                Platform.runLater(()->{
+                    Alert alert =new Alert(Alert.AlertType.INFORMATION);
+                    ObservableList<String> stylesheets = primaryStage.getScene().getStylesheets();
+                    if(stylesheets.size()!=0)
+                        alert.getDialogPane().getStylesheets().add(stylesheets.get(0));
+
+                    alert.setTitle("Message");
+                    alert.setContentText("The server is closed");
+                    alert.showAndWait();
+                    primaryStage.close();
+                });
+                okHttpClient.dispatcher().executorService().shutdown();
+                okHttpClient.connectionPool().evictAll();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(response.code()==401)
+                {
+                    Platform.runLater(primaryStage::close);
+                    okHttpClient.dispatcher().executorService().shutdown();
+                    okHttpClient.connectionPool().evictAll();
+                }
+            }
+        });
+
         primaryStage.setOnCloseRequest(event -> {
             event.consume(); // Consume the event to prevent default close behavior
 
@@ -102,6 +138,21 @@ public class AppController {
             // Handle the user's choice
             alert.showAndWait().ifPresent(result -> {
                 if (result == ButtonType.OK) {
+
+                    Request closeRequest = new Request.Builder()
+                            .url(Constants.FULL_SERVER_PATH+RESOURCE)
+                            .delete()
+                            .build();
+
+                    okHttpClient.newCall(closeRequest).enqueue(new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {}
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {}
+                    });
+
+                    okHttpClient.dispatcher().executorService().shutdown();
+                    okHttpClient.connectionPool().evictAll();
                     primaryStage.close();
                 }
             });
@@ -123,7 +174,7 @@ public class AppController {
                         .build();
 
         Request request = new Request.Builder()
-                .url("http://localhost:8080/ServerApp" + RESOURCE)
+                .url(Constants.FULL_SERVER_PATH + RESOURCE)
                 .post(body)
                 .build();
 
