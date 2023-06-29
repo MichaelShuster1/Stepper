@@ -91,9 +91,13 @@ public class LoginController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
-                    Platform.runLater(() ->
-                            errorMessageProperty.set("Something went wrong, please try again.")
-                    );
+                    Platform.runLater(() -> {
+                        if(response.code() == 409)
+                          errorMessageProperty.set("Something went wrong, please try again.");
+                        else
+                            errorMessageProperty.set(responseBody);
+
+                    });
                 } else {
                     Platform.runLater(() -> {
                         showMainScreen(userName);
