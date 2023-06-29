@@ -24,7 +24,12 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Callback;
 import javafx.util.Pair;
+import okhttp3.*;
+import org.jetbrains.annotations.NotNull;
+import utils.Constants;
+import utils.HttpClientUtil;
 
+import java.io.IOException;
 import java.util.*;
 
 public class DefinitionController {
@@ -177,12 +182,38 @@ public class DefinitionController {
 
     private void showFlowData(AvailableFlowDTO selectedRow) {
         String flowName = selectedRow.getName();
-        showFlowDefinition1(flowName);
+        String finalUrl = HttpUrl
+                .parse(Constants.FULL_SERVER_PATH + "/get-definition")
+                .newBuilder()
+                .addQueryParameter("flowName", flowName)
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalUrl, new okhttp3.Callback() {
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.code() != 200) {
+                } else {
+                    String jsonDefinition = response.body().string();
+                    FlowDefinitionDTO flowDefinitionDTO = Constants.GSON_INSTANCE.fromJson(jsonDefinition, FlowDefinitionDTO.class);
+                    Platform.runLater(() -> {
+                        showFlowDefinition(flowDefinitionDTO);
+                    });
+                }
+
+            }
+        });
+        //showFlowDefinition(flowName);
     }
 
 
-    private void showFlowDefinition1(String name) {
-        FlowDefinitionDTO flowDefinition = engine.getFlowDefinition(name);
+    private void showFlowDefinition(FlowDefinitionDTO flowDefinition) {
+        //FlowDefinitionDTO flowDefinition = engine.getFlowDefinition(name);
         VBox vbox = new VBox();
         List<HBox> addToVBox = new ArrayList<>();
         addToVBox.add(createHBoxForData("Flow name: ",flowDefinition.getName() + "\n"));

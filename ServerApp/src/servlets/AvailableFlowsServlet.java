@@ -18,7 +18,6 @@ public class AvailableFlowsServlet extends HttpServlet {
         Gson gson = new Gson();
         response.setContentType("application/json");
 
-        //need to check if exists
         EngineApi engine= (Manager) getServletContext().getAttribute("FlowManager");
         List<AvailableFlowDTO> flows = engine.getAvailableFlows();
         if(flows != null) {

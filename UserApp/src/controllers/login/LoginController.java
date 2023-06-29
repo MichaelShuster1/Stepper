@@ -94,8 +94,9 @@ public class LoginController {
                     Platform.runLater(() -> {
                         if(response.code() == 409)
                           errorMessageProperty.set("Something went wrong, please try again.");
-                        else
+                        else {
                             errorMessageProperty.set(responseBody);
+                        }
 
                     });
                 } else {
@@ -103,6 +104,7 @@ public class LoginController {
                         showMainScreen(userName);
                     });
                 }
+
             }
         });
     }

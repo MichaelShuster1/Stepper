@@ -175,8 +175,8 @@ public class AppController {
             alert.showAndWait().ifPresent(result -> {
                 if (result == ButtonType.OK) {
                     primaryStage.close();
-                    engine.endProcess();
                     HttpClientUtil.shutdown();
+                    engine.endProcess();
                 }
             });
         });
