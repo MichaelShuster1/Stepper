@@ -39,8 +39,10 @@ public class FileUploadServlet extends HttpServlet {
         for (Part part : parts) {
             try {
                 engine.loadXmlFile(part.getInputStream());
-            } catch (JAXBException e) {
-                throw new RuntimeException(e);
+                response.setStatus(HttpServletResponse.SC_OK);
+            } catch (Exception e) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().println(e.getMessage());
             }
         }
 
