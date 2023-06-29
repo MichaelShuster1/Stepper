@@ -61,7 +61,7 @@ public class DefinitionController {
     public void startFlowRefresher() {
         flowRefresher = new flowDefinitionRefresher(this::fillTableData,appController.getClient());
         timer = new Timer();
-        timer.schedule(flowRefresher, 100, 2000);
+        timer.schedule(flowRefresher, 500, 2000);
     }
 
     public void fillTableData(List<AvailableFlowDTO> flowsList)

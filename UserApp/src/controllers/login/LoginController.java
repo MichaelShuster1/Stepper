@@ -36,6 +36,8 @@ public class LoginController {
 
     private Stage primaryStage;
 
+    OkHttpClient client;
+
 
     public void setEngine(EngineApi engine) {
         this.engine = engine;
@@ -44,6 +46,7 @@ public class LoginController {
     @FXML
     public void initialize() {
         loginButton.disableProperty().bind(userNameField.textProperty().isEmpty());
+        this.client = new OkHttpClient();
     }
 
 
@@ -59,7 +62,6 @@ public class LoginController {
     @FXML
     void userLogin(ActionEvent event) {
         String userName = userNameField.getText();
-        OkHttpClient client = new OkHttpClient();
         if(true)
             showMainScreen(userName,client);
     }
@@ -88,8 +90,8 @@ public class LoginController {
             mainStage.getIcons().add(icon);
             mainStage.setTitle("Stepper");
             mainStage.setScene(scene);
-            controller.setUserName(userName);
             controller.setHTTPClient(client);
+            controller.setUserName(userName);
             controller.setFlowRefreshActive();
             mainStage.show();
 
