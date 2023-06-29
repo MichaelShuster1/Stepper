@@ -1,6 +1,7 @@
 package controllers.users;
 
 import controllers.AppController;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Orientation;
@@ -13,6 +14,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class UsersController {
     @FXML
     private ListView<String> usersListView;
@@ -23,21 +29,55 @@ public class UsersController {
 
     private AppController appController;
 
+    private Timer timer;
+
     @FXML
     public void initialize() {
         usersListView.setOrientation(Orientation.VERTICAL);
+        Label placeholderLabel = new Label("No users in the system");
+        usersListView.setPlaceholder(placeholderLabel);
         usersListView.setOnMouseClicked(e->rowClick(new ActionEvent()));
-        usersListView.getItems().add("user1");
-        usersListView.getItems().add("user2");
     }
 
+    @FXML
+    private void SaveButtonClicked(ActionEvent event) {
+        System.out.println("save click");
+    }
+
+    public void updateUsersList(List<String> usersName)
+    {
+        if(usersName!=null) {
+            Platform.runLater(() -> {
+                Collection<String> users = usersListView.getItems();
+                for (String userName : usersName) {
+                    if (!users.contains(userName))
+                        users.add(userName);
+                }
+            });
+        }
+    }
+
+    public void StartUsersRefresher()
+    {
+        TimerTask usersRefresher=new UsersRefresher(this::updateUsersList);
+
+        timer = new Timer();
+        timer.schedule(usersRefresher, 200, 2000);
+    }
+
+
+    public void StopUsersRefresher()
+    {
+        timer.cancel();
+    }
+
+
+
     private void rowClick(ActionEvent event) {
-        System.out.println("row click");
         if(!usersListView.getSelectionModel().isEmpty()) {
             userSelectedView.getChildren().clear();
             addTitleLine(usersListView.getSelectionModel().getSelectedItem());
         }
-
     }
 
     private HBox getNewHbox()
@@ -62,8 +102,4 @@ public class UsersController {
         this.appController = appController;
     }
 
-    @FXML
-    void SaveButtonClicked(ActionEvent event) {
-        System.out.println("save click");
-    }
 }

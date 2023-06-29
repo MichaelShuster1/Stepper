@@ -178,6 +178,7 @@ public class AppController {
             // Handle the user's choice
             alert.showAndWait().ifPresent(result -> {
                 if (result == ButtonType.OK) {
+                    definitionComponentController.StopFlowRefresher();
                     primaryStage.close();
                     HttpClientUtil.shutdown();
                     engine.endProcess();

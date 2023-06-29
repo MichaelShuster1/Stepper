@@ -345,43 +345,27 @@ public class ExecutionController {
 
         return toggleGroup;
     }
-//    private void processInput(Button button, String data) {
-//
-//        RequestBody requestBody =new FormBody.Builder()
-//                .add("inputName", button.getId())
-//                .add("data",data)
-//                .build();
-//
-//
-//        String finalUrl = HttpUrl
-//                .parse(Constants.FULL_SERVER_PATH + "/process-input")
-//                .newBuilder()
-//                .build()
-//                .toString();
-//
-//
-//
-//        ResultDTO resultDTO=engine.processInput(button.getId(), data);
-//
-//        if(resultDTO.getStatus())
-//        {
-//            button.setStyle("-fx-background-color: #40ff00; ");
-//            if(engine.isFlowReady())
-//                executeButton.setDisable(false);
-//        }
-//        else
-//        {
-//            Alert alert =new Alert(Alert.AlertType.ERROR);
-//
-//            ObservableList<String> stylesheets = appController.getPrimaryStage().getScene().getStylesheets();
-//            if(stylesheets.size()!=0)
-//                alert.getDialogPane().getStylesheets().add(stylesheets.get(0));
-//
-//            alert.setTitle("Error");
-//            alert.setContentText(resultDTO.getMessage());
-//            alert.showAndWait();
-//        }
-//    }
+    private void processInput(Button button, String data) {
+        ResultDTO resultDTO=engine.processInput(button.getId(), data);
+        if(resultDTO.getStatus())
+        {
+            button.setStyle("-fx-background-color: #40ff00; ");
+            if(engine.isFlowReady())
+                executeButton.setDisable(false);
+        }
+        else
+        {
+            Alert alert =new Alert(Alert.AlertType.ERROR);
+
+            ObservableList<String> stylesheets = appController.getPrimaryStage().getScene().getStylesheets();
+            if(stylesheets.size()!=0)
+                alert.getDialogPane().getStylesheets().add(stylesheets.get(0));
+
+            alert.setTitle("Error");
+            alert.setContentText(resultDTO.getMessage());
+            alert.showAndWait();
+        }
+    }
 
 
     private TextInputDialog getNewTextInputDialog()

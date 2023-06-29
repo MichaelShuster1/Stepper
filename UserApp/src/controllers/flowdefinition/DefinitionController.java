@@ -67,6 +67,10 @@ public class DefinitionController {
         timer.schedule(flowRefresher, 500, 2000);
     }
 
+    public void StopFlowRefresher(){
+        timer.cancel();
+    }
+
     public void fillTableData(List<AvailableFlowDTO> flowsList)
     {
         if(flowTable.getSelectionModel().getSelectedItem() != null)

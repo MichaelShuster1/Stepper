@@ -66,7 +66,6 @@ public class AppController {
 
     private Stage primaryStage;
 
-    private OkHttpClient okHttpClient;
 
 
 
@@ -79,7 +78,8 @@ public class AppController {
         usersComponentController.setAppController(this);
         rolesComponentController.setAppController(this);
         setTab(3);
-        okHttpClient=new OkHttpClient();
+
+        usersComponentController.StartUsersRefresher();
     }
 
 
@@ -92,7 +92,7 @@ public class AppController {
                 .url(Constants.FULL_SERVER_PATH+RESOURCE)
                 .build();
 
-        okHttpClient.newCall(request).enqueue(new Callback() {
+        Constants.HTTP_CLIENT.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
 
@@ -107,8 +107,8 @@ public class AppController {
                     alert.showAndWait();
                     primaryStage.close();
                 });
-                okHttpClient.dispatcher().executorService().shutdown();
-                okHttpClient.connectionPool().evictAll();
+                Constants.HTTP_CLIENT.dispatcher().executorService().shutdown();
+                Constants.HTTP_CLIENT.connectionPool().evictAll();
             }
 
             @Override
@@ -116,14 +116,15 @@ public class AppController {
                 if(response.code()==401)
                 {
                     Platform.runLater(primaryStage::close);
-                    okHttpClient.dispatcher().executorService().shutdown();
-                    okHttpClient.connectionPool().evictAll();
+                    Constants.HTTP_CLIENT.dispatcher().executorService().shutdown();
+                    Constants.HTTP_CLIENT.connectionPool().evictAll();
                 }
             }
         });
 
         primaryStage.setOnCloseRequest(event -> {
             event.consume(); // Consume the event to prevent default close behavior
+
 
             // Show a confirmation dialog
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -139,20 +140,22 @@ public class AppController {
             alert.showAndWait().ifPresent(result -> {
                 if (result == ButtonType.OK) {
 
+                    usersComponentController.StopUsersRefresher();
+
                     Request closeRequest = new Request.Builder()
                             .url(Constants.FULL_SERVER_PATH+RESOURCE)
                             .delete()
                             .build();
 
-                    okHttpClient.newCall(closeRequest).enqueue(new Callback() {
+                    Constants.HTTP_CLIENT.newCall(closeRequest).enqueue(new Callback() {
                         @Override
                         public void onFailure(Call call, IOException e) {}
                         @Override
                         public void onResponse(Call call, Response response) throws IOException {}
                     });
 
-                    okHttpClient.dispatcher().executorService().shutdown();
-                    okHttpClient.connectionPool().evictAll();
+                    Constants.HTTP_CLIENT.dispatcher().executorService().shutdown();
+                    Constants.HTTP_CLIENT.connectionPool().evictAll();
                     primaryStage.close();
                 }
             });
@@ -178,7 +181,7 @@ public class AppController {
                 .post(body)
                 .build();
 
-        okHttpClient.newCall(request).enqueue(new Callback() {
+        Constants.HTTP_CLIENT.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
 
