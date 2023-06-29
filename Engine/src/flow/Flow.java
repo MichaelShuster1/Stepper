@@ -305,17 +305,11 @@ public class Flow implements Serializable {
         Input input = step.getInput(inputIndex);
 
 
-//        int stepIndex = flowFreeInputs.get(inputName).get(0);
-//        Step step = steps.get(stepIndex);
-//        int inputIndex = step.getNameToInputIndex().get(inputName);
-//        Input input = step.getInput(inputIndex);
-
         String data=null;
         if(input.getData()!=null)
             data=input.getData().toString();
 
-        DataDefintionDTO dataDefintionDTO = new DataDefintionDTO(input.getName(), input.getType());
-        return new FreeInputExecutionDTO(dataDefintionDTO, data, freeInputsIsReq.get(inputName));
+        return freeInputExecutionDTO;
     }
 
 

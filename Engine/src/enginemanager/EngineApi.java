@@ -28,7 +28,7 @@ public interface EngineApi {
 
     InputData clearInputData(String inputName);
 
-    FreeInputExecutionDTO getInputData(String inputName);
+    FreeInputExecutionDTO getInputData(User user, String inputName);
 
     boolean isFlowReady();
 
@@ -58,9 +58,9 @@ public interface EngineApi {
 
     FlowExecution getFlowExecution(String ID);
 
-    List<String> getEnumerationAllowedValues(String inputName);
+    List<String> getEnumerationAllowedValues(User user, String inputName);
 
-    String getInputDefaultName(String inputName);
+    String getInputDefaultName(User user , String inputName);
 
     void endProcess();
 

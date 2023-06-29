@@ -17,4 +17,8 @@ public class FreeInputExecutionDTO extends DataDefintionDTO  {
     public boolean isMandatory() {
         return necessity;
     }
+
+    public List<String> getAllowedValues() {
+        return allowedValues;
+    }
 }

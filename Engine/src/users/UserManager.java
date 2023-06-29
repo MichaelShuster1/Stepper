@@ -1,14 +1,12 @@
 package users;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class UserManager {
     private final Set<String> usersSet;
 
     public UserManager() {
-        usersSet = new HashSet<>();
+        users = new LinkedHashMap<>();
     }
 
     public synchronized void addUser(String username) {
@@ -26,4 +24,6 @@ public class UserManager {
     public boolean isUserExists(String username) {
         return usersSet.contains(username);
     }
+
+    public synchronized User getUser(String name) {return users.get(name); }
 }

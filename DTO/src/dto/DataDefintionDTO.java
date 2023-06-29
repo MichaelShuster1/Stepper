@@ -12,14 +12,19 @@ public class DataDefintionDTO implements Serializable
     {
         this.name=name;
         this.type=type.substring(4);
+        this.defaultName = null;
     }
 
     public DataDefintionDTO(DataDefintionDTO other)
     {
         this.name=other.name;
         this.type=other.type;
+        this.defaultName = null;
     }
 
+    public String getDefaultName() {
+        return defaultName;
+    }
 
     public String getName() {
         return name;

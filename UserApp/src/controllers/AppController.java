@@ -187,13 +187,6 @@ public class AppController {
     }
 
 
-    public InputsDTO getFlowInputs(int index)
-    {
-        return engine.getFlowInputs(index);
-    }
-
-
-
 
     public void streamFlow(String flowName) {
         progressTracker.resetCurrentFlowId();

@@ -8,6 +8,7 @@ import elementlogic.ElementLogic;
 import enginemanager.EngineApi;
 import javafx.animation.FadeTransition;
 import javafx.animation.RotateTransition;
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
@@ -27,6 +28,7 @@ import javafx.stage.*;
 import javafx.util.Duration;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -257,7 +259,7 @@ public class ExecutionController {
         if(result.isPresent())
         {
             String data= result.get();
-            processInput(button, data);
+            //processInput(button, data);
         }
     }
 
@@ -322,27 +324,43 @@ public class ExecutionController {
 
         return toggleGroup;
     }
-    private void processInput(Button button, String data) {
-        ResultDTO resultDTO=engine.processInput(button.getId(), data);
-        if(resultDTO.getStatus())
-        {
-            button.setStyle("-fx-background-color: #40ff00; ");
-            if(engine.isFlowReady())
-                executeButton.setDisable(false);
-        }
-        else
-        {
-            Alert alert =new Alert(Alert.AlertType.ERROR);
-
-            ObservableList<String> stylesheets = appController.getPrimaryStage().getScene().getStylesheets();
-            if(stylesheets.size()!=0)
-                alert.getDialogPane().getStylesheets().add(stylesheets.get(0));
-
-            alert.setTitle("Error");
-            alert.setContentText(resultDTO.getMessage());
-            alert.showAndWait();
-        }
-    }
+//    private void processInput(Button button, String data) {
+//
+//        RequestBody requestBody =new FormBody.Builder()
+//                .add("inputName", button.getId())
+//                .add("data",data)
+//                .build();
+//
+//
+//        String finalUrl = HttpUrl
+//                .parse(Constants.FULL_SERVER_PATH + "/process-input")
+//                .newBuilder()
+//                .build()
+//                .toString();
+//
+//
+//
+//        ResultDTO resultDTO=engine.processInput(button.getId(), data);
+//
+//        if(resultDTO.getStatus())
+//        {
+//            button.setStyle("-fx-background-color: #40ff00; ");
+//            if(engine.isFlowReady())
+//                executeButton.setDisable(false);
+//        }
+//        else
+//        {
+//            Alert alert =new Alert(Alert.AlertType.ERROR);
+//
+//            ObservableList<String> stylesheets = appController.getPrimaryStage().getScene().getStylesheets();
+//            if(stylesheets.size()!=0)
+//                alert.getDialogPane().getStylesheets().add(stylesheets.get(0));
+//
+//            alert.setTitle("Error");
+//            alert.setContentText(resultDTO.getMessage());
+//            alert.showAndWait();
+//        }
+//    }
 
 
     private TextInputDialog getNewTextInputDialog()
@@ -419,30 +437,79 @@ public class ExecutionController {
         contextMenu.getItems().addAll(item1,item2);
 
         item1.setOnAction(event -> {
-            boolean necessity =engine.clearInputData(button.getId()).getNecessity();
-            if(necessity){
-                executeButton.setDisable(true);
-                button.setStyle("-fx-background-color: #ff0000; ");
-            }
-            else
-                button.setStyle("");
+            //boolean necessity =engine.clearInputData(button.getId()).getNecessity();
+            String finalUrl = HttpUrl
+                    .parse(Constants.FULL_SERVER_PATH + "/input-options")
+                    .newBuilder()
+                    .addQueryParameter("Id", button.getId())
+                    .build()
+                    .toString();
+
+            HttpClientUtil.runAsyncDelete(finalUrl, new Callback() {
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+                }
+
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    if (response.code() == 200) {
+                        if (response.body() != null) {
+                            Boolean necessity = Constants.GSON_INSTANCE.fromJson(response.body().string(), Boolean.class);
+                            Platform.runLater(() -> {
+                            if (necessity) {
+                                executeButton.setDisable(true);
+                                button.setStyle("-fx-background-color: #ff0000; ");
+                            } else
+                                button.setStyle("");
+                            });
+                        }
+                    }
+                }
+            });
         });
 
         item2.setOnAction(event -> {
-            String data =engine.getInputData(button.getId()).getData();
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            //String data =engine.getInputData(button.getId()).getData();
+            String finalUrl = HttpUrl
+                    .parse(Constants.FULL_SERVER_PATH + "/input-options")
+                    .newBuilder()
+                    .addQueryParameter("Id", button.getId())
+                    .build()
+                    .toString();
 
-            ObservableList<String> stylesheets = appController.getPrimaryStage().getScene().getStylesheets();
-            if(stylesheets.size()!=0)
-                alert.getDialogPane().getStylesheets().add(stylesheets.get(0));
+            HttpClientUtil.runAsync(finalUrl, new Callback() {
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
 
-            alert.setGraphic(null);
-            alert.setTitle("input's data");
-            if(data!=null)
-                alert.setHeaderText(data);
-            else
-                alert.setHeaderText("no data");
-            alert.showAndWait();
+                }
+
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+
+                    ObservableList<String> stylesheets = appController.getPrimaryStage().getScene().getStylesheets();
+                    if(stylesheets.size()!=0)
+                        alert.getDialogPane().getStylesheets().add(stylesheets.get(0));
+
+                    if(response.code() == 200) {
+                        if(response.body() != null) {
+                            String data = response.body().string();
+                            alert.setGraphic(null);
+                            alert.setTitle("input's data");
+                            if (data != null)
+                                alert.setHeaderText(data);
+                        }
+                        else
+                            alert.setHeaderText("no data");
+                    }
+                    else {
+                        alert.setHeaderText("Something went wrong...");
+                    }
+                    Platform.runLater(alert::showAndWait);
+                }
+            });
+
         });
 
         button.setContextMenu(contextMenu);
@@ -455,8 +522,8 @@ public class ExecutionController {
     private void executeFlow(ActionEvent event)
     {
         elementDetailsView.getChildren().clear();
-        String flowId=engine.runFlow();
-        appController.addFlowId(flowId);
+        //String flowId=engine.runFlow();
+        //appController.addFlowId(flowId);
         executeButton.setDisable(true);
 
         for(Button button:mandatoryInputButtons) {
