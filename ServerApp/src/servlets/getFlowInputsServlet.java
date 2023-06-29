@@ -9,16 +9,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import users.UserManager;
 import utils.Constants;
 import utils.ServletUtils;
 import utils.SessionUtils;
 
 import java.io.IOException;
 
-@WebServlet("/get-definition")
-public class GetFlowDefinitionServlet extends HttpServlet {
-    @Override
+@WebServlet("/get-inputs")
+public class getFlowInputsServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String usernameFromSession = SessionUtils.getUsername(request);
         if(ServletUtils.checkAuthorization(usernameFromSession, response)) {
@@ -30,10 +28,11 @@ public class GetFlowDefinitionServlet extends HttpServlet {
             } else {
                 EngineApi engine = (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
                 synchronized (this) {
-                    FlowDefinitionDTO res = engine.getFlowDefinition(flowName);
+                    int index =engine.getFlowIndexByName(flowName);
+                    InputsDTO inputsDTO = engine.getFlowInputs(index);
                     response.setStatus(HttpServletResponse.SC_OK);
                     Gson gson = new Gson();
-                    response.getWriter().println(gson.toJson(res));
+                    response.getWriter().println(gson.toJson(inputsDTO));
                 }
             }
         }

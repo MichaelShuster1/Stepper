@@ -34,7 +34,6 @@ import java.util.*;
 
 public class DefinitionController {
 
-    private EngineApi engine;
     private AppController appController;
     @FXML
     private StackPane selectedFlowDetails;
@@ -48,9 +47,8 @@ public class DefinitionController {
     private TimerTask flowRefresher;
 
     Timer timer;
-    public void setEngine(EngineApi engine) {
-        this.engine = engine;
-    }
+
+    private String selectedName;
 
 
     public void setAppController(AppController appController) {
@@ -71,9 +69,23 @@ public class DefinitionController {
 
     public void fillTableData(List<AvailableFlowDTO> flowsList)
     {
+        if(flowTable.getSelectionModel().getSelectedItem() != null)
+          selectedName = flowTable.getSelectionModel().getSelectedItem().getName();
+        else
+            selectedName = null;
         Platform.runLater(() -> {
         fillTableObservableListWithData(flowsList);
         flowTable.setItems(tvObservableList);
+        if(selectedName != null) {
+            ObservableList<AvailableFlowDTO> list = flowTable.getItems();
+            int i = 0;
+            for (AvailableFlowDTO flow : list) {
+                if (flow.getName().equals(selectedName))
+                    flowTable.getSelectionModel().select(i);
+                i++;
+            }
+        }
+
      });
     }
 
@@ -199,11 +211,13 @@ public class DefinitionController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
                 } else {
-                    String jsonDefinition = response.body().string();
-                    FlowDefinitionDTO flowDefinitionDTO = Constants.GSON_INSTANCE.fromJson(jsonDefinition, FlowDefinitionDTO.class);
-                    Platform.runLater(() -> {
-                        showFlowDefinition(flowDefinitionDTO);
-                    });
+                    if(response.body() != null) {
+                        String jsonDefinition = response.body().string();
+                        FlowDefinitionDTO flowDefinitionDTO = Constants.GSON_INSTANCE.fromJson(jsonDefinition, FlowDefinitionDTO.class);
+                        Platform.runLater(() -> {
+                            showFlowDefinition(flowDefinitionDTO);
+                        });
+                    }
                 }
 
             }

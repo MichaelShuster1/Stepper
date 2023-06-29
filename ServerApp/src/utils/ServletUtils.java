@@ -3,6 +3,7 @@ package utils;
 
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import users.UserManager;
 
 
@@ -20,6 +21,20 @@ public class ServletUtils {
 			}
 		}
 		return (UserManager) servletContext.getAttribute(USER_MANAGER_ATTRIBUTE_NAME);
+	}
+
+	public static Boolean checkAuthorization(String usernameFromSession, HttpServletResponse response) {
+		if(usernameFromSession == null) {
+			try {
+				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+				response.getWriter().println("Error");
+			}
+			catch (Exception e) {
+				System.out.println("Something went wrong...");
+			}
+			return false;
+		}
+		return true;
 	}
 
 }

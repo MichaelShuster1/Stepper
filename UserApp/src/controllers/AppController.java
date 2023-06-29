@@ -2,11 +2,13 @@ package controllers;
 
 import controllers.flowdefinition.DefinitionController;
 import controllers.history.HistoryController;
+import dto.FlowDefinitionDTO;
 import dto.FlowExecutionDTO;
 import dto.InputsDTO;
 import enginemanager.EngineApi;
 import enginemanager.Manager;
 import controllers.flowexecution.ExecutionController;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -18,12 +20,15 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import okhttp3.OkHttpClient;
+import okhttp3.*;
+import org.jetbrains.annotations.NotNull;
 import progress.ProgressTracker;
 import styles.Styles;
+import utils.Constants;
 import utils.HttpClientUtil;
 
 import java.io.File;
+import java.io.IOException;
 
 public class AppController {
 
@@ -138,7 +143,6 @@ public class AppController {
     public void setModel(Manager engine) {
         this.engine = engine;
         executionComponentController.setEngine(engine);
-        definitionComponentController.setEngine(engine);
         historyComponentController.setEngine(engine);
         progressTracker=new ProgressTracker(this,engine);
         Thread thread=new Thread(progressTracker);
@@ -193,10 +197,37 @@ public class AppController {
 
     public void streamFlow(String flowName) {
         progressTracker.resetCurrentFlowId();
-        int index =engine.getFlowIndexByName(flowName);
-        executionComponentController.setTabView(getFlowInputs(index),flowName);
-        tabClicked=false;
-        setTab(2);
+        //int index =engine.getFlowIndexByName(flowName);
+        String finalUrl = HttpUrl
+                .parse(Constants.FULL_SERVER_PATH + "/get-inputs")
+                .newBuilder()
+                .addQueryParameter("flowName", flowName)
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+            }
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.code() != 200) {
+                } else {
+                    if (response.body() != null) {
+                        String jsonInputs = response.body().string();
+                        InputsDTO inputsDTO = Constants.GSON_INSTANCE.fromJson(jsonInputs, InputsDTO.class);
+                        Platform.runLater(() -> {
+                            executionComponentController.setTabView(inputsDTO,flowName);
+
+                        });
+                        tabClicked=false;
+                        setTab(1);
+                    }
+                }
+
+            }
+        });
     }
 
 
