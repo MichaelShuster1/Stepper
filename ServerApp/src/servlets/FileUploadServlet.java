@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
+import utils.Constants;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
@@ -25,16 +26,9 @@ public class FileUploadServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         response.setContentType("text/plain");
-        PrintWriter out = response.getWriter();
-
         Collection<Part> parts = request.getParts();
 
-        StringBuilder fileContent = new StringBuilder();
-
-        if(getServletContext().getAttribute("FlowManager")==null)
-            getServletContext().setAttribute("FlowManager",new Manager());
-
-        EngineApi engine= (Manager) getServletContext().getAttribute("FlowManager");
+        EngineApi engine= (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
 
         for (Part part : parts) {
             try {
@@ -50,11 +44,6 @@ public class FileUploadServlet extends HttpServlet {
 
         for(String flowName:flowsNames)
             System.out.println(flowName);
-
-
-
-
-
 
     }
 }

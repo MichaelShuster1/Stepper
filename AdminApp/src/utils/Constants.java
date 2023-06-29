@@ -8,7 +8,6 @@ public class Constants {
     private final static String CONTEXT_PATH = "/ServerApp";
     public final static String FULL_SERVER_PATH = BASE_URL + CONTEXT_PATH;
 
-
     // GSON instance
     public final static Gson GSON_INSTANCE = new Gson();
 }
