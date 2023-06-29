@@ -3,6 +3,9 @@ package controllers.login;
 import controllers.AppController;
 import enginemanager.EngineApi;
 import enginemanager.Manager;
+import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,9 +18,14 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import okhttp3.OkHttpClient;
+import okhttp3.*;
+import org.jetbrains.annotations.NotNull;
 import progress.ProgressTracker;
+import utils.Constants;
+import utils.CookieManager;
+import utils.HttpClientUtil;
 
+import java.io.IOException;
 import java.net.URL;
 
 public class LoginController {
@@ -36,7 +44,8 @@ public class LoginController {
 
     private Stage primaryStage;
 
-    OkHttpClient client;
+    private final StringProperty errorMessageProperty = new SimpleStringProperty();
+
 
 
     public void setEngine(EngineApi engine) {
@@ -46,7 +55,7 @@ public class LoginController {
     @FXML
     public void initialize() {
         loginButton.disableProperty().bind(userNameField.textProperty().isEmpty());
-        this.client = new OkHttpClient();
+        errorLabel.textProperty().bind(errorMessageProperty);
     }
 
 
@@ -62,11 +71,39 @@ public class LoginController {
     @FXML
     void userLogin(ActionEvent event) {
         String userName = userNameField.getText();
-        if(true)
-            showMainScreen(userName,client);
+        String finalUrl = HttpUrl
+                .parse(Constants.LOGIN_PAGE)
+                .newBuilder()
+                .addQueryParameter("username", userName)
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() ->
+                        errorMessageProperty.set("Something went wrong: " + e.getMessage())
+                );
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.code() != 200) {
+                    String responseBody = response.body().string();
+                    Platform.runLater(() ->
+                            errorMessageProperty.set("Something went wrong, please try again.")
+                    );
+                } else {
+                    Platform.runLater(() -> {
+                        showMainScreen(userName);
+                    });
+                }
+            }
+        });
     }
 
-    public void showMainScreen(String userName,OkHttpClient client) {
+    public void showMainScreen(String userName) {
         try {
             URL resource = getClass().getResource("/resources/fxml/MainScreen.fxml");
             FXMLLoader loader = new FXMLLoader();
@@ -90,7 +127,6 @@ public class LoginController {
             mainStage.getIcons().add(icon);
             mainStage.setTitle("Stepper");
             mainStage.setScene(scene);
-            controller.setHTTPClient(client);
             controller.setUserName(userName);
             controller.setFlowRefreshActive();
             mainStage.show();

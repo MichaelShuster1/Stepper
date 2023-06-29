@@ -59,7 +59,7 @@ public class DefinitionController {
     }
 
     public void startFlowRefresher() {
-        flowRefresher = new flowDefinitionRefresher(this::fillTableData,appController.getClient());
+        flowRefresher = new flowDefinitionRefresher(this::fillTableData);
         timer = new Timer();
         timer.schedule(flowRefresher, 500, 2000);
     }

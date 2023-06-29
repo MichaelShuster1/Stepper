@@ -21,6 +21,7 @@ import javafx.stage.Stage;
 import okhttp3.OkHttpClient;
 import progress.ProgressTracker;
 import styles.Styles;
+import utils.HttpClientUtil;
 
 import java.io.File;
 
@@ -77,7 +78,6 @@ public class AppController {
 
     private boolean tabClicked;
 
-    private OkHttpClient client;
 
 
 
@@ -176,6 +176,7 @@ public class AppController {
                 if (result == ButtonType.OK) {
                     primaryStage.close();
                     engine.endProcess();
+                    HttpClientUtil.shutdown();
                 }
             });
         });
@@ -232,13 +233,7 @@ public class AppController {
         userName.setText(userName.getText() + " " + name);
     }
 
-    public void setHTTPClient(OkHttpClient client) {
-        this.client = client;
-    }
 
-    public OkHttpClient getClient() {
-        return client;
-    }
 
     public void setFlowRefreshActive() {
         definitionComponentController.startFlowRefresher();

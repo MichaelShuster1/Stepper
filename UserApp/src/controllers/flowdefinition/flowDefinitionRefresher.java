@@ -7,6 +7,7 @@ import javafx.beans.property.BooleanProperty;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import utils.Constants;
+import utils.HttpClientUtil;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -20,11 +21,9 @@ public class flowDefinitionRefresher extends TimerTask {
     private final Consumer<List<AvailableFlowDTO>> flowsListConsumer;
 
 
-    private final OkHttpClient client;
 
-    public flowDefinitionRefresher( Consumer<List<AvailableFlowDTO>> flowsListConsumer, OkHttpClient client) {
+    public flowDefinitionRefresher( Consumer<List<AvailableFlowDTO>> flowsListConsumer) {
         this.flowsListConsumer = flowsListConsumer;
-        this.client = client;
     }
 
     @Override
@@ -32,10 +31,7 @@ public class flowDefinitionRefresher extends TimerTask {
 
 
         HttpUrl.Builder urlBuilder = HttpUrl.parse(Constants.FULL_SERVER_PATH + "/get-flows").newBuilder();
-        Request request = new Request.Builder()
-                .url(urlBuilder.build().toString())
-                .build();
-        client.newCall(request).enqueue(new Callback() {
+        HttpClientUtil.runAsync(urlBuilder.build().toString(), new Callback() {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
