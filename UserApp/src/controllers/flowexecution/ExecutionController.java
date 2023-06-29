@@ -26,6 +26,10 @@ import javafx.scene.layout.*;
 import javafx.scene.transform.Rotate;
 import javafx.stage.*;
 import javafx.util.Duration;
+import okhttp3.*;
+import org.jetbrains.annotations.NotNull;
+import utils.Constants;
+import utils.HttpClientUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -206,7 +210,24 @@ public class ExecutionController {
     {
         TextInputDialog inputDialog =getNewTextInputDialog();
 
-        String inputType =engine.getInputData(button.getId()).getType();
+
+        String finalUrl = HttpUrl
+                .parse(Constants.FULL_SERVER_PATH + "/input-data")
+                .newBuilder()
+                .addQueryParameter("inputName", button.getId())
+                .build()
+                .toString();
+
+        Response response=HttpClientUtil.runSync(finalUrl);
+
+        FreeInputExecutionDTO freeInputExecutionDTO =Constants
+                .GSON_INSTANCE
+                .fromJson(String.valueOf(response.body()),FreeInputExecutionDTO.class);
+
+        String inputType=freeInputExecutionDTO.getType();
+
+        //String inputType =engine.getInputData(button.getId()).getType();
+
         Optional<String> result=Optional.empty();
 
 
@@ -214,7 +235,7 @@ public class ExecutionController {
         {
             case ENUMERATOR:
                 ChoiceBox<String> enumerationSetChoice = new ChoiceBox<>();
-                enumerationSetChoice.getItems().addAll(engine.getEnumerationAllowedValues(button.getId()));
+                enumerationSetChoice.getItems().addAll(freeInputExecutionDTO.getAllowedValues());
                 enumerationSetChoice.setStyle("-fx-pref-width: 200px;");
 
                 HBox hbox = new HBox(10, new Label("Please select an option:"),  enumerationSetChoice);
@@ -250,7 +271,7 @@ public class ExecutionController {
                 result =inputDialog.showAndWait();
                 break;
             case STRING:
-                String inputDefaultName = engine.getInputDefaultName(button.getId());
+                String inputDefaultName = freeInputExecutionDTO.getDefaultName();
                 result = getStringInputFromUser(inputDialog, inputDefaultName);
                 break;
         }

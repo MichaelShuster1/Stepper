@@ -2,6 +2,7 @@ package enginemanager;
 
 import dto.*;
 import flow.FlowExecution;
+import users.User;
 
 import javax.xml.bind.JAXBException;
 import java.io.InputStream;
@@ -22,17 +23,17 @@ public interface EngineApi {
 
     FlowDefinitionDTO getFlowDefinition(String flowName);
 
-    InputsDTO getFlowInputs(int flowIndex);
+    InputsDTO getFlowInputs(User user, String flowName);
 
-    ResultDTO processInput(String inputName, String data);
+    ResultDTO processInput(User user,String inputName, String data);
 
     InputData clearInputData(String inputName);
 
     FreeInputExecutionDTO getInputData(User user, String inputName);
 
-    boolean isFlowReady();
+    boolean isFlowReady(User user);
 
-    String runFlow(); //getFlowInputs
+    String runFlow(User user);
 
     List<String> getInitialHistoryList();
 

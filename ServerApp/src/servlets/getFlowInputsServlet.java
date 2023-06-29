@@ -9,6 +9,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import users.UserManager;
 import utils.Constants;
 import utils.ServletUtils;
 import utils.SessionUtils;
@@ -27,6 +28,7 @@ public class getFlowInputsServlet extends HttpServlet {
                 response.getWriter().println("Invalid query parameter");
             } else {
                 EngineApi engine = (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
+                UserManager userManager = ServletUtils.getUserManager(getServletContext());
                 synchronized (this) {
                     InputsDTO inputsDTO = engine.getFlowInputs(userManager.getUser(usernameFromSession), flowName);
                     response.setStatus(HttpServletResponse.SC_OK);

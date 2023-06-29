@@ -6,6 +6,7 @@ import java.util.Objects;
 public class DataDefintionDTO implements Serializable
 {
     private final String name;
+    private final String defaultName;
     private final String type;
 
     public DataDefintionDTO(String name,String type)
@@ -13,6 +14,12 @@ public class DataDefintionDTO implements Serializable
         this.name=name;
         this.type=type.substring(4);
         this.defaultName = null;
+    }
+
+    public DataDefintionDTO(String name, String defaultName, String type) {
+        this.name = name;
+        this.type=type.substring(4);
+        this.defaultName = defaultName;
     }
 
     public DataDefintionDTO(DataDefintionDTO other)

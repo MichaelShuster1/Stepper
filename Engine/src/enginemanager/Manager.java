@@ -10,6 +10,7 @@ import hardcodeddata.HCSteps;
 import step.*;
 import exception.*;
 import javafx.util.Pair;
+import users.User;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -393,37 +394,44 @@ public class Manager implements EngineApi, Serializable {
 
 
     @Override
-    public InputsDTO getFlowInputs(int flowIndex) {
-        currentFlow = flows.get(flowIndex);
-        return currentFlow.getInputList();
+    public InputsDTO getFlowInputs(User user,String flowName) {
+        //currentFlow = flows.get(flowIndex);
+        //return currentFlow.getInputList();
+
+        user.setCurrentFlow(flowName);
+        return user.getCurrentFlow().getInputList();
     }
+
 
     @Override
     public int getFlowIndexByName(String name) {
         return flowNames2Index.get(name);
     }
 
+
+
     @Override
-    public ResultDTO processInput(String inputName, String data) {
-        return currentFlow.processInput(inputName, data);
+    public ResultDTO processInput(User user,String inputName, String data) {
+        //return currentFlow.processInput(inputName, data);
+        return user.getCurrentFlow().processInput(inputName,data);
     }
 
 
     @Override
-    public boolean isFlowReady() {
-        return currentFlow.isFlowReady();
+    public boolean isFlowReady(User user) {
+        return user.getCurrentFlow().isFlowReady();
     }
 
 
     @Override
-    public String runFlow() {
+    public String runFlow(User user) {
 
-        FlowExecution flowExecution = new FlowExecution(currentFlow,this);
+        FlowExecution flowExecution = new FlowExecution(user.getCurrentFlow(),this);
         String flowID=flowExecution.getFlowId();
         flowExecutions.put(flowID,flowExecution);
         threadPool.execute(flowExecution);
 
-        currentFlow.resetFlow();
+        user.getCurrentFlow().resetFlow();
         return flowID;
     }
 
@@ -456,14 +464,14 @@ public class Manager implements EngineApi, Serializable {
     }
 
     @Override
-    public FreeInputExecutionDTO getInputData(String inputName)
+    public FreeInputExecutionDTO getInputData(User user,String inputName)
     {
-        return currentFlow.getInputData(inputName);
+        return user.getCurrentFlow().getInputData(inputName);
     }
 
     @Override
-    public List<String> getEnumerationAllowedValues(String inputName) {
-        return currentFlow.getEnumerationAllowedValues(inputName);
+    public List<String> getEnumerationAllowedValues(User user,String inputName) {
+        return user.getCurrentFlow().getEnumerationAllowedValues(inputName);
     }
 
 
@@ -619,8 +627,8 @@ public class Manager implements EngineApi, Serializable {
 
 
     @Override
-    public String getInputDefaultName(String inputName) {
-        return currentFlow.getInputDefaultName(inputName);
+    public String getInputDefaultName(User user,String inputName) {
+        return user.getCurrentFlow().getInputDefaultName(inputName);
     }
 
 

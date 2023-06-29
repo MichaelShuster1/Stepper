@@ -1,10 +1,7 @@
 package flow;
 
-import datadefinition.DataDefinition;
-import datadefinition.DataEnumerator;
+import datadefinition.*;
 import dto.*;
-import datadefinition.Input;
-import datadefinition.Output;
 import initialvalue.InitialValue;
 import step.State;
 import step.Step;
@@ -308,6 +305,26 @@ public class Flow implements Serializable {
         String data=null;
         if(input.getData()!=null)
             data=input.getData().toString();
+
+        DataDefintionDTO dataDefintionDTO;
+        FreeInputExecutionDTO freeInputExecutionDTO;
+        switch (DataType.valueOf(input.getType().toUpperCase()))
+        {
+            case ENUMERATOR:
+                List<String> allowedValues= getEnumerationAllowedValues(inputName);
+                dataDefintionDTO = new DataDefintionDTO(input.getName(), input.getType());
+                freeInputExecutionDTO = new FreeInputExecutionDTO(dataDefintionDTO, data, freeInputsIsReq.get(inputName), allowedValues);
+                break;
+            case STRING:
+                String defaultName = input.getDefaultName();
+                dataDefintionDTO = new DataDefintionDTO(inputName,defaultName,input.getType());
+                freeInputExecutionDTO=new FreeInputExecutionDTO(dataDefintionDTO, data, freeInputsIsReq.get(inputName));
+                break;
+            default:
+                dataDefintionDTO = new DataDefintionDTO(input.getName(), input.getType());
+                freeInputExecutionDTO=new FreeInputExecutionDTO(dataDefintionDTO, data, freeInputsIsReq.get(inputName));
+                break;
+        }
 
         return freeInputExecutionDTO;
     }
