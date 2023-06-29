@@ -8,7 +8,7 @@ import java.io.InputStream;
 import java.util.List;
 
 public interface EngineApi {
-    void loadXmlFile(InputStream inputStream) throws JAXBException;
+    void loadXmlFile(InputStream inputStream) throws Exception;
 
     void loadXmlFile(String path) throws JAXBException;
 

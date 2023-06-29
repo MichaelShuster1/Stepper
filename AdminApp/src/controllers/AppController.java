@@ -9,6 +9,7 @@ import dto.FlowExecutionDTO;
 import dto.InputsDTO;
 import enginemanager.EngineApi;
 import enginemanager.Manager;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -23,6 +24,7 @@ import okhttp3.*;
 import progress.ProgressTracker;
 
 import java.io.File;
+import java.io.IOException;
 
 public class AppController {
 
@@ -59,8 +61,6 @@ public class AppController {
     @FXML
     private TabPane tabPaneView;
 
-    private EngineApi engine;
-
     private ProgressTracker progressTracker;
 
     private Stage primaryStage;
@@ -82,21 +82,6 @@ public class AppController {
     }
 
 
-    public void setModel(Manager engine) {
-        this.engine = engine;
-        statisticsComponentController.setEngine(engine);
-        historyComponentController.setEngine(engine);
-        progressTracker=new ProgressTracker(this,engine);
-        Thread thread=new Thread(progressTracker);
-        thread.setDaemon(true);
-        thread.start();
-    }
-
-    public void addFlowId(String id)
-    {
-        progressTracker.addFlowId(id);
-    }
-
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
         historyComponentController.setStage(primaryStage);
@@ -110,26 +95,17 @@ public class AppController {
             if(primaryStage.getScene().getStylesheets().size()!=0)
                 alert.getDialogPane().getStylesheets().add(primaryStage.getScene().getStylesheets().get(0));
 
-            if(progressTracker.areFlowsRunning())
-                alert.setHeaderText("The are still flows running in the background!\nAre you sure you want to exit?");
-            else
-                alert.setHeaderText("Are you sure you want to exit?");
+
+            alert.setHeaderText("Are you sure you want to exit?");
             alert.setContentText("Press OK to exit the application.\n");
 
             // Handle the user's choice
             alert.showAndWait().ifPresent(result -> {
                 if (result == ButtonType.OK) {
                     primaryStage.close();
-                    engine.endProcess();
                 }
             });
         });
-    }
-
-
-    public InputsDTO getFlowInputs(int index)
-    {
-        return engine.getFlowInputs(index);
     }
 
 
@@ -151,27 +127,53 @@ public class AppController {
                 .post(body)
                 .build();
 
-        Call call = okHttpClient.newCall(request);
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(response.code()==200) {
+
+                    Platform.runLater(() ->
+                            loadedXML.setText("Currently loaded file: " + selectedFile.getAbsolutePath()));
+
+                    Platform.runLater(()->{
+                        Alert alert =new Alert(Alert.AlertType.INFORMATION);
+                        ObservableList<String> stylesheets = primaryStage.getScene().getStylesheets();
+                        if(stylesheets.size()!=0)
+                            alert.getDialogPane().getStylesheets().add(stylesheets.get(0));
+
+                        alert.setTitle("Message");
+                        alert.setContentText("the xml file was loaded successfully");
+                        alert.showAndWait();
+
+                    });
+                }
+
+                if(response.code()==400){
+                    Platform.runLater(()->{
+                        Alert alert =new Alert(Alert.AlertType.ERROR);
+
+                        ObservableList<String> stylesheets = primaryStage.getScene().getStylesheets();
+                        if(stylesheets.size()!=0)
+                            alert.getDialogPane().getStylesheets().add(stylesheets.get(0));
+
+                        alert.setTitle("Error");
+                        try {
+                            alert.setContentText(response.body().string());
+                        } catch (IOException e) {
+                            alert.setContentText("the xml file was not loaded successfully!");
+                        }
+                        alert.showAndWait();
+                    });
+                }
 
 
-
-        try {
-            Response response = call.execute();
-            loadedXML.setText("Currently loaded file: " + selectedFile.getAbsolutePath());
-            statisticsComponentController.createStatisticsTables();
-        }
-        catch (Exception ex)
-        {
-            Alert alert =new Alert(Alert.AlertType.ERROR);
-
-            ObservableList<String> stylesheets = primaryStage.getScene().getStylesheets();
-            if(stylesheets.size()!=0)
-                alert.getDialogPane().getStylesheets().add(stylesheets.get(0));
-
-            alert.setTitle("Error");
-            alert.setContentText(ex.getMessage());
-            alert.showAndWait();
-        }
+            }
+        });
     }
 
 
@@ -182,21 +184,6 @@ public class AppController {
         File selectedFile = fileChooser.showOpenDialog(primaryStage);
         return  selectedFile;
     }
-
-
-    public void streamFlow(String flowName) {
-        progressTracker.resetCurrentFlowId();
-        int index =engine.getFlowIndexByName(flowName);
-        setTab(2);
-    }
-
-
-    /*
-    public void updateProgressFlow(FlowExecutionDTO flowExecutionDTO)
-    {
-        executionComponentController.updateProgressFlow(flowExecutionDTO);
-    }
-    */
 
 
 
@@ -219,6 +206,7 @@ public class AppController {
     public Stage getPrimaryStage() {
         return primaryStage;
     }
+
 
     public void clearTabs() {
         historyComponentController.clearTab();

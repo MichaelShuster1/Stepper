@@ -59,7 +59,7 @@ public class Manager implements EngineApi, Serializable {
     }
 
     @Override
-    public void loadXmlFile(InputStream inputStream) throws JAXBException {
+    public void loadXmlFile(InputStream inputStream) throws Exception {
         STStepper stepper;
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(STStepper.class);
@@ -67,7 +67,7 @@ public class Manager implements EngineApi, Serializable {
             stepper = (STStepper) jaxbUnmarshaller.unmarshal(inputStream);
             createFlows(stepper);
             createThreadPool(stepper);
-        } catch (JAXBException e) {
+        } catch (Exception e) {
             throw e;
         }
     }
