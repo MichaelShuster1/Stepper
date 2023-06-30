@@ -671,6 +671,33 @@ public class ExecutionController {
     private void executeFlow(ActionEvent event)
     {
         elementDetailsView.getChildren().clear();
+
+        String finalUrl = HttpUrl
+                .parse(Constants.FULL_SERVER_PATH + "/run-flow")
+                .newBuilder()
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(()-> showErrorAlert("there was a problem with the connection with the server"));
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if(response.code()==200&&response.body()!=null){
+                    String flowId=response.body().string();
+                    appController.addFlowId(flowId);
+                }
+                else {
+                    Platform.runLater(()-> showErrorAlert("there was a problem with the connection with the server"));
+                }
+
+            }
+        });
+
+
         //String flowId=engine.runFlow();
         //appController.addFlowId(flowId);
         executeButton.setDisable(true);

@@ -210,7 +210,6 @@ public class AppController {
                 } else {
                     if (response.body() != null) {
                         String jsonInputs = response.body().string();
-                        response.close();
                         InputsDTO inputsDTO = Constants.GSON_INSTANCE.fromJson(jsonInputs, InputsDTO.class);
                         Platform.runLater(() -> {
                             executionComponentController.setTabView(inputsDTO,flowName);
