@@ -1,6 +1,10 @@
 package utils;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import dto.DataDefintionDTO;
+
+import java.util.Map;
 
 public class Constants {
     public final static String BASE_DOMAIN = "localhost";
@@ -11,6 +15,8 @@ public class Constants {
     public final static String LOGIN_PAGE = FULL_SERVER_PATH + "/login";
 
 
+
+
     // GSON instance
-    public final static Gson GSON_INSTANCE = new Gson();
+    public final static Gson GSON_INSTANCE = new GsonBuilder().serializeNulls().create();
 }

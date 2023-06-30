@@ -597,7 +597,7 @@ public class ExecutionController {
             HttpClientUtil.runAsyncDelete(finalUrl, new Callback() {
                 @Override
                 public void onFailure(@NotNull Call call, @NotNull IOException e) {
-
+                    Platform.runLater(()-> showErrorAlert("there was a problem with the connection with the server"));
                 }
 
                 @Override
@@ -614,6 +614,8 @@ public class ExecutionController {
                             });
                         }
                     }
+                    else
+                        Platform.runLater(()-> showErrorAlert("there was a problem with the connection with the server"));
                 }
             });
         });
@@ -630,32 +632,30 @@ public class ExecutionController {
             HttpClientUtil.runAsync(finalUrl, new Callback() {
                 @Override
                 public void onFailure(@NotNull Call call, @NotNull IOException e) {
-
+                    Platform.runLater(()-> showErrorAlert("there was a problem with the connection with the server"));
                 }
 
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-
-                    ObservableList<String> stylesheets = appController.getPrimaryStage().getScene().getStylesheets();
-                    if(stylesheets.size()!=0)
-                        alert.getDialogPane().getStylesheets().add(stylesheets.get(0));
-
-                    if(response.code() == 200) {
-                        if(response.body() != null) {
-                            String data = response.body().string();
+                    if(response.code() == 200 && response.body() != null) {
+                        String data = Constants.GSON_INSTANCE.fromJson(response.body().string(), String.class);
+                        Platform.runLater(() -> {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                            ObservableList<String> stylesheets = appController.getPrimaryStage().getScene().getStylesheets();
+                            if(stylesheets.size()!=0)
+                                alert.getDialogPane().getStylesheets().add(stylesheets.get(0));
                             alert.setGraphic(null);
                             alert.setTitle("input's data");
                             if (data != null)
                                 alert.setHeaderText(data);
-                        }
-                        else
-                            alert.setHeaderText("no data");
+                           else
+                               alert.setHeaderText("no data");
+                        alert.showAndWait();
+                        });
                     }
                     else {
-                        alert.setHeaderText("Something went wrong...");
+                        Platform.runLater(()-> showErrorAlert("there was a problem with the connection with the server"));
                     }
-                    Platform.runLater(alert::showAndWait);
                 }
             });
 

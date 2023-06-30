@@ -1,6 +1,7 @@
 package utils;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class Constants {
     public static final String ADMIN_CONNECTED = "AdminConnected";
@@ -11,5 +12,5 @@ public class Constants {
 
     public static final String JSON_FORMAT = "application/json";
 
-    public final static Gson GSON_INSTANCE = new Gson();
+    public final static Gson GSON_INSTANCE = new GsonBuilder().serializeNulls().create();
 }

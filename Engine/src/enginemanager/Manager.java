@@ -448,9 +448,9 @@ public class Manager implements EngineApi, Serializable {
     }
 
     @Override
-    public InputData clearInputData(String inputName)
+    public InputData clearInputData(User user, String inputName)
     {
-        return currentFlow.clearInputData(inputName);
+        return user.getCurrentFlow().clearInputData(inputName);
     }
 
     @Override

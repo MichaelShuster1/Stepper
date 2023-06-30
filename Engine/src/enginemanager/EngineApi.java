@@ -27,7 +27,7 @@ public interface EngineApi {
 
     ResultDTO processInput(User user,String inputName, String data);
 
-    InputData clearInputData(String inputName);
+    InputData clearInputData(User user, String inputName);
 
     FreeInputExecutionDTO getInputData(User user, String inputName);
 
