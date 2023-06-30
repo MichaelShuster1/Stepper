@@ -1,7 +1,12 @@
 package progress;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import controllers.AppController;
+import dto.AvailableFlowDTO;
 import dto.FlowExecutionDTO;
+import dto.StepExtensionDTO;
 import enginemanager.EngineApi;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -11,9 +16,12 @@ import okhttp3.HttpUrl;
 import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
 import utils.Constants;
+import utils.FlowExecutionDTODeserializer;
 import utils.HttpClientUtil;
+import utils.StepExtensionDTODeserializer;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -91,8 +99,18 @@ public class ProgressTracker extends Task<Boolean> {
                         @Override
                         public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                             if(response.code()==200&&response.body()!=null){
-                                FlowExecutionDTO flowExecutionDTO =Constants.GSON_INSTANCE
-                                        .fromJson(response.body().string(),FlowExecutionDTO.class);
+
+                                 Gson gson = new GsonBuilder()
+                                         .registerTypeAdapter(StepExtensionDTO.class, new StepExtensionDTODeserializer())
+                                        .registerTypeAdapter(FlowExecutionDTO.class, new FlowExecutionDTODeserializer())
+                                        .serializeNulls()
+                                         .setPrettyPrinting()
+                                        .create();
+
+                                System.out.println(response.body());
+                                FlowExecutionDTO flowExecutionDTO =gson
+                                        .fromJson(response.body().string(), FlowExecutionDTO.class);
+                                System.out.println(flowExecutionDTO);
                                 if(flowId.equals(currentFlowId)) {
                                     Platform.runLater(()->appController.updateProgressFlow(flowExecutionDTO));
                                 }

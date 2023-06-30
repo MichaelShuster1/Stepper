@@ -33,4 +33,8 @@ public class FreeInputExecutionDTO extends DataDefintionDTO  {
     public List<String> getAllowedValues() {
         return allowedValues;
     }
+
+    public boolean isNecessity() {
+        return necessity;
+    }
 }
