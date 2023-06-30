@@ -1,10 +1,6 @@
 package utils;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import dto.DataDefintionDTO;
-
-import java.util.Map;
 
 public class Constants {
     public final static String BASE_DOMAIN = "localhost";
@@ -18,5 +14,8 @@ public class Constants {
 
 
     // GSON instance
-    public final static Gson GSON_INSTANCE = new GsonBuilder().serializeNulls().create();
+    public final static Gson GSON_INSTANCE = new GsonBuilder()
+            .registerTypeAdapter(FlowExecutionDTO.class, new FlowExecutionDTODeserializer())
+            .serializeNulls()
+            .create();
 }

@@ -54,4 +54,5 @@ public class FlowExecutionDetailsDTO implements Serializable {
     public String getActivationTime() {
         return activationTime;
     }
+
 }

@@ -35,4 +35,5 @@ public class FlowExecutionDTO extends FlowExecutionDetailsDTO{
     public double getProgress() {
         return progress;
     }
+
 }
