@@ -385,6 +385,9 @@ public class Manager implements EngineApi, Serializable {
         //currentFlow = flows.get(flowIndex);
         //return currentFlow.getInputList();
 
+        int flowIndex=flowNames2Index.get(flowName);
+
+        user.addFlow(flows.get(flowIndex));
         user.setCurrentFlow(flowName);
         return user.getCurrentFlow().getInputList();
     }

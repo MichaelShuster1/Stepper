@@ -208,25 +208,44 @@ public class ExecutionController {
     @FXML
     public void inputClick(Button button,ActionEvent event)
     {
-        TextInputDialog inputDialog =getNewTextInputDialog();
-
-
         String finalUrl = HttpUrl
-                .parse(Constants.FULL_SERVER_PATH + "/input-data")
+                .parse(Constants.FULL_SERVER_PATH + "/input-parameters")
                 .newBuilder()
                 .addQueryParameter("inputName", button.getId())
                 .build()
                 .toString();
 
-        Response response=HttpClientUtil.runSync(finalUrl);
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(()-> showErrorAlert("there was a problem with the connection with the server"));
+            }
 
-        FreeInputExecutionDTO freeInputExecutionDTO =Constants
-                .GSON_INSTANCE
-                .fromJson(String.valueOf(response.body()),FreeInputExecutionDTO.class);
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if(response.code()==200&&response.body()!=null){
+                    FreeInputExecutionDTO freeInputExecutionDTO =Constants
+                            .GSON_INSTANCE
+                            .fromJson(response.body().string(),FreeInputExecutionDTO.class);
 
+                    Platform.runLater(()->{
+                        Optional<String> result =getInputFromUser(freeInputExecutionDTO);
+                        if(result.isPresent())
+                        {
+                            String data= result.get();
+                            processInput(button, data);
+                        }
+                    });
+
+                }
+                else
+                    Platform.runLater(()-> showErrorAlert("there was a problem with the connection with the server"));
+            }
+        });
+
+        /*
+        TextInputDialog inputDialog =getNewTextInputDialog();
         String inputType=freeInputExecutionDTO.getType();
-
-        //String inputType =engine.getInputData(button.getId()).getType();
 
         Optional<String> result=Optional.empty();
 
@@ -276,12 +295,66 @@ public class ExecutionController {
                 break;
         }
 
-
         if(result.isPresent())
         {
             String data= result.get();
-            //processInput(button, data);
+            processInput(button, data);
         }
+        */
+    }
+
+    private Optional<String> getInputFromUser(FreeInputExecutionDTO freeInputExecutionDTO){
+
+        Optional<String> result=Optional.empty();
+        String inputType=freeInputExecutionDTO.getType();
+        TextInputDialog inputDialog =getNewTextInputDialog();
+
+        switch (DataType.valueOf(inputType.toUpperCase()))
+        {
+            case ENUMERATOR:
+                ChoiceBox<String> enumerationSetChoice = new ChoiceBox<>();
+                enumerationSetChoice.getItems().addAll(freeInputExecutionDTO.getAllowedValues());
+                enumerationSetChoice.setStyle("-fx-pref-width: 200px;");
+
+                HBox hbox = new HBox(10, new Label("Please select an option:"),  enumerationSetChoice);
+                hbox.setAlignment(Pos.CENTER);
+                inputDialog.getDialogPane().setContent(hbox);
+
+                inputDialog.setResultConverter(dialogButton -> {
+                    if (dialogButton == ButtonType.OK) {
+                        String selectedOption = enumerationSetChoice.getValue();
+                        return selectedOption;
+                    }
+                    return null;
+                });
+
+                Button submitButton=(Button) inputDialog.getDialogPane().lookupButton(ButtonType.OK);
+
+                enumerationSetChoice.valueProperty().addListener((observable, oldValue, newValue) -> {
+                    submitButton.setDisable(newValue == null);
+                });
+
+
+                result = inputDialog.showAndWait();
+                break;
+            case NUMBER:
+                TextField textField =inputDialog.getEditor();
+                inputDialog.setContentText("Please enter the number here:");
+                textField.addEventFilter(KeyEvent.KEY_TYPED, e -> {
+                    String input = e.getCharacter();
+                    if (!input.matches("[0-9]")) {
+                        e.consume();
+                    }
+                });
+                result =inputDialog.showAndWait();
+                break;
+            case STRING:
+                String inputDefaultName = freeInputExecutionDTO.getDefaultName();
+                result = getStringInputFromUser(inputDialog, inputDefaultName);
+                break;
+        }
+
+        return result;
     }
 
     private Optional<String> getStringInputFromUser(TextInputDialog inputDialog, String inputDefaultName) {
@@ -346,11 +419,68 @@ public class ExecutionController {
         return toggleGroup;
     }
     private void processInput(Button button, String data) {
+
+        RequestBody requestBody =new FormBody.Builder()
+                .add("inputName",button.getId())
+                .add("data",data)
+                .build();
+
+        String finalUrl = HttpUrl
+                .parse(Constants.FULL_SERVER_PATH + "/process-input")
+                .newBuilder()
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsyncPost(finalUrl, requestBody, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(()-> showErrorAlert("there was a problem with the connection with the server"));
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if(response.code()==200&& response.body()!=null) {
+
+                    ResultDTO resultDTO =Constants.GSON_INSTANCE
+                            .fromJson(response.body().string(),ResultDTO.class);
+
+                    Platform.runLater(()->{
+                        if(resultDTO.getStatus())
+                        {
+                            button.setStyle("-fx-background-color: #40ff00; ");
+                            if(resultDTO.isFlowReady())
+                                executeButton.setDisable(false);
+                        }
+                        else
+                        {
+                            Alert alert =new Alert(Alert.AlertType.ERROR);
+
+                            ObservableList<String> stylesheets = appController.getPrimaryStage().getScene().getStylesheets();
+                            if(stylesheets.size()!=0)
+                                alert.getDialogPane().getStylesheets().add(stylesheets.get(0));
+
+                            alert.setTitle("Error");
+                            alert.setContentText(resultDTO.getMessage());
+                            alert.showAndWait();
+                        }
+
+                    });
+
+                }
+                else {
+                    Platform.runLater(()-> showErrorAlert("there was a problem with the connection with the server"));
+                }
+
+            }
+        });
+
+        /*
         ResultDTO resultDTO=engine.processInput(button.getId(), data);
+
         if(resultDTO.getStatus())
         {
             button.setStyle("-fx-background-color: #40ff00; ");
-            if(engine.isFlowReady())
+            if(resultDTO.isFlowReady())
                 executeButton.setDisable(false);
         }
         else
@@ -365,6 +495,20 @@ public class ExecutionController {
             alert.setContentText(resultDTO.getMessage());
             alert.showAndWait();
         }
+        */
+    }
+
+
+    private void showErrorAlert(String message) {
+        Alert alert =new Alert(Alert.AlertType.ERROR);
+
+        ObservableList<String> stylesheets = appController.getPrimaryStage().getScene().getStylesheets();
+        if(stylesheets.size()!=0)
+            alert.getDialogPane().getStylesheets().add(stylesheets.get(0));
+
+        alert.setTitle("Error");
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
 

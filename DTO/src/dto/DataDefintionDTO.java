@@ -26,7 +26,7 @@ public class DataDefintionDTO implements Serializable
     {
         this.name=other.name;
         this.type=other.type;
-        this.defaultName = null;
+        this.defaultName = other.defaultName;
     }
 
     public String getDefaultName() {

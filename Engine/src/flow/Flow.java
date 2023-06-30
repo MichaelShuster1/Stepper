@@ -257,7 +257,7 @@ public class Flow implements Serializable {
                 return resultDTO;
         }
         freeMandatoryInputs.remove(inputName);
-        return new ResultDTO(true, "The input was processed successfully");
+        return new ResultDTO(true, "The input was processed successfully",isFlowReady());
     }
 
     public InputData clearInputData(String inputName)
@@ -308,7 +308,8 @@ public class Flow implements Serializable {
 
         DataDefintionDTO dataDefintionDTO;
         FreeInputExecutionDTO freeInputExecutionDTO;
-        switch (DataType.valueOf(input.getType().toUpperCase()))
+        String type=input.getType().substring(4).toUpperCase();
+        switch (DataType.valueOf(type))
         {
             case ENUMERATOR:
                 List<String> allowedValues= getEnumerationAllowedValues(inputName);
