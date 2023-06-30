@@ -206,14 +206,13 @@ public class ElementLogic {
     }
 
 
-    private void addStepInputsOrOutputsData(Map<DataDefintionDTO,Object> io)
+    private void addStepInputsOrOutputsData(List<DataExecutionDTO> io)
     {
-        String value="";
-        for(DataDefintionDTO dataDefintionDTO:io.keySet())
+        for(DataExecutionDTO dataExecutionDTO:io)
         {
-            String name=dataDefintionDTO.getName();
-            String type=dataDefintionDTO.getType();
-            Object data=io.get(dataDefintionDTO);
+            String name=dataExecutionDTO.getName();
+            String type=dataExecutionDTO.getType();
+            Object data=dataExecutionDTO.getData();
 
             if(data!=null) {
                 if(type.equals(DataType.RELATION.toString())||type.equals(DataType.LIST.toString()))
@@ -224,7 +223,7 @@ public class ElementLogic {
             else
                 addKeyValueLine(name+": ","No Data Received");
         }
-        if(io.keySet().size()==0)
+        if(io.size()==0)
             addKeyValueLine("No outputs exist","");
     }
 
@@ -371,8 +370,8 @@ public class ElementLogic {
 
     }
 
-    private void updateOutputsHistoryData(List<OutputExecutionDTO> outputs) {
-        for (OutputExecutionDTO output : outputs) {
+    private void updateOutputsHistoryData(List<DataExecutionDTO> outputs) {
+        for (DataExecutionDTO output : outputs) {
             addKeyValueLine("Name: " , output.getName());
             addKeyValueLine("Type: " , output.getType());
             if (output.getData() != null) {

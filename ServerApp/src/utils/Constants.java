@@ -14,7 +14,7 @@ public class Constants {
     public static final String JSON_FORMAT = "application/json";
 
     public final static Gson GSON_INSTANCE = new GsonBuilder()
-            .registerTypeAdapter(StepExtensionDTO.class, new StepExtensionDTOSerializer())
+            //.registerTypeAdapter(StepExtensionDTO.class, new StepExtensionDTOSerializer())
             // Other Gson configuration
             .create();
 }

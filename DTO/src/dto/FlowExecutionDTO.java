@@ -5,11 +5,11 @@ import java.util.List;
 public class FlowExecutionDTO extends FlowExecutionDetailsDTO{
     private final List<StepExecutionDTO> steps;
     private final List<FreeInputExecutionDTO> freeInputs;
-    private final List<OutputExecutionDTO> outputs;
+    private final List<DataExecutionDTO> outputs;
 
     private double progress;
 
-    public FlowExecutionDTO(FlowExecutionDetailsDTO other, List<StepExecutionDTO> steps, List<FreeInputExecutionDTO> freeInputs, List<OutputExecutionDTO> outputs,double progress) {
+    public FlowExecutionDTO(FlowExecutionDetailsDTO other, List<StepExecutionDTO> steps, List<FreeInputExecutionDTO> freeInputs, List<DataExecutionDTO> outputs,double progress) {
         super(other);
         this.steps = steps;
         this.freeInputs = freeInputs;
@@ -28,7 +28,7 @@ public class FlowExecutionDTO extends FlowExecutionDetailsDTO{
         return freeInputs;
     }
 
-    public List<OutputExecutionDTO> getOutputs() {
+    public List<DataExecutionDTO> getOutputs() {
         return outputs;
     }
 

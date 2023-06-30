@@ -56,20 +56,18 @@ public class FlowExecutionDTODeserializer implements JsonDeserializer<FlowExecut
         }
 
         // Deserialize outputs
-        List<OutputExecutionDTO> outputs = new ArrayList<>();
+        List<DataExecutionDTO> outputs = new ArrayList<>();
         if (jsonObject.has("outputs")) {
             JsonArray outputsJsonArray = jsonObject.getAsJsonArray("outputs");
             for (JsonElement outputJsonElement : outputsJsonArray) {
-                OutputExecutionDTO output = context.deserialize(outputJsonElement, OutputExecutionDTO.class);
+                DataExecutionDTO output = context.deserialize(outputJsonElement, DataExecutionDTO.class);
                 outputs.add(output);
             }
         }
 
         double progress =jsonObject.get("progress").getAsDouble();
 
-        FlowExecutionDTO flowExecutionDTO = new FlowExecutionDTO(flowExecutionDetailsDTO,steps,freeInputs,outputs,progress);
 
-
-        return flowExecutionDTO;
+        return new FlowExecutionDTO(flowExecutionDetailsDTO,steps,freeInputs,outputs,progress);
     }
 }

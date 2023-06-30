@@ -1,7 +1,7 @@
 package dto;
 
 public class OutputExecutionDTO extends DataDefintionDTO {
-    private Object data;
+    private final Object data;
 
     public OutputExecutionDTO(DataDefintionDTO other, Object data) {
         super(other);

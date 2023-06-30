@@ -2,10 +2,12 @@ package utils;
 
 import com.google.gson.*;
 import dto.DataDefintionDTO;
+import dto.DataExecutionDTO;
 import dto.FlowExecutionDTO;
 import dto.StepExtensionDTO;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,27 +22,19 @@ public class StepExtensionDTODeserializer  implements JsonDeserializer<StepExten
         List<String> logs = context.deserialize(jsonObject.get("logs"), List.class);
 
         // Deserialize inputs
-        JsonObject inputsJsonObject = jsonObject.getAsJsonObject("inputs");
-        Map<DataDefintionDTO,Object> inputs = new HashMap<>();
-        if (inputsJsonObject != null) {
-            for (Map.Entry<String, JsonElement> entry : inputsJsonObject.entrySet()) {
-                JsonObject jsonObject1=Constants.GSON_INSTANCE.fromJson(entry.getKey(),JsonObject.class);
-                DataDefintionDTO key = context.deserialize(jsonObject1, DataDefintionDTO.class);
-                Object value = context.deserialize(entry.getValue(), Object.class);
-                inputs.put(key, value);
-            }
+        JsonArray inputsArray = jsonObject.getAsJsonArray("inputs");
+        List<DataExecutionDTO> inputs = new ArrayList<>();
+        for (JsonElement element : inputsArray) {
+            DataExecutionDTO dataExecutionDTO = context.deserialize(element, DataExecutionDTO.class);
+            inputs.add(dataExecutionDTO);
         }
 
         // Deserialize outputs
-        JsonObject outputsJsonObject = jsonObject.getAsJsonObject("outputs");
-        Map<DataDefintionDTO, Object> outputs = new HashMap<>();
-        if (outputsJsonObject != null) {
-            for (Map.Entry<String, JsonElement> entry : outputsJsonObject.entrySet()) {
-                JsonObject jsonObject1=Constants.GSON_INSTANCE.fromJson(entry.getKey(),JsonObject.class);
-                DataDefintionDTO key = context.deserialize(jsonObject1, DataDefintionDTO.class);
-                Object value = context.deserialize(entry.getValue(), Object.class);
-                outputs.put(key, value);
-            }
+        JsonArray outputsArray = jsonObject.getAsJsonArray("outputs");
+        List<DataExecutionDTO> outputs = new ArrayList<>();
+        for (JsonElement element : outputsArray) {
+            DataExecutionDTO dataExecutionDTO = context.deserialize(element, DataExecutionDTO.class);
+            outputs.add(dataExecutionDTO);
         }
 
         // Create and return the StepExtensionDTO object

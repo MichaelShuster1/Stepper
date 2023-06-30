@@ -12,7 +12,10 @@ public class DataDefintionDTO implements Serializable
     public DataDefintionDTO(String name,String type)
     {
         this.name=name;
-        this.type=type.substring(4);
+        if(type.startsWith("Data"))
+            this.type=type.substring(4);
+        else
+            this.type=type;
         this.defaultName = null;
     }
 
