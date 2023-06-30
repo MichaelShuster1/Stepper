@@ -20,7 +20,8 @@ public class User {
 
     public void addFlow(Flow flow)
     {
-        flows.put(flow.getName(),flow);
+        if(!flows.containsKey(flow.getName()))
+            flows.put(flow.getName(),flow);
     }
 
     public void removeFlow(String name) {

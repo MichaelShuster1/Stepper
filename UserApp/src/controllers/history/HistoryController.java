@@ -1,12 +1,10 @@
 package controllers.history;
 
 import controllers.AppController;
-import dto.FlowExecutionDTO;
-import dto.FreeInputExecutionDTO;
-import dto.OutputExecutionDTO;
-import dto.StepExecutionDTO;
+import dto.*;
 import elementlogic.ElementLogic;
 import enginemanager.EngineApi;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -21,7 +19,12 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import okhttp3.*;
+import org.jetbrains.annotations.NotNull;
+import utils.Constants;
+import utils.HttpClientUtil;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -107,11 +110,50 @@ public class HistoryController {
 
     }
 
+    private void showErrorAlert(String message) {
+        Alert alert =new Alert(Alert.AlertType.ERROR);
+
+        ObservableList<String> stylesheets = appController.getPrimaryStage().getScene().getStylesheets();
+        if(stylesheets.size()!=0)
+            alert.getDialogPane().getStylesheets().add(stylesheets.get(0));
+
+        alert.setTitle("Error");
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
     private void checkIfContinuationsAvailable(FlowExecutionDTO selectedItem) {
-        if (engine.getContinuationMenuDTOByName(selectedItem.getName()) != null)
-            continuationButton.setDisable(false);
-        else
-            continuationButton.setDisable(true);
+        String finalUrl = HttpUrl
+                .parse(Constants.FULL_SERVER_PATH + "/continuation")
+                .newBuilder()
+                .addQueryParameter("getBy","name")
+                .addQueryParameter("flowName", selectedItem.getName())
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(()-> showErrorAlert("there was a problem with the connection with the server"));
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if(response.code()==200 && response.body()!=null){
+                    ContinutionMenuDTO continutionMenuDTO = Constants.GSON_INSTANCE.fromJson(response.body().string(), ContinutionMenuDTO.class);
+                    Platform.runLater(() -> {
+                        if (continutionMenuDTO != null)
+                            continuationButton.setDisable(false);
+                        else
+                            continuationButton.setDisable(true);
+                    });
+                }
+                else {
+                    Platform.runLater(()-> showErrorAlert("there was a problem with the connection with the server"));
+                }
+
+            }
+        });
     }
 
 
@@ -132,10 +174,37 @@ public class HistoryController {
     void reRunFlow(ActionEvent event) {
         if(!historyTableView.getSelectionModel().isEmpty()) {
             FlowExecutionDTO flowExecutionDTO = historyTableView.getSelectionModel().getSelectedItem();
-            engine.reUseInputsData(flowExecutionDTO);
-            appController.streamFlow(flowExecutionDTO.getName());
-        }
+            RequestBody requestBody =new FormBody.Builder()
+                    .add("freeInputs",Constants.GSON_INSTANCE.toJson(flowExecutionDTO.getFreeInputs()))
+                    .add("flowName", flowExecutionDTO.getName())
+                    .build();
 
+            String finalUrl = HttpUrl
+                    .parse(Constants.FULL_SERVER_PATH + "/rerun")
+                    .newBuilder()
+                    .build()
+                    .toString();
+
+            HttpClientUtil.runAsyncPost(finalUrl, requestBody, new Callback() {
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    Platform.runLater(()-> showErrorAlert("there was a problem with the connection with the server"));
+                }
+
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    if(response.code()==200 && response.body()!=null){
+                        Platform.runLater(() -> {
+                            appController.streamFlow(flowExecutionDTO.getName());
+                        });
+                    }
+                    else {
+                        Platform.runLater(()-> showErrorAlert("Something went wrong..."));
+                    }
+
+                }
+            });
+        }
     }
 
     @FXML
@@ -202,35 +271,62 @@ public class HistoryController {
     void openContinuationPopUp(ActionEvent event) {
         FlowExecutionDTO flowExecutionDTO = historyTableView.getSelectionModel().getSelectedItem();
         TextInputDialog inputDialog =getNewTextInputDialog();
-        Optional<String> result = Optional.empty();
-        ChoiceBox<String> continuationChoice = new ChoiceBox<>();
-        continuationChoice.getItems().addAll(engine.getContinuationMenuDTOByName(flowExecutionDTO.getName()).getTargetFlows());
-        continuationChoice.setStyle("-fx-pref-width: 200px;");
+        String finalUrl = HttpUrl
+                .parse(Constants.FULL_SERVER_PATH + "/continuation")
+                .newBuilder()
+                .addQueryParameter("getBy","name")
+                .addQueryParameter("flowName", flowExecutionDTO.getName())
+                .build()
+                .toString();
 
-        HBox hbox = new HBox(10, new Label("Available Continuations:"), continuationChoice);
-        hbox.setAlignment(Pos.CENTER);
-        inputDialog.getDialogPane().setContent(hbox);
-
-        inputDialog.setResultConverter(dialogButton -> {
-            if (dialogButton == ButtonType.OK) {
-                String selectedOption = continuationChoice.getValue();
-                return selectedOption;
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(()-> showErrorAlert("there was a problem with the connection with the server"));
             }
-            return null;
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if(response.code()==200 && response.body()!=null){
+                    ContinutionMenuDTO continutionMenuDTO = Constants.GSON_INSTANCE.fromJson(response.body().string(), ContinutionMenuDTO.class);
+                    Platform.runLater(() -> {
+                        Optional<String> result = Optional.empty();
+                        ChoiceBox<String> continuationChoice = new ChoiceBox<>();
+                        continuationChoice.getItems().addAll(continutionMenuDTO.getTargetFlows());
+                        continuationChoice.setStyle("-fx-pref-width: 200px;");
+
+                        HBox hbox = new HBox(10, new Label("Available Continuations:"), continuationChoice);
+                        hbox.setAlignment(Pos.CENTER);
+                        inputDialog.getDialogPane().setContent(hbox);
+
+                        inputDialog.setResultConverter(dialogButton -> {
+                            if (dialogButton == ButtonType.OK) {
+                                String selectedOption = continuationChoice.getValue();
+                                return selectedOption;
+                            }
+                            return null;
+                        });
+
+                        Button submitButton=(Button) inputDialog.getDialogPane().lookupButton(ButtonType.OK);
+
+                        continuationChoice.valueProperty().addListener((observable, oldValue, newValue) -> {
+                            submitButton.setDisable(newValue == null);
+                        });
+
+                        result = inputDialog.showAndWait();
+                        if(result.isPresent())
+                        {
+                            String targetName= result.get();
+                            continueToFlow(targetName, flowExecutionDTO.getId());
+                        }
+                    });
+                }
+                else {
+                    Platform.runLater(()-> showErrorAlert("there was a problem with the connection with the server"));
+                }
+
+            }
         });
-
-        Button submitButton=(Button) inputDialog.getDialogPane().lookupButton(ButtonType.OK);
-
-        continuationChoice.valueProperty().addListener((observable, oldValue, newValue) -> {
-            submitButton.setDisable(newValue == null);
-        });
-
-        result = inputDialog.showAndWait();
-        if(result.isPresent())
-        {
-            String targetName= result.get();
-            continueToFlow(targetName, flowExecutionDTO.getId());
-        }
     }
 
     private TextInputDialog getNewTextInputDialog()
@@ -259,8 +355,36 @@ public class HistoryController {
     }
 
     void continueToFlow(String targetName, String id) {
-        engine.doContinuation(engine.getFlowExecution(id),targetName);
-        appController.streamFlow(targetName);
+        RequestBody requestBody =new FormBody.Builder()
+                .add("Id",id)
+                .add("flowName", targetName)
+                .build();
+
+        String finalUrl = HttpUrl
+                .parse(Constants.FULL_SERVER_PATH + "/continuation")
+                .newBuilder()
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsyncPost(finalUrl, requestBody, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(()-> showErrorAlert("there was a problem with the connection with the server"));
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if(response.code()==200 && response.body()!=null){
+                    Platform.runLater(() -> {
+                        appController.streamFlow(targetName);
+                    });
+                }
+                else {
+                    Platform.runLater(()-> showErrorAlert("there was a problem with the connection with the server"));
+                }
+
+            }
+        });
     }
 
 }

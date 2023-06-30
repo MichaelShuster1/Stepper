@@ -49,13 +49,13 @@ public interface EngineApi {
 
     int getCurrInitializedFlowsCount();
 
-    ContinutionMenuDTO getContinutionMenuDTO();
+    ContinutionMenuDTO getContinutionMenuDTO(User user);
 
-    ContinutionMenuDTO getContinuationMenuDTOByName(String flowName);
+    ContinutionMenuDTO getContinuationMenuDTOByName(User user, String flowName);
 
-    void reUseInputsData(FlowExecutionDTO flowExecutionDTO);
+    void reUseInputsData(User user, List<FreeInputExecutionDTO> inputs, String flowName);
 
-    void doContinuation(FlowExecution flowExecution, String targetName);
+    void doContinuation(User user, FlowExecution flowExecution, String targetName);
 
     FlowExecution getFlowExecution(String ID);
 
@@ -64,6 +64,8 @@ public interface EngineApi {
     String getInputDefaultName(User user , String inputName);
 
     void endProcess();
+
+    void updateUserFlows(User user);
 
 
 }

@@ -468,7 +468,7 @@ public class ExecutionController {
 
                 }
                 else {
-                    Platform.runLater(()-> showErrorAlert("there was a problem with the connection with the server"));
+                    Platform.runLater(()-> showErrorAlert("Something went wrong..."));
                 }
 
             }
@@ -549,7 +549,7 @@ public class ExecutionController {
 
     public Optional<String> openNotExistFileChooser() {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("first navigate to where you want to save the file and then write his name");
+        fileChooser.setTitle("First navigate to where you want to save the file and then write his name");
         File selectedFolder = fileChooser.showSaveDialog(appController.getPrimaryStage());
         if (selectedFolder != null)
             return Optional.of(selectedFolder.getAbsolutePath());
@@ -615,7 +615,7 @@ public class ExecutionController {
                         }
                     }
                     else
-                        Platform.runLater(()-> showErrorAlert("there was a problem with the connection with the server"));
+                        Platform.runLater(()-> showErrorAlert("Something went wrong..."));
                 }
             });
         });
@@ -654,7 +654,7 @@ public class ExecutionController {
                         });
                     }
                     else {
-                        Platform.runLater(()-> showErrorAlert("there was a problem with the connection with the server"));
+                        Platform.runLater(()-> showErrorAlert("Something went wrong..."));
                     }
                 }
             });
@@ -691,7 +691,7 @@ public class ExecutionController {
                     appController.addFlowId(flowId);
                 }
                 else {
-                    Platform.runLater(()-> showErrorAlert("there was a problem with the connection with the server"));
+                    Platform.runLater(()-> showErrorAlert("Something went wrong..."));
                 }
 
             }
@@ -740,18 +740,43 @@ public class ExecutionController {
         progressBarView.setProgress(flowExecutionDTO.getProgress());
         if(flowExecutionDTO.getStateAfterRun()!=null)
         {
-            ContinutionMenuDTO continutionMenuDTO=engine.getContinutionMenuDTO();
-            if(continutionMenuDTO!=null)
-            {
-                List<String> targetFlows = continutionMenuDTO.getTargetFlows();
-                choiceBoxView.setItems(FXCollections.observableArrayList(targetFlows));
-                if(isAnimationsOn.get()) {
-                    createFadeAnimation(choiceBoxView);
+            String finalUrl = HttpUrl
+                    .parse(Constants.FULL_SERVER_PATH + "/continuation")
+                    .newBuilder()
+                    .addQueryParameter("getBy","current")
+                    .build()
+                    .toString();
+
+            HttpClientUtil.runAsync(finalUrl, new Callback() {
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    Platform.runLater(()-> showErrorAlert("there was a problem with the connection with the server"));
                 }
-                else
-                    choiceBoxView.setOpacity(1.0);
-                choiceBoxView.setDisable(false);
-            }
+
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    if(response.code()==200 && response.body()!=null){
+                        ContinutionMenuDTO continutionMenuDTO = Constants.GSON_INSTANCE.fromJson(response.body().string(), ContinutionMenuDTO.class);
+                        Platform.runLater(() -> {
+                            if(continutionMenuDTO!=null)
+                            {
+                                List<String> targetFlows = continutionMenuDTO.getTargetFlows();
+                                choiceBoxView.setItems(FXCollections.observableArrayList(targetFlows));
+                                if(isAnimationsOn.get()) {
+                                    createFadeAnimation(choiceBoxView);
+                                }
+                                else
+                                    choiceBoxView.setOpacity(1.0);
+                                choiceBoxView.setDisable(false);
+                            }
+                        });
+                    }
+                    else {
+                        Platform.runLater(()-> showErrorAlert("Something went wrong..."));
+                    }
+
+                }
+            });
             if(isAnimationsOn.get() && !elementLogic.isTableClicked() && !isClicked) {
                 createFadeAnimation(elementDetailsView);
             }
@@ -766,8 +791,36 @@ public class ExecutionController {
 
     private void reRunFlow(FlowExecutionDTO flowExecutionDTO)
     {
-        engine.reUseInputsData(flowExecutionDTO);
-        appController.streamFlow(flowExecutionDTO.getName());
+        RequestBody requestBody =new FormBody.Builder()
+                .add("freeInputs",Constants.GSON_INSTANCE.toJson(flowExecutionDTO.getFreeInputs()))
+                .add("flowName", flowExecutionDTO.getName())
+                .build();
+
+        String finalUrl = HttpUrl
+                .parse(Constants.FULL_SERVER_PATH + "/rerun")
+                .newBuilder()
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsyncPost(finalUrl, requestBody, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(()-> showErrorAlert("there was a problem with the connection with the server"));
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if(response.code()==200 && response.body()!=null){
+                    Platform.runLater(() -> {
+                        appController.streamFlow(flowExecutionDTO.getName());
+                    });
+                }
+                else {
+                    Platform.runLater(()-> showErrorAlert("Something went wrong..."));
+                }
+
+            }
+        });
     }
     private void createFadeAnimation(Node node)
     {
@@ -788,8 +841,36 @@ public class ExecutionController {
     @FXML
     void continueToFlow(ActionEvent event) {
         String targetName = choiceBoxView.getValue();
-        engine.doContinuation(engine.getFlowExecution(elementLogic.getID()),targetName);
-        appController.streamFlow(targetName);
+        RequestBody requestBody =new FormBody.Builder()
+                .add("Id",elementLogic.getID())
+                .add("flowName", targetName)
+                .build();
+
+        String finalUrl = HttpUrl
+                .parse(Constants.FULL_SERVER_PATH + "/continuation")
+                .newBuilder()
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsyncPost(finalUrl, requestBody, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(()-> showErrorAlert("there was a problem with the connection with the server"));
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if(response.code()==200 && response.body()!=null){
+                    Platform.runLater(() -> {
+                        appController.streamFlow(targetName);
+                    });
+                }
+                else {
+                    Platform.runLater(()-> showErrorAlert("Something went wrong..."));
+                }
+
+            }
+        });
     }
 
 }

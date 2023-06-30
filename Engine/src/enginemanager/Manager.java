@@ -387,7 +387,7 @@ public class Manager implements EngineApi, Serializable {
 
         int flowIndex=flowNames2Index.get(flowName);
 
-        user.addFlow(flows.get(flowIndex));
+        //user.addFlow(flows.get(flowIndex));
         user.setCurrentFlow(flowName);
         return user.getCurrentFlow().getInputList();
     }
@@ -577,23 +577,20 @@ public class Manager implements EngineApi, Serializable {
     }
 
     @Override
-    public ContinutionMenuDTO getContinutionMenuDTO() {
-        return currentFlow.getContinutionMenuDTO();
+    public ContinutionMenuDTO getContinutionMenuDTO(User user) {
+        return user.getCurrentFlow().getContinutionMenuDTO();
     }
 
     @Override
-    public ContinutionMenuDTO getContinuationMenuDTOByName(String flowName) {
-        return flows.get(flowNames2Index.get(flowName)).getContinutionMenuDTO();
+    public ContinutionMenuDTO getContinuationMenuDTOByName(User user, String flowName) {
+        return user.getFlows().get(flowName).getContinutionMenuDTO();
     }
 
     @Override
-    public void reUseInputsData(FlowExecutionDTO flowExecutionDTO)
+    public void reUseInputsData(User user, List<FreeInputExecutionDTO> inputs, String flowName)
     {
-        String flowName = flowExecutionDTO.getName();
-        int flowIndex = flowNames2Index.get(flowName);
-        Flow flow = flows.get(flowIndex);
+        Flow flow = user.getFlows().get(flowName);
         flow.clearFlowInputsData();
-        List<FreeInputExecutionDTO> inputs = flowExecutionDTO.getFreeInputs();
         for(FreeInputExecutionDTO currInput : inputs) {
             if(currInput.getData() != null)
                 flow.processInput(currInput.getName(), currInput.getData());
@@ -602,12 +599,12 @@ public class Manager implements EngineApi, Serializable {
 
 
     @Override
-    public void doContinuation(FlowExecution flowExecution, String targetName) {
+    public void doContinuation(User user, FlowExecution flowExecution, String targetName) {
         String sourceFlowName = flowExecution.getName();
-        Flow sourceFlow = flows.get(getFlowIndexByName(sourceFlowName));
+        Flow sourceFlow = user.getFlows().get(sourceFlowName);
         Continuation continuation = sourceFlow.getContinuation(targetName);
-        flows.get(getFlowIndexByName(targetName)).clearFlowInputsData();
-        flows.get(getFlowIndexByName(targetName)).applyContinuation(flowExecution, continuation);
+        user.getFlows().get(targetName).clearFlowInputsData();
+        user.getFlows().get(targetName).applyContinuation(flowExecution, continuation);
     }
 
     @Override
@@ -621,8 +618,9 @@ public class Manager implements EngineApi, Serializable {
         return user.getCurrentFlow().getInputDefaultName(inputName);
     }
 
-
-
-
-
+    @Override
+    public void updateUserFlows(User user) {
+        for(Flow flow: flows)
+            user.addFlow(flow);
+    }
 }

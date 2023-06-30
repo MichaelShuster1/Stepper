@@ -8,6 +8,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import users.UserManager;
 import utils.Constants;
 import utils.ServletUtils;
 import utils.SessionUtils;
@@ -22,14 +23,18 @@ public class AvailableFlowsServlet extends HttpServlet {
         if(ServletUtils.checkAuthorization(usernameFromSession,response)) {
             Gson gson = new Gson();
             response.setContentType(Constants.JSON_FORMAT);
+            UserManager userManager = ServletUtils.getUserManager(getServletContext());
 
-            EngineApi engine = (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
-            List<AvailableFlowDTO> flows = engine.getAvailableFlows();
-            if (flows != null) {
-                response.getWriter().println(gson.toJson(flows));
-                response.setStatus(HttpServletResponse.SC_OK);
-            } else {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            synchronized (this) {
+                EngineApi engine = (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
+                engine.updateUserFlows(userManager.getUser(usernameFromSession));
+                List<AvailableFlowDTO> flows = engine.getAvailableFlows();
+                if (flows != null) {
+                    response.getWriter().println(gson.toJson(flows));
+                    response.setStatus(HttpServletResponse.SC_OK);
+                } else {
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                }
             }
         }
 
