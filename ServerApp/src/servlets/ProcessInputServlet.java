@@ -30,11 +30,13 @@ public class ProcessInputServlet extends HttpServlet {
                 response.getWriter().println("Invalid query parameter");
             }
             else {
-                EngineApi engine = (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
-                User user = ServletUtils.getUserManager(getServletContext()).getUser(usernameFromSession);
-                ResultDTO resultDTO =engine.processInput(user,inputName,data);
-                response.getWriter().println(Constants.GSON_INSTANCE.toJson(resultDTO));
-                response.setStatus(HttpServletResponse.SC_OK);
+                synchronized (this) { //maybe synchronized is not necessary here (need to verify that later)
+                    EngineApi engine = (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
+                    User user = ServletUtils.getUserManager(getServletContext()).getUser(usernameFromSession);
+                    ResultDTO resultDTO = engine.processInput(user, inputName, data);
+                    response.getWriter().println(Constants.GSON_INSTANCE.toJson(resultDTO));
+                    response.setStatus(HttpServletResponse.SC_OK);
+                }
             }
         }
     }
