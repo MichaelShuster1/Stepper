@@ -28,5 +28,6 @@
     <orderEntry type="library" name="gson-2.8.8" level="project" />
     <orderEntry type="module" module-name="engine" />
     <orderEntry type="module" module-name="DTO" />
+    <orderEntry type="module" module-name="UserApp" />
   </component>
 </module>

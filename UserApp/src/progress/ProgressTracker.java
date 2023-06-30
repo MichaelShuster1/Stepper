@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import controllers.AppController;
 import dto.AvailableFlowDTO;
+import dto.DataDefintionDTO;
 import dto.FlowExecutionDTO;
 import dto.StepExtensionDTO;
 import enginemanager.EngineApi;
@@ -15,10 +16,7 @@ import okhttp3.Callback;
 import okhttp3.HttpUrl;
 import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
-import utils.Constants;
-import utils.FlowExecutionDTODeserializer;
-import utils.HttpClientUtil;
-import utils.StepExtensionDTODeserializer;
+import utils.*;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -101,6 +99,7 @@ public class ProgressTracker extends Task<Boolean> {
                             if(response.code()==200&&response.body()!=null){
 
                                  Gson gson = new GsonBuilder()
+                                         .registerTypeAdapter(DataDefintionDTO.class, new DataDefintionDTODeserializer())
                                          .registerTypeAdapter(StepExtensionDTO.class, new StepExtensionDTODeserializer())
                                         .registerTypeAdapter(FlowExecutionDTO.class, new FlowExecutionDTODeserializer())
                                         .serializeNulls()

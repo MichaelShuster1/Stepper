@@ -24,8 +24,9 @@ public class StepExtensionDTODeserializer  implements JsonDeserializer<StepExten
         Map<DataDefintionDTO,Object> inputs = new HashMap<>();
         if (inputsJsonObject != null) {
             for (Map.Entry<String, JsonElement> entry : inputsJsonObject.entrySet()) {
-                DataDefintionDTO key = context.deserialize(new JsonPrimitive(entry.getKey()), DataDefintionDTO.class);
-                Object value = context.deserialize(entry.getValue(), String.class);
+                JsonObject jsonObject1=Constants.GSON_INSTANCE.fromJson(entry.getKey(),JsonObject.class);
+                DataDefintionDTO key = context.deserialize(jsonObject1, DataDefintionDTO.class);
+                Object value = context.deserialize(entry.getValue(), Object.class);
                 inputs.put(key, value);
             }
         }
@@ -35,7 +36,8 @@ public class StepExtensionDTODeserializer  implements JsonDeserializer<StepExten
         Map<DataDefintionDTO, Object> outputs = new HashMap<>();
         if (outputsJsonObject != null) {
             for (Map.Entry<String, JsonElement> entry : outputsJsonObject.entrySet()) {
-                DataDefintionDTO key = context.deserialize(new JsonPrimitive(entry.getKey()), DataDefintionDTO.class);
+                JsonObject jsonObject1=Constants.GSON_INSTANCE.fromJson(entry.getKey(),JsonObject.class);
+                DataDefintionDTO key = context.deserialize(jsonObject1, DataDefintionDTO.class);
                 Object value = context.deserialize(entry.getValue(), Object.class);
                 outputs.put(key, value);
             }
