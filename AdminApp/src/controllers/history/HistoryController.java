@@ -18,6 +18,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.util.List;
 import java.util.Optional;
 
 public class HistoryController {
@@ -105,6 +106,11 @@ public class HistoryController {
             FlowExecutionDTO flowExecutionDTO = historyTableView.getSelectionModel().getSelectedItem();
             elementLogic.setElementDetailsView(flowExecutionDTO);
         }
+    }
+
+    public void updateHistoryTable(List<FlowExecutionDTO> flowExecutionDTOList)
+    {
+
     }
 
 
