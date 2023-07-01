@@ -32,6 +32,10 @@ public class Manager implements EngineApi, Serializable {
     private ExecutorService threadPool;
     private Map<String,Integer> flowNames2Index;
 
+    private int historyVersion;
+
+
+
 
 
     public Manager() {
@@ -40,6 +44,7 @@ public class Manager implements EngineApi, Serializable {
         flowsStatistics = new LinkedHashMap<>();
         stepsStatistics = new LinkedHashMap<>();
         flowExecutions=new HashMap<>();
+        historyVersion = 0;
     }
 
     @Override
@@ -620,5 +625,13 @@ public class Manager implements EngineApi, Serializable {
     public void updateUserFlows(User user) {
         for(Flow flow: flows)
             user.addFlow(flow);
+    }
+
+    public int getHistoryVersion() {
+        return historyVersion;
+    }
+
+    public void setHistoryVersion(int historyVersion) {
+        this.historyVersion = historyVersion;
     }
 }

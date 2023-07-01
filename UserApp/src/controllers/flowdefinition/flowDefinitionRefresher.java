@@ -52,12 +52,9 @@ public class flowDefinitionRefresher extends TimerTask {
                     else
                         flowsListConsumer.accept(new ArrayList<>());
                 }
-                else {
-                    HttpClientUtil.errorMessage(response.body(), appController );
-                }
+
                 if(response.body() != null)
                     response.body().close();
-
             }
         });
     }

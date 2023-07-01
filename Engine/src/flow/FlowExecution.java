@@ -65,10 +65,6 @@ public class FlowExecution implements  Runnable {
         boolean continueExecution = true;
         stateAfterRun = State.SUCCESS;
 
-        synchronized (manager)
-        {
-            manager.addFlowHistory(this);
-        }
 
         for (index = 0; index < steps.size() && continueExecution; index++) {
             Step currStep = steps.get(index);
@@ -97,7 +93,9 @@ public class FlowExecution implements  Runnable {
 
         synchronized (manager)
         {
+            manager.addFlowHistory(this);
             manager.addStatistics(this);
+            manager.setHistoryVersion(manager.getHistoryVersion() + 1);
         }
     }
 
