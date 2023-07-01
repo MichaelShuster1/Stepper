@@ -1,6 +1,7 @@
 package utils;
 
 
+import dto.ResultDTO;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -27,7 +28,9 @@ public class ServletUtils {
 		if(usernameFromSession == null) {
 			try {
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-				response.getWriter().println("Error");
+				response.setContentType(Constants.JSON_FORMAT);
+				ResultDTO resultDTO=new ResultDTO("");
+				response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
 			}
 			catch (Exception e) {
 				System.out.println("Something went wrong...");
