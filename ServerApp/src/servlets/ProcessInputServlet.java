@@ -26,8 +26,10 @@ public class ProcessInputServlet extends HttpServlet {
             String data=request.getParameter("data");
 
             if(inputName==null||data==null){
+                response.setContentType(Constants.JSON_FORMAT);
+                ResultDTO resultDTO=new ResultDTO(Constants.INVALID_PARAMETER);
+                response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.getWriter().println("Invalid query parameter");
             }
             else {
                 synchronized (this) { //maybe synchronized is not necessary here (need to verify that later)

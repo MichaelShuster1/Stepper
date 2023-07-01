@@ -2,6 +2,7 @@ package servlets;
 
 import com.google.gson.Gson;
 import dto.FreeInputExecutionDTO;
+import dto.ResultDTO;
 import enginemanager.EngineApi;
 import enginemanager.Manager;
 import jakarta.servlet.ServletException;
@@ -28,8 +29,10 @@ public class InputParametersServlet extends HttpServlet {
             response.setContentType(Constants.JSON_FORMAT);
             String inputName =request.getParameter("inputName");
             if(inputName==null){
+                response.setContentType(Constants.JSON_FORMAT);
+                ResultDTO resultDTO=new ResultDTO(Constants.INVALID_PARAMETER);
+                response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.getWriter().println("Invalid query parameter");
             }
             else {
                 synchronized (this){ //maybe synchronized is not necessary here (need to verify that later)

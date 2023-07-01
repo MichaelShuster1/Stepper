@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import users.UserManager;
+import utils.Constants;
 import utils.ServletUtils;
 
 import java.io.IOException;
@@ -18,10 +19,8 @@ public class GetUsersListServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Gson gson = new Gson();
-        response.setContentType("application/json");
-
+        response.setContentType(Constants.JSON_FORMAT);
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
-
         Set<String> users= userManager.getUsers();
 
         if(users.size()!=0)
@@ -29,6 +28,7 @@ public class GetUsersListServlet extends HttpServlet {
             response.getWriter().println(gson.toJson(users));
             response.setStatus(HttpServletResponse.SC_OK);
         }
+
 
     }
 }

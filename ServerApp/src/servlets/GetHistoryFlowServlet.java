@@ -1,6 +1,7 @@
 package servlets;
 
 import dto.FlowExecutionDTO;
+import dto.ResultDTO;
 import enginemanager.EngineApi;
 import enginemanager.Manager;
 import jakarta.servlet.ServletException;
@@ -24,8 +25,10 @@ public class GetHistoryFlowServlet extends HttpServlet {
             response.setContentType(Constants.JSON_FORMAT);
             String flowId = request.getParameter("flowId");
             if(flowId==null){
+                response.setContentType(Constants.JSON_FORMAT);
+                ResultDTO resultDTO=new ResultDTO(Constants.INVALID_PARAMETER);
+                response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.getWriter().println("Invalid query parameter");
             }
             else{
                 synchronized (this) {
