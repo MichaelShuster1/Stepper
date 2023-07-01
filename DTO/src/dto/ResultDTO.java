@@ -17,6 +17,12 @@ public class ResultDTO {
         this.isFlowReady=isFlowReady;
     }
 
+    public ResultDTO(String message){
+        this.message=message;
+        this.status=false;
+        this.isFlowReady=false;
+    }
+
 
     public boolean getStatus() {
         return status;

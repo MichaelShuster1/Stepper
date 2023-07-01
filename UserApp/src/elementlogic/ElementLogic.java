@@ -51,6 +51,7 @@ public class ElementLogic {
         stepColumnView=new TableColumn<>("step");
         stateColumnView=new TableColumn<>("state");
 
+
         stepColumnView.setCellValueFactory(new PropertyValueFactory<>("name"));
         stateColumnView.setCellValueFactory(new PropertyValueFactory<>("stateAfterRun"));
 

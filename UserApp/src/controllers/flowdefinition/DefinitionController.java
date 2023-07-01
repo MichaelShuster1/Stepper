@@ -214,7 +214,10 @@ public class DefinitionController {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
-                } else {
+                    if(response.body()!=null)
+                        response.body().close();
+                }
+                else {
                     if(response.body() != null) {
                         String jsonDefinition = response.body().string();
                         FlowDefinitionDTO flowDefinitionDTO = Constants.GSON_INSTANCE.fromJson(jsonDefinition, FlowDefinitionDTO.class);

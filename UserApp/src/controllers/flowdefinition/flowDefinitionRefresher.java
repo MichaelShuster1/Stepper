@@ -45,11 +45,11 @@ public class flowDefinitionRefresher extends TimerTask {
                         Type listType = new TypeToken<List<AvailableFlowDTO>>() {}.getType();
                         List<AvailableFlowDTO> availableFlows = Constants.GSON_INSTANCE.fromJson(jsonArrayOfFlows, listType);
                         flowsListConsumer.accept(availableFlows);
-                        response.body().close();
                     }
                     else
                         flowsListConsumer.accept(new ArrayList<>());
                 }
+
 
             }
         });

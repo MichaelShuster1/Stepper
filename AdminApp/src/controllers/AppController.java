@@ -69,8 +69,6 @@ public class AppController {
 
 
 
-
-
     @FXML
     public void initialize() {
         historyComponentController.setAppController(this);
@@ -259,12 +257,6 @@ public class AppController {
 
     public Stage getPrimaryStage() {
         return primaryStage;
-    }
-
-
-    public void clearTabs() {
-        historyComponentController.clearTab();
-        statisticsComponentController.clearTab();
     }
 
 }
