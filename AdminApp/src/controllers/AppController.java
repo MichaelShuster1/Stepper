@@ -23,6 +23,7 @@ import javafx.stage.Stage;
 import okhttp3.*;
 import progress.ProgressTracker;
 import utils.Constants;
+import utils.HttpClientUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -76,7 +77,6 @@ public class AppController {
         usersComponentController.setAppController(this);
         rolesComponentController.setAppController(this);
         setTab(3);
-
         usersComponentController.StartUsersRefresher();
     }
 
@@ -86,37 +86,33 @@ public class AppController {
         historyComponentController.setStage(primaryStage);
 
         final String RESOURCE ="/admin";
-        Request request = new Request.Builder()
-                .url(Constants.FULL_SERVER_PATH+RESOURCE)
-                .build();
 
-        Constants.HTTP_CLIENT.newCall(request).enqueue(new Callback() {
+        String finalUrl = HttpUrl
+                .parse(Constants.FULL_SERVER_PATH + RESOURCE)
+                .newBuilder()
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalUrl,new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
 
-                Platform.runLater(()->{
-                    Alert alert =new Alert(Alert.AlertType.INFORMATION);
-                    ObservableList<String> stylesheets = primaryStage.getScene().getStylesheets();
-                    if(stylesheets.size()!=0)
-                        alert.getDialogPane().getStylesheets().add(stylesheets.get(0));
-
-                    alert.setTitle("Message");
-                    alert.setContentText("The server is closed");
-                    alert.showAndWait();
-                    primaryStage.close();
-                });
-                Constants.HTTP_CLIENT.dispatcher().executorService().shutdown();
-                Constants.HTTP_CLIENT.connectionPool().evictAll();
+                HttpClientUtil.showErrorAlert(Constants.CONNECTION_ERROR,AppController.this);
+                Platform.runLater(primaryStage::close);
+                HttpClientUtil.shutdown();
+                usersComponentController.StopUsersRefresher();
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if(response.code()==401)
-                {
-                    Platform.runLater(primaryStage::close);
-                    Constants.HTTP_CLIENT.dispatcher().executorService().shutdown();
-                    Constants.HTTP_CLIENT.connectionPool().evictAll();
+                if(response.code()!=200) {
+                        Platform.runLater(primaryStage::close);
+                        HttpClientUtil.errorMessage(response.body(), AppController.this);
+                        HttpClientUtil.shutdown();
+                        usersComponentController.StopUsersRefresher();
                 }
+                if(response.body()!=null)
+                    response.body().close();
             }
         });
 
@@ -140,20 +136,25 @@ public class AppController {
 
                     usersComponentController.StopUsersRefresher();
 
-                    Request closeRequest = new Request.Builder()
-                            .url(Constants.FULL_SERVER_PATH+RESOURCE)
-                            .delete()
-                            .build();
+                    String url = HttpUrl
+                            .parse(Constants.FULL_SERVER_PATH + RESOURCE)
+                            .newBuilder()
+                            .build()
+                            .toString();
 
-                    Constants.HTTP_CLIENT.newCall(closeRequest).enqueue(new Callback() {
+                    HttpClientUtil.runAsyncDelete(url,new Callback() {
                         @Override
-                        public void onFailure(Call call, IOException e) {}
+                        public void onFailure(Call call, IOException e) {
+                            //HttpClientUtil.showErrorAlert(Constants.CONNECTION_ERROR,AppController.this);
+                        }
                         @Override
-                        public void onResponse(Call call, Response response) throws IOException {}
+                        public void onResponse(Call call, Response response) throws IOException {
+                            if(response.body()!=null)
+                                response.body().close();
+                        }
                     });
 
-                    Constants.HTTP_CLIENT.dispatcher().executorService().shutdown();
-                    Constants.HTTP_CLIENT.connectionPool().evictAll();
+                    HttpClientUtil.shutdown();
                     primaryStage.close();
                 }
             });
@@ -174,25 +175,23 @@ public class AppController {
                                 RequestBody.create(selectedFile, MediaType.parse("text/plain")))
                         .build();
 
-        Request request = new Request.Builder()
-                .url(Constants.FULL_SERVER_PATH + RESOURCE)
-                .post(body)
-                .build();
+        String finalUrl = HttpUrl
+                .parse(Constants.FULL_SERVER_PATH + RESOURCE)
+                .newBuilder()
+                .build()
+                .toString();
 
-        Constants.HTTP_CLIENT.newCall(request).enqueue(new Callback() {
+        HttpClientUtil.runAsyncPost(finalUrl,body,new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-
+                    HttpClientUtil.showErrorAlert(Constants.CONNECTION_ERROR,AppController.this);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if(response.code()==200) {
-
-                    Platform.runLater(() ->
-                            loadedXML.setText("Currently loaded file: " + selectedFile.getAbsolutePath()));
-
                     Platform.runLater(()->{
+                        loadedXML.setText("Currently loaded file: " + selectedFile.getAbsolutePath());
                         Alert alert =new Alert(Alert.AlertType.INFORMATION);
                         ObservableList<String> stylesheets = primaryStage.getScene().getStylesheets();
                         if(stylesheets.size()!=0)
@@ -204,7 +203,13 @@ public class AppController {
 
                     });
                 }
+                else
+                    HttpClientUtil.errorMessage(response.body(),AppController.this);
 
+                if(response.body()!=null)
+                    response.body().close();
+
+                /*
                 if(response.code()==400){
                     Platform.runLater(()->{
                         Alert alert =new Alert(Alert.AlertType.ERROR);
@@ -222,8 +227,7 @@ public class AppController {
                         alert.showAndWait();
                     });
                 }
-
-
+                */
             }
         });
     }

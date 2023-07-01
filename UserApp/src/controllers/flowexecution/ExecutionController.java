@@ -242,65 +242,6 @@ public class ExecutionController {
                     Platform.runLater(()-> showErrorAlert("there was a problem with the connection with the server"));
             }
         });
-
-        /*
-        TextInputDialog inputDialog =getNewTextInputDialog();
-        String inputType=freeInputExecutionDTO.getType();
-
-        Optional<String> result=Optional.empty();
-
-
-        switch (DataType.valueOf(inputType.toUpperCase()))
-        {
-            case ENUMERATOR:
-                ChoiceBox<String> enumerationSetChoice = new ChoiceBox<>();
-                enumerationSetChoice.getItems().addAll(freeInputExecutionDTO.getAllowedValues());
-                enumerationSetChoice.setStyle("-fx-pref-width: 200px;");
-
-                HBox hbox = new HBox(10, new Label("Please select an option:"),  enumerationSetChoice);
-                hbox.setAlignment(Pos.CENTER);
-                inputDialog.getDialogPane().setContent(hbox);
-
-                inputDialog.setResultConverter(dialogButton -> {
-                    if (dialogButton == ButtonType.OK) {
-                        String selectedOption = enumerationSetChoice.getValue();
-                        return selectedOption;
-                    }
-                    return null;
-                });
-
-                Button submitButton=(Button) inputDialog.getDialogPane().lookupButton(ButtonType.OK);
-
-                enumerationSetChoice.valueProperty().addListener((observable, oldValue, newValue) -> {
-                    submitButton.setDisable(newValue == null);
-                });
-
-
-                result = inputDialog.showAndWait();
-                break;
-            case NUMBER:
-                TextField textField =inputDialog.getEditor();
-                inputDialog.setContentText("Please enter the number here:");
-                textField.addEventFilter(KeyEvent.KEY_TYPED, e -> {
-                    String input = e.getCharacter();
-                    if (!input.matches("[0-9]")) {
-                        e.consume();
-                    }
-                });
-                result =inputDialog.showAndWait();
-                break;
-            case STRING:
-                String inputDefaultName = freeInputExecutionDTO.getDefaultName();
-                result = getStringInputFromUser(inputDialog, inputDefaultName);
-                break;
-        }
-
-        if(result.isPresent())
-        {
-            String data= result.get();
-            processInput(button, data);
-        }
-        */
     }
 
     private Optional<String> getInputFromUser(FreeInputExecutionDTO freeInputExecutionDTO){

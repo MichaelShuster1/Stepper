@@ -23,6 +23,7 @@ public class GetUsersListServlet extends HttpServlet {
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
         Set<String> users= userManager.getUsers();
 
+
         if(users.size()!=0)
         {
             response.getWriter().println(gson.toJson(users));

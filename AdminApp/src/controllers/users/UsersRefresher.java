@@ -1,12 +1,11 @@
 package controllers.users;
 
 import com.google.gson.reflect.TypeToken;
+import controllers.AppController;
 import dto.AvailableFlowDTO;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Request;
-import okhttp3.Response;
+import okhttp3.*;
 import utils.Constants;
+import utils.HttpClientUtil;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -18,18 +17,26 @@ import java.util.function.Consumer;
 public class UsersRefresher  extends TimerTask {
     private final Consumer<List<String>> usersListConsumer;
 
-    public UsersRefresher(Consumer<List<String>> usersListConsumer) {
+    private final AppController appController;
+
+
+    public UsersRefresher(Consumer<List<String>> usersListConsumer,AppController appController) {
+        this.appController=appController;
         this.usersListConsumer = usersListConsumer;
     }
 
     @Override
     public void run() {
         final String RESOURCE ="/get-users";
-        Request request = new Request.Builder()
-                .url(Constants.FULL_SERVER_PATH+RESOURCE)
-                .build();
 
-        Constants.HTTP_CLIENT.newCall(request).enqueue(new Callback() {
+        String finalUrl = HttpUrl
+                .parse(Constants.FULL_SERVER_PATH + RESOURCE)
+                .newBuilder()
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+
             @Override
             public void onFailure(Call call, IOException e) {
 
@@ -48,6 +55,8 @@ public class UsersRefresher  extends TimerTask {
                     else
                         usersListConsumer.accept(new ArrayList<>());
                 }
+                if(response.body()!=null)
+                    response.body().close();
             }
         });
 

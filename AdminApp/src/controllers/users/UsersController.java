@@ -59,7 +59,7 @@ public class UsersController {
 
     public void StartUsersRefresher()
     {
-        TimerTask usersRefresher=new UsersRefresher(this::updateUsersList);
+        TimerTask usersRefresher=new UsersRefresher(this::updateUsersList,appController);
 
         timer = new Timer();
         timer.schedule(usersRefresher, 200, 2000);
