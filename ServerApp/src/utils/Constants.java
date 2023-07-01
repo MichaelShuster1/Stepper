@@ -13,6 +13,8 @@ public class Constants {
 
     public static final String JSON_FORMAT = "application/json";
 
+    public static final String TEXT_FORMAT = "text/plain";
+
     public static final String INVALID_PARAMETER = "Invalid query parameters";
 
     public static final String UNAUTHORIZED_ACCESS = "Unauthorized access";

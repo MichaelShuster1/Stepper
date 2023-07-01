@@ -26,7 +26,7 @@ public class getFlowInputsServlet extends HttpServlet {
             String flowName = request.getParameter(Constants.FLOW_NAME);
             if (flowName == null) {
                 response.setContentType(Constants.JSON_FORMAT);
-                ResultDTO resultDTO=new ResultDTO("Invalid query parameter");
+                ResultDTO resultDTO=new ResultDTO(Constants.INVALID_PARAMETER);
                 response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             } else {
