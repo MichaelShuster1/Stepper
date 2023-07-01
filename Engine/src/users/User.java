@@ -21,7 +21,7 @@ public class User {
     public void addFlow(Flow flow)
     {
         if(!flows.containsKey(flow.getName()))
-            flows.put(flow.getName(),flow);
+            flows.put(flow.getName(), new Flow(flow));
     }
 
     public void removeFlow(String name) {
