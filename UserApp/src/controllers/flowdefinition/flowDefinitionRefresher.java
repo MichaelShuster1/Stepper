@@ -2,6 +2,7 @@ package controllers.flowdefinition;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import controllers.AppController;
 import dto.AvailableFlowDTO;
 import javafx.beans.property.BooleanProperty;
 import okhttp3.*;
@@ -19,11 +20,13 @@ import java.util.function.Consumer;
 
 public class flowDefinitionRefresher extends TimerTask {
     private final Consumer<List<AvailableFlowDTO>> flowsListConsumer;
+    AppController appController;
 
 
 
-    public flowDefinitionRefresher( Consumer<List<AvailableFlowDTO>> flowsListConsumer) {
+    public flowDefinitionRefresher(Consumer<List<AvailableFlowDTO>> flowsListConsumer, AppController appController) {
         this.flowsListConsumer = flowsListConsumer;
+        this.appController = appController;
     }
 
     @Override
@@ -49,7 +52,11 @@ public class flowDefinitionRefresher extends TimerTask {
                     else
                         flowsListConsumer.accept(new ArrayList<>());
                 }
-
+                else {
+                    HttpClientUtil.errorMessage(response.body(), appController );
+                }
+                if(response.body() != null)
+                    response.body().close();
 
             }
         });

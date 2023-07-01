@@ -62,7 +62,7 @@ public class DefinitionController {
     }
 
     public void startFlowRefresher() {
-        flowRefresher = new flowDefinitionRefresher(this::fillTableData);
+        flowRefresher = new flowDefinitionRefresher(this::fillTableData, appController);
         timer = new Timer();
         timer.schedule(flowRefresher, 500, 2000);
     }
@@ -226,8 +226,10 @@ public class DefinitionController {
                         });
                     }
                 }
-
+                if (response.body() != null)
+                    response.body().close();
             }
+
         });
         //showFlowDefinition(flowName);
     }

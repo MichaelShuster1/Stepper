@@ -1,6 +1,7 @@
 package controllers.login;
 
 import controllers.AppController;
+import dto.ResultDTO;
 import enginemanager.EngineApi;
 import enginemanager.Manager;
 import javafx.application.Platform;
@@ -83,7 +84,7 @@ public class LoginController {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 Platform.runLater(() ->
-                        errorMessageProperty.set("Something went wrong: " + e.getMessage())
+                        errorMessageProperty.set(Constants.SOMETHING_WRONG + e.getMessage())
                 );
             }
 
@@ -91,19 +92,24 @@ public class LoginController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
-                    Platform.runLater(() -> {
-                        if(response.code() == 409)
-                          errorMessageProperty.set("Something went wrong, please try again.");
-                        else {
-                            errorMessageProperty.set(responseBody);
-                        }
-
-                    });
+                    try {
+                        ResultDTO resultDTO = Constants.GSON_INSTANCE.fromJson(responseBody, ResultDTO.class);
+                        Platform.runLater(() -> {
+                            errorMessageProperty.set(resultDTO.getMessage());
+                        });
+                    }
+                    catch (Exception e) {
+                        Platform.runLater(() -> {
+                            errorMessageProperty.set(Constants.SOMETHING_WRONG + "please try again");
+                        });
+                    }
                 } else {
                     Platform.runLater(() -> {
                         showMainScreen(userName);
                     });
                 }
+                if(response.body() != null)
+                    response.body().close();
 
             }
         });

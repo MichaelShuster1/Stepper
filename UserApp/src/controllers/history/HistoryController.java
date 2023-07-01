@@ -134,7 +134,7 @@ public class HistoryController {
         HttpClientUtil.runAsync(finalUrl, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(()-> showErrorAlert("there was a problem with the connection with the server"));
+                HttpClientUtil.showErrorAlert(Constants.CONNECTION_ERROR, appController);
             }
 
             @Override
@@ -149,9 +149,10 @@ public class HistoryController {
                     });
                 }
                 else {
-                    Platform.runLater(()-> showErrorAlert("there was a problem with the connection with the server"));
+                    HttpClientUtil.errorMessage(response.body(), appController);
                 }
-
+                if(response.body() != null)
+                    response.body().close();
             }
         });
     }
@@ -188,7 +189,7 @@ public class HistoryController {
             HttpClientUtil.runAsyncPost(finalUrl, requestBody, new Callback() {
                 @Override
                 public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    Platform.runLater(()-> showErrorAlert("there was a problem with the connection with the server"));
+                    HttpClientUtil.showErrorAlert(Constants.CONNECTION_ERROR, appController);
                 }
 
                 @Override
@@ -199,9 +200,10 @@ public class HistoryController {
                         });
                     }
                     else {
-                        Platform.runLater(()-> showErrorAlert("Something went wrong..."));
+                        HttpClientUtil.errorMessage(response.body(), appController);
                     }
-
+                    if(response.body() != null)
+                        response.body().close();
                 }
             });
         }
@@ -282,7 +284,7 @@ public class HistoryController {
         HttpClientUtil.runAsync(finalUrl, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(()-> showErrorAlert("there was a problem with the connection with the server"));
+                HttpClientUtil.showErrorAlert(Constants.CONNECTION_ERROR, appController);
             }
 
             @Override
@@ -322,9 +324,10 @@ public class HistoryController {
                     });
                 }
                 else {
-                    Platform.runLater(()-> showErrorAlert("there was a problem with the connection with the server"));
+                    HttpClientUtil.errorMessage(response.body(), appController);
                 }
-
+                if(response.body() != null)
+                    response.body().close();
             }
         });
     }
@@ -369,7 +372,7 @@ public class HistoryController {
         HttpClientUtil.runAsyncPost(finalUrl, requestBody, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(()-> showErrorAlert("there was a problem with the connection with the server"));
+                HttpClientUtil.showErrorAlert(Constants.CONNECTION_ERROR, appController);
             }
 
             @Override
@@ -380,8 +383,10 @@ public class HistoryController {
                     });
                 }
                 else {
-                    Platform.runLater(()-> showErrorAlert("there was a problem with the connection with the server"));
+                    HttpClientUtil.errorMessage(response.body(), appController);
                 }
+                if(response.body() != null)
+                    response.body().close();
 
             }
         });

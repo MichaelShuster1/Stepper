@@ -76,10 +76,10 @@ public class HttpClientUtil {
     public static void errorMessage(ResponseBody responseBody, AppController appController) {
         try {
             ResultDTO resultDTO = Constants.GSON_INSTANCE.fromJson(responseBody.string(), ResultDTO.class);
-            Platform.runLater(()-> showErrorAlert(resultDTO.getMessage(), appController));
+            showErrorAlert(resultDTO.getMessage(), appController);
         }
         catch (Exception e) {
-            Platform.runLater(()-> showErrorAlert("Something went wrong...", appController));
+           showErrorAlert("Something went wrong...", appController);
         }
     }
 
@@ -92,6 +92,7 @@ public class HttpClientUtil {
 
 
     public static void showErrorAlert(String message, AppController appController) {
+        Platform.runLater(() -> {
         Alert alert =new Alert(Alert.AlertType.ERROR);
 
         ObservableList<String> stylesheets = appController.getPrimaryStage().getScene().getStylesheets();
@@ -101,5 +102,6 @@ public class HttpClientUtil {
         alert.setTitle("Error");
         alert.setContentText(message);
         alert.showAndWait();
+        });
     }
 }

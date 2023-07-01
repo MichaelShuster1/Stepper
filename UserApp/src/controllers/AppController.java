@@ -203,10 +203,12 @@ public class AppController {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                HttpClientUtil.showErrorAlert(Constants.CONNECTION_ERROR, AppController.this);
             }
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
+                    HttpClientUtil.errorMessage(response.body(), AppController.this);
                 } else {
                     if (response.body() != null) {
                         String jsonInputs = response.body().string();
@@ -218,7 +220,8 @@ public class AppController {
                         });
                     }
                 }
-
+                if(response.body() != null)
+                    response.body().close();
             }
         });
     }
