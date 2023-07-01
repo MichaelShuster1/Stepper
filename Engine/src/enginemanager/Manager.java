@@ -469,9 +469,10 @@ public class Manager implements EngineApi, Serializable {
     }
 
     @Override
-    public List<FlowHistory> getFlowsHistory()
+    public List<FlowExecution> getFlowsHistoryDelta(int historyVersion)
     {
-        return flowsHistory;
+        List<FlowExecution> flowsList = new ArrayList<>();
+
     }
 
 

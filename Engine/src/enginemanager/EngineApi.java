@@ -68,6 +68,6 @@ public interface EngineApi {
 
     void updateUserFlows(User user);
 
-    List<FlowHistory> getFlowsHistory();
+    List<FlowExecution> getFlowsHistory(int historyVersion);
 
 }

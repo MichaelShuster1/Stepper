@@ -27,6 +27,7 @@ import utils.HttpClientUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Timer;
 
 public class AppController {
 
@@ -66,6 +67,8 @@ public class AppController {
     private ProgressTracker progressTracker;
 
     private Stage primaryStage;
+
+    Timer timer;
 
 
 
@@ -266,6 +269,7 @@ public class AppController {
     public Integer getHistoryVersion() {
         return historyComponentController.getHistoryVersion();
     }
+
 }
 
 

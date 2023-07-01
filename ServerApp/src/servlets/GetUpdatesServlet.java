@@ -8,6 +8,7 @@ import dto.StatisticsDTO;
 import enginemanager.EngineApi;
 import enginemanager.Manager;
 import enginemanager.Statistics;
+import flow.FlowExecution;
 import flow.FlowHistory;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -46,7 +47,7 @@ public class GetUpdatesServlet extends HttpServlet {
         }
 
         JsonArray jsonArray=new JsonArray();
-        List<FlowHistory> flowHistoryList=engine.getFlowsHistory();
+        List<FlowExecution> flowHistoryList=engine.getFlowsHistory(historyVersion);
         jsonArray.add(gson.toJsonTree(flowHistoryList).getAsJsonObject());
         StatisticsDTO statisticsDTO =engine.getStatistics();
         jsonArray.add(gson.toJsonTree(statisticsDTO).getAsJsonObject());
