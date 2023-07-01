@@ -263,6 +263,9 @@ public class AppController {
         return primaryStage;
     }
 
+    public Integer getHistoryVersion() {
+        return historyComponentController.getHistoryVersion();
+    }
 }
 
 

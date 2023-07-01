@@ -50,6 +50,8 @@ public class HistoryController {
 
     private ElementLogic elementLogic;
 
+    private Integer historyVersion;
+
 
 
 
@@ -78,6 +80,7 @@ public class HistoryController {
 
         tableData = FXCollections.observableArrayList();
         historyTableView.setItems(tableData);
+        historyVersion = 0;
     }
 
 
@@ -153,5 +156,13 @@ public class HistoryController {
     @FXML
     void showFlowInfo(MouseEvent event) {
         elementLogic.updateFlowInfoView();
+    }
+
+    public Integer getHistoryVersion() {
+        return historyVersion;
+    }
+
+    public void setHistoryVersion(int historyVersion) {
+        this.historyVersion = historyVersion;
     }
 }
