@@ -469,10 +469,13 @@ public class Manager implements EngineApi, Serializable {
     }
 
     @Override
-    public List<FlowExecution> getFlowsHistoryDelta(int historyVersion)
+    public List<FlowExecutionDTO> getFlowsHistoryDelta(int historyVersion)
     {
-        List<FlowExecution> flowsList = new ArrayList<>();
-
+        List<FlowExecutionDTO> flowsList = new ArrayList<>();
+        for(int i = historyVersion ; i < flowsHistory.size() ; i++) {
+            flowsList.add(getHistoryDataOfFlow(flowsHistory.get(i).getID()));
+        }
+        return flowsList;
     }
 
 

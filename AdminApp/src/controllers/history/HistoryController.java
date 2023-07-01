@@ -4,6 +4,7 @@ import controllers.AppController;
 import dto.FlowExecutionDTO;
 import elementlogic.ElementLogic;
 import enginemanager.EngineApi;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -110,7 +111,11 @@ public class HistoryController {
 
     public void updateHistoryTable(List<FlowExecutionDTO> flowExecutionDTOList)
     {
-
+        Platform.runLater(() -> {
+            historyVersion = historyVersion + flowExecutionDTOList.size();
+        for(FlowExecutionDTO flowExecutionDTO : flowExecutionDTOList)
+            addRow(flowExecutionDTO);
+        });
     }
 
 

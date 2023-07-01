@@ -3,6 +3,7 @@ package servlets;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import dto.FlowExecutionDTO;
 import dto.ResultDTO;
 import dto.StatisticsDTO;
 import enginemanager.EngineApi;
@@ -47,7 +48,7 @@ public class GetUpdatesServlet extends HttpServlet {
         }
 
         JsonArray jsonArray=new JsonArray();
-        List<FlowExecution> flowHistoryList=engine.getFlowsHistory(historyVersion);
+        List<FlowExecutionDTO> flowHistoryList=engine.getFlowsHistoryDelta(historyVersion);
         jsonArray.add(gson.toJsonTree(flowHistoryList).getAsJsonObject());
         StatisticsDTO statisticsDTO =engine.getStatistics();
         jsonArray.add(gson.toJsonTree(statisticsDTO).getAsJsonObject());
