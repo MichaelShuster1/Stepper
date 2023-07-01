@@ -74,8 +74,12 @@ public class Flow implements Serializable {
             newStep.setNameToOutputIndex(currStep.getNameToOutputIndex());
             List<Input> currStepInputs =  currStep.getInputs();
             for(int j = 0; j< currStepInputs.size(); j++) {
-                newStep.getInput(j).setData((currStepInputs.get(j)).getData());
-                newStep.getInput(j).setName((currStepInputs.get(j).getName()));
+                Input newStepInput = newStep.getInput(j);
+                Input currStepInput = currStepInputs.get(j);
+                newStepInput.setData(currStepInput.getData());
+                newStepInput.setName((currStepInput.getName()));
+                newStepInput.setHaveInitialValue(currStepInput.haveInitialValue());
+                newStepInput.setConnected(currStepInput.isConnected());
             }
             List<Output> currStepOutputs =  currStep.getOutputs();
             for(int j = 0; j< currStepOutputs.size(); j++) {
