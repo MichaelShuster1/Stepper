@@ -1,5 +1,10 @@
 package utils;
 
+import controllers.AppController;
+import dto.ResultDTO;
+import javafx.application.Platform;
+import javafx.collections.ObservableList;
+import javafx.scene.control.Alert;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -68,10 +73,33 @@ public class HttpClientUtil {
         return response;
     }
 
+    public static void errorMessage(ResponseBody responseBody, AppController appController) {
+        try {
+            ResultDTO resultDTO = Constants.GSON_INSTANCE.fromJson(responseBody.string(), ResultDTO.class);
+            Platform.runLater(()-> showErrorAlert(resultDTO.getMessage(), appController));
+        }
+        catch (Exception e) {
+            Platform.runLater(()-> showErrorAlert("Something went wrong...", appController));
+        }
+    }
+
 
     public static void shutdown() {
         System.out.println("Shutting down HTTP CLIENT");
         HTTP_CLIENT.dispatcher().executorService().shutdown();
         HTTP_CLIENT.connectionPool().evictAll();
+    }
+
+
+    private static void showErrorAlert(String message, AppController appController) {
+        Alert alert =new Alert(Alert.AlertType.ERROR);
+
+        ObservableList<String> stylesheets = appController.getPrimaryStage().getScene().getStylesheets();
+        if(stylesheets.size()!=0)
+            alert.getDialogPane().getStylesheets().add(stylesheets.get(0));
+
+        alert.setTitle("Error");
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
