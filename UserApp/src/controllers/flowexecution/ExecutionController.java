@@ -240,6 +240,9 @@ public class ExecutionController {
                 }
                 else
                     HttpClientUtil.errorMessage(response.body(), appController);
+
+                if(response.body()!=null)
+                    response.body().close();
             }
         });
     }
@@ -375,7 +378,7 @@ public class ExecutionController {
         HttpClientUtil.runAsyncPost(finalUrl, requestBody, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(()-> showErrorAlert("there was a problem with the connection with the server"));
+                HttpClientUtil.showErrorAlert(Constants.CONNECTION_ERROR,appController);
             }
 
             @Override
@@ -408,49 +411,18 @@ public class ExecutionController {
                     });
 
                 }
-                else {
-                    Platform.runLater(()-> showErrorAlert("Something went wrong..."));
-                }
+                else
+                    HttpClientUtil.showErrorAlert(Constants.CONNECTION_ERROR,appController);
+
+                if(response.body()!=null)
+                    response.body().close();
+
 
             }
         });
 
-        /*
-        ResultDTO resultDTO=engine.processInput(button.getId(), data);
-
-        if(resultDTO.getStatus())
-        {
-            button.setStyle("-fx-background-color: #40ff00; ");
-            if(resultDTO.isFlowReady())
-                executeButton.setDisable(false);
-        }
-        else
-        {
-            Alert alert =new Alert(Alert.AlertType.ERROR);
-
-            ObservableList<String> stylesheets = appController.getPrimaryStage().getScene().getStylesheets();
-            if(stylesheets.size()!=0)
-                alert.getDialogPane().getStylesheets().add(stylesheets.get(0));
-
-            alert.setTitle("Error");
-            alert.setContentText(resultDTO.getMessage());
-            alert.showAndWait();
-        }
-        */
     }
 
-
-    private void showErrorAlert(String message) {
-        Alert alert =new Alert(Alert.AlertType.ERROR);
-
-        ObservableList<String> stylesheets = appController.getPrimaryStage().getScene().getStylesheets();
-        if(stylesheets.size()!=0)
-            alert.getDialogPane().getStylesheets().add(stylesheets.get(0));
-
-        alert.setTitle("Error");
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
 
 
     private TextInputDialog getNewTextInputDialog()
@@ -626,7 +598,7 @@ public class ExecutionController {
         HttpClientUtil.runAsync(finalUrl, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(()-> showErrorAlert("there was a problem with the connection with the server"));
+                HttpClientUtil.showErrorAlert(Constants.CONNECTION_ERROR,appController);
             }
 
             @Override
@@ -635,10 +607,11 @@ public class ExecutionController {
                     String flowId=response.body().string();
                     appController.addFlowId(flowId);
                 }
-                else {
-                    Platform.runLater(()-> showErrorAlert("Something went wrong..."));
-                }
+                else
+                    HttpClientUtil.showErrorAlert(Constants.CONNECTION_ERROR,appController);
 
+                if(response.body()!=null)
+                    response.body().close();
             }
         });
 
