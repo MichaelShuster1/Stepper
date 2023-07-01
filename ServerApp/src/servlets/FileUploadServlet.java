@@ -1,6 +1,7 @@
 package servlets;
 
 
+import dto.ResultDTO;
 import enginemanager.EngineApi;
 import enginemanager.Manager;
 import jakarta.servlet.ServletException;
@@ -25,9 +26,8 @@ import java.util.Scanner;
 public class FileUploadServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        response.setContentType("text/plain");
-        Collection<Part> parts = request.getParts();
 
+        Collection<Part> parts = request.getParts();
         EngineApi engine= (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
 
         for (Part part : parts) {
@@ -35,8 +35,10 @@ public class FileUploadServlet extends HttpServlet {
                 engine.loadXmlFile(part.getInputStream());
                 response.setStatus(HttpServletResponse.SC_OK);
             } catch (Exception e) {
+                response.setContentType(Constants.JSON_FORMAT);
+                ResultDTO resultDTO=new ResultDTO(e.getMessage());
+                response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.getWriter().println(e.getMessage());
             }
         }
 

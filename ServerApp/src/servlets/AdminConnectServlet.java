@@ -1,5 +1,6 @@
 package servlets;
 
+import dto.ResultDTO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -20,8 +21,12 @@ public class AdminConnectServlet extends HttpServlet {
                 response.setStatus(HttpServletResponse.SC_OK);
             } else {
                 boolean adminConnected = (Boolean) getServletContext().getAttribute(Constants.ADMIN_CONNECTED);
-                if (adminConnected)
+                if (adminConnected) {
+                    response.setContentType(Constants.JSON_FORMAT);
+                    ResultDTO resultDTO=new ResultDTO("Admin already connected to the server!");
+                    response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                }
                 else {
                     getServletContext().setAttribute(Constants.ADMIN_CONNECTED, true);
                     response.setStatus(HttpServletResponse.SC_OK);
