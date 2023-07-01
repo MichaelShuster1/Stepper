@@ -5,6 +5,7 @@ import dto.StatisticsDTO;
 import dto.StatisticsUnitDTO;
 import enginemanager.EngineApi;
 import hardcodeddata.HCSteps;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -113,18 +114,21 @@ public class StatisticsController {
     public void fillTablesData(StatisticsDTO statistics) {
 
         //StatisticsDTO statistics = engine.getStatistics();
-        List<StatisticsUnitDTO> flowsStatistics = statistics.getFlowsStatistics();
-        List<StatisticsUnitDTO> stepsStatistics= statistics.getStepsStatistics();
 
-        if(!flowsObservableList.isEmpty())
-            flowsObservableList.clear();
-        flowsObservableList.addAll(flowsStatistics);
-        flowsTable.setItems(flowsObservableList);
+        Platform.runLater(()->{
+            List<StatisticsUnitDTO> flowsStatistics = statistics.getFlowsStatistics();
+            List<StatisticsUnitDTO> stepsStatistics= statistics.getStepsStatistics();
 
-        if(!stepsObservableList.isEmpty())
-            stepsObservableList.clear();
-        stepsObservableList.addAll(stepsStatistics);
-        stepsTable.setItems(stepsObservableList);
+            if(!flowsObservableList.isEmpty())
+                flowsObservableList.clear();
+            flowsObservableList.addAll(flowsStatistics);
+            flowsTable.setItems(flowsObservableList);
+
+            if(!stepsObservableList.isEmpty())
+                stepsObservableList.clear();
+            stepsObservableList.addAll(stepsStatistics);
+            stepsTable.setItems(stepsObservableList);
+        });
 
         //updateActivatedTimesGraph(stepsStatistics,stepsActivatedTimesGraph);
         //updateAvgRunTimeGraph(stepsStatistics,stepsAvgRunTimeGraph);
