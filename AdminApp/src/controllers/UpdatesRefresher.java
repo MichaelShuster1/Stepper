@@ -30,7 +30,8 @@ public class UpdatesRefresher extends TimerTask {
 
 
 
-    public UpdatesRefresher(Consumer<List<FlowExecutionDTO>> flowsListConsumer, Consumer<StatisticsDTO> statistics, AppController appController, Integer historyVersionConsumer) {
+    public UpdatesRefresher(Consumer<List<FlowExecutionDTO>> flowsListConsumer, Consumer<StatisticsDTO> statistics,
+                            AppController appController, Integer historyVersionConsumer) {
         this.flowsListConsumer = flowsListConsumer;
         this.statisticsConsumer = statistics;
         this.appController = appController;
@@ -56,17 +57,20 @@ public class UpdatesRefresher extends TimerTask {
                     if(response.body() != null) {
                         JsonArray jsonArray = JsonParser.parseString(response.body().string()).getAsJsonArray();
                         try {
-                            Type listType = new TypeToken<List<FlowExecutionDTO>>() {
-                            }.getType();
-                            List<FlowExecutionDTO> historyFlows = Constants.GSON_INSTANCE.fromJson(jsonArray.get(0), listType);
-                            flowsListConsumer.accept(historyFlows);
+                            Type listType = new TypeToken<List<FlowExecutionDTO>>() {}.getType();
+                            if(!jsonArray.get(0).isJsonNull()) {
+                                List<FlowExecutionDTO> historyFlows = Constants.GSON_INSTANCE.fromJson(jsonArray.get(0), listType);
+                                flowsListConsumer.accept(historyFlows);
+                            }
                         }
                         catch (Exception e) {
                             System.out.println("Error:" + e.getMessage() );
                         }
                         try {
-                            StatisticsDTO statisticsDTO = Constants.GSON_INSTANCE.fromJson(jsonArray.get(1), StatisticsDTO.class);
-                            statisticsConsumer.accept(statisticsDTO);
+                            if(!jsonArray.get(0).isJsonNull()) {
+                                StatisticsDTO statisticsDTO = Constants.GSON_INSTANCE.fromJson(jsonArray.get(1), StatisticsDTO.class);
+                                statisticsConsumer.accept(statisticsDTO);
+                            }
                         }
                         catch (Exception e) {
                             System.out.println("Error:" + e.getMessage());

@@ -47,9 +47,10 @@ public class GetUpdatesServlet extends HttpServlet {
 
         JsonArray jsonArray=new JsonArray();
         List<FlowHistory> flowHistoryList=engine.getFlowsHistory();
-        jsonArray.add(gson.toJsonTree(flowHistoryList).getAsJsonObject());
+        jsonArray.add(gson.toJson(flowHistoryList));
         StatisticsDTO statisticsDTO =engine.getStatistics();
-        jsonArray.add(gson.toJsonTree(statisticsDTO).getAsJsonObject());
+        jsonArray.add(gson.toJson(flowHistoryList));
         response.setStatus(HttpServletResponse.SC_OK);
+        response.getWriter().print(jsonArray.toString());
     }
 }
