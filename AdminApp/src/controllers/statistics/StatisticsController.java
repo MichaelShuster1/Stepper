@@ -110,9 +110,9 @@ public class StatisticsController {
         stepsStatisticsPane.getChildren().add(stepsTable);
     }
 
-    public void fillTablesData() {
+    public void fillTablesData(StatisticsDTO statistics) {
 
-        StatisticsDTO statistics = engine.getStatistics();
+        //StatisticsDTO statistics = engine.getStatistics();
         List<StatisticsUnitDTO> flowsStatistics = statistics.getFlowsStatistics();
         List<StatisticsUnitDTO> stepsStatistics= statistics.getStepsStatistics();
 
@@ -137,7 +137,7 @@ public class StatisticsController {
         createFlowsTable();
         createStepsTable();
         createGraphs();
-        fillTablesData();
+        //fillTablesData();
     }
 
     public void clearTab() {

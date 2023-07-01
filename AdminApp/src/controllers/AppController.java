@@ -5,10 +5,12 @@ import controllers.history.HistoryController;
 import controllers.roles.RolesController;
 import controllers.statistics.StatisticsController;
 import controllers.users.UsersController;
+import controllers.users.UsersRefresher;
 import dto.FlowExecutionDTO;
 import dto.InputsDTO;
 import enginemanager.EngineApi;
 import enginemanager.Manager;
+import flow.FlowHistory;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -28,6 +30,10 @@ import utils.HttpClientUtil;
 import java.io.File;
 import java.io.IOException;
 import java.util.Timer;
+import java.sql.Time;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class AppController {
 
@@ -68,8 +74,7 @@ public class AppController {
 
     private Stage primaryStage;
 
-    Timer timer;
-
+    private Timer timer;
 
 
 
@@ -81,6 +86,16 @@ public class AppController {
         rolesComponentController.setAppController(this);
         setTab(3);
         usersComponentController.StartUsersRefresher();
+    }
+
+
+    public void StartUpdatesRefresher()
+    {
+        TimerTask updatesRefresher=new UpdatesRefresher(historyComponentController::updateHistoryTable,statisticsComponentController::fillTablesData,
+                this,historyComponentController.getHistoryVersion());
+
+        timer = new Timer();
+        timer.schedule(updatesRefresher, 200, 1000);
     }
 
 
@@ -211,26 +226,6 @@ public class AppController {
 
                 if(response.body()!=null)
                     response.body().close();
-
-                /*
-                if(response.code()==400){
-                    Platform.runLater(()->{
-                        Alert alert =new Alert(Alert.AlertType.ERROR);
-
-                        ObservableList<String> stylesheets = primaryStage.getScene().getStylesheets();
-                        if(stylesheets.size()!=0)
-                            alert.getDialogPane().getStylesheets().add(stylesheets.get(0));
-
-                        alert.setTitle("Error");
-                        try {
-                            alert.setContentText(response.body().string());
-                        } catch (IOException e) {
-                            alert.setContentText("the xml file was not loaded successfully!");
-                        }
-                        alert.showAndWait();
-                    });
-                }
-                */
             }
         });
     }
@@ -252,11 +247,6 @@ public class AppController {
     }
 
 
-    public void updateStatistics() {
-        statisticsComponentController.fillTablesData();
-    }
-
-
     public void addRowInHistoryTable(FlowExecutionDTO flowExecutionDTO)
     {
         historyComponentController.addRow(flowExecutionDTO);
@@ -269,7 +259,6 @@ public class AppController {
     public Integer getHistoryVersion() {
         return historyComponentController.getHistoryVersion();
     }
-
 }
 
 
