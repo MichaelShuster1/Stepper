@@ -94,6 +94,7 @@ public class Manager implements EngineApi, Serializable {
         }
     }
 
+
     private void createThreadPool(STStepper stepper)
     {
         int threadPoolSize=stepper.getSTThreadPool();
@@ -465,6 +466,12 @@ public class Manager implements EngineApi, Serializable {
     @Override
     public List<String> getEnumerationAllowedValues(User user,String inputName) {
         return user.getCurrentFlow().getEnumerationAllowedValues(inputName);
+    }
+
+    @Override
+    public List<FlowHistory> getFlowsHistory()
+    {
+        return flowsHistory;
     }
 
 

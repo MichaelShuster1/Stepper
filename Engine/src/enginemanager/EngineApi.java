@@ -2,6 +2,7 @@ package enginemanager;
 
 import dto.*;
 import flow.FlowExecution;
+import flow.FlowHistory;
 import users.User;
 
 import javax.xml.bind.JAXBException;
@@ -67,5 +68,6 @@ public interface EngineApi {
 
     void updateUserFlows(User user);
 
+    List<FlowHistory> getFlowsHistory();
 
 }
