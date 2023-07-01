@@ -3,6 +3,7 @@ package servlets;
 import com.google.gson.Gson;
 import dto.FlowDefinitionDTO;
 import dto.InputsDTO;
+import dto.ResultDTO;
 import enginemanager.EngineApi;
 import enginemanager.Manager;
 import jakarta.servlet.annotation.WebServlet;
@@ -26,7 +27,8 @@ public class GetFlowDefinitionServlet extends HttpServlet {
             String flowName = request.getParameter(Constants.FLOW_NAME);
             if (flowName == null) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.getWriter().println("Invalid query parameter");
+                ResultDTO resultDTO=new ResultDTO(Constants.INVALID_PARAMETER);
+                response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
             } else {
                 EngineApi engine = (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
                 synchronized (this) {

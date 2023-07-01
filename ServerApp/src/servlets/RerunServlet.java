@@ -2,6 +2,7 @@ package servlets;
 
 import com.google.gson.reflect.TypeToken;
 import dto.FreeInputExecutionDTO;
+import dto.ResultDTO;
 import enginemanager.EngineApi;
 import enginemanager.Manager;
 import jakarta.servlet.annotation.WebServlet;
@@ -29,7 +30,8 @@ public class RerunServlet extends HttpServlet {
             UserManager userManager = ServletUtils.getUserManager(getServletContext());
             if (jsonInputs == null || flowName == null) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.getWriter().println("Invalid query parameter");
+                ResultDTO resultDTO=new ResultDTO(Constants.INVALID_PARAMETER);
+                response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
             }
             else {
                 try {
@@ -43,7 +45,9 @@ public class RerunServlet extends HttpServlet {
                 }
                 catch (Exception e) {
                     response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                    response.getWriter().println("Server failed to get free inputs");
+                    response.setContentType(Constants.JSON_FORMAT);
+                    ResultDTO resultDTO=new ResultDTO("Server failed to get free inputs");
+                    response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
                 }
             }
         }

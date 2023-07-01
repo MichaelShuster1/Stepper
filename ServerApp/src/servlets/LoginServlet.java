@@ -1,11 +1,13 @@
 package servlets;
 
+import dto.ResultDTO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import users.UserManager;
+import utils.Constants;
 import utils.ServletUtils;
 import utils.SessionUtils;
 
@@ -15,7 +17,7 @@ import java.io.IOException;
 public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("text/plain;charset=UTF-8");
+        response.setContentType(Constants.JSON_FORMAT);
 
 
         String usernameFromSession = SessionUtils.getUsername(request);
@@ -29,6 +31,8 @@ public class LoginServlet extends HttpServlet {
 
                 // stands for conflict in server state
                 response.setStatus(HttpServletResponse.SC_CONFLICT);
+                ResultDTO resultDTO=new ResultDTO(Constants.INVALID_PARAMETER);
+                response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
             } else {
                 //normalize the username value
                 usernameFromParameter = usernameFromParameter.trim();
@@ -39,7 +43,8 @@ public class LoginServlet extends HttpServlet {
 
                         // stands for unauthorized as there is already such user with this name
                         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                        response.getOutputStream().print(errorMessage);
+                        ResultDTO resultDTO=new ResultDTO(errorMessage);
+                        response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
                     }
                     else {
                         //add the new user to the users list

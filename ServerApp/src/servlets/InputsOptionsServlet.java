@@ -2,6 +2,7 @@ package servlets;
 
 import com.google.gson.Gson;
 import dto.InputsDTO;
+import dto.ResultDTO;
 import enginemanager.EngineApi;
 import enginemanager.Manager;
 import jakarta.servlet.annotation.WebServlet;
@@ -24,7 +25,8 @@ public class InputsOptionsServlet extends HttpServlet {
             String buttonId = request.getParameter("Id");
             if (buttonId == null) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.getWriter().println("Invalid query parameter");
+                ResultDTO resultDTO=new ResultDTO(Constants.INVALID_PARAMETER);
+                response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
             } else {
                 EngineApi engine = (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
                 UserManager userManager = ServletUtils.getUserManager(getServletContext());

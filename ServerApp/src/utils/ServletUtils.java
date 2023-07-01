@@ -29,7 +29,7 @@ public class ServletUtils {
 			try {
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 				response.setContentType(Constants.JSON_FORMAT);
-				ResultDTO resultDTO=new ResultDTO("");
+				ResultDTO resultDTO=new ResultDTO(Constants.UNAUTHORIZED_ACCESS);
 				response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
 			}
 			catch (Exception e) {

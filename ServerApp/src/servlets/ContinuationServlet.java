@@ -1,6 +1,7 @@
 package servlets;
 
 import dto.ContinutionMenuDTO;
+import dto.ResultDTO;
 import enginemanager.EngineApi;
 import enginemanager.Manager;
 import jakarta.servlet.annotation.WebServlet;
@@ -67,7 +68,9 @@ public class ContinuationServlet extends HttpServlet {
             UserManager userManager = ServletUtils.getUserManager(getServletContext());
             if (Id == null || targetName == null) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.getWriter().println("Invalid query parameter");
+                response.setContentType(Constants.JSON_FORMAT);
+                ResultDTO resultDTO=new ResultDTO(Constants.INVALID_PARAMETER);
+                response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
             }
             else {
                 synchronized (this) {

@@ -2,6 +2,7 @@ package servlets;
 
 import com.google.gson.Gson;
 import dto.AvailableFlowDTO;
+import dto.ResultDTO;
 import enginemanager.EngineApi;
 import enginemanager.Manager;
 import jakarta.servlet.annotation.WebServlet;
@@ -34,6 +35,9 @@ public class AvailableFlowsServlet extends HttpServlet {
                     response.setStatus(HttpServletResponse.SC_OK);
                 } else {
                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    response.setContentType(Constants.JSON_FORMAT);
+                    ResultDTO resultDTO=new ResultDTO("There are no available flows");
+                    response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
                 }
             }
         }
