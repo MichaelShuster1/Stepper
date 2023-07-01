@@ -4,23 +4,23 @@ import java.util.List;
 import java.util.Map;
 
 public class StepExtensionDTO {
-    List<String> logs;
-    private Map<DataDefintionDTO,Object> inputs;
+    private List<String> logs;
 
-    private Map<DataDefintionDTO,Object> outputs;
+    private List<DataExecutionDTO> inputs;
 
+    private List<DataExecutionDTO> outputs;
 
-    public StepExtensionDTO(List<String> logs,Map<DataDefintionDTO,Object> inputs,Map<DataDefintionDTO,Object> outputs) {
-        this.logs=logs;
-        this.inputs=inputs;
-        this.outputs=outputs;
+    public StepExtensionDTO(List<String> logs, List<DataExecutionDTO> inputs, List<DataExecutionDTO> outputs) {
+        this.logs = logs;
+        this.inputs = inputs;
+        this.outputs = outputs;
     }
 
-    public Map<DataDefintionDTO, Object> getInputs() {
+    public List<DataExecutionDTO> getInputs() {
         return inputs;
     }
 
-    public Map<DataDefintionDTO, Object> getOutputs() {
+    public List<DataExecutionDTO> getOutputs() {
         return outputs;
     }
 

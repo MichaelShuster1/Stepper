@@ -159,22 +159,22 @@ public class FlowExecution implements  Runnable {
             executionDetails = new FlowExecutionDetailsDTO(flowDefinition.getName(),flowId,activationTime);
         List<StepExecutionDTO> steps = getStepsExecutionDTO();
         List<FreeInputExecutionDTO> freeInputs = getFreeInputsExecutionDTO();
-        List<OutputExecutionDTO> outputs = getOutputsExecutionDTO();
+        List<DataExecutionDTO> outputs = getOutputsExecutionDTO();
         return new FlowExecutionDTO(executionDetails,steps,freeInputs,outputs,((double)index)/this.steps.size());
     }
 
 
-    private List<OutputExecutionDTO> getOutputsExecutionDTO() {
-        List<OutputExecutionDTO> outputsList = new ArrayList<>();
+    private List<DataExecutionDTO> getOutputsExecutionDTO() {
+        List<DataExecutionDTO> outputsList = new ArrayList<>();
         for (int i = 0; i < index; i++) {
             Step step = steps.get(i);
             List<Output> outputs = step.getOutputs();
             for (Output output : outputs) {
                 DataDefintionDTO outputDetails = new DataDefintionDTO(output.getName(),output.getType());
                 if (output.getData() != null)
-                    outputsList.add(new OutputExecutionDTO(outputDetails,output.getData()));
+                    outputsList.add(new DataExecutionDTO(outputDetails,output.getData()));
                 else
-                    outputsList.add(new OutputExecutionDTO(outputDetails,null));
+                    outputsList.add(new DataExecutionDTO(outputDetails,null));
             }
         }
         return outputsList;

@@ -3,6 +3,7 @@ package step;
 import datadefinition.Input;
 import datadefinition.Output;
 import dto.DataDefintionDTO;
+import dto.DataExecutionDTO;
 import dto.StepExecutionDTO;
 import dto.StepExtensionDTO;
 
@@ -70,20 +71,17 @@ public abstract class Step implements Serializable {
     }
 
     public StepExecutionDTO getStepExecutionData() {
-        Map<DataDefintionDTO,Object> inputsData=new HashMap<>();
-        Map<DataDefintionDTO,Object> outPutsData=new HashMap<>();
 
-        for(Input input:inputs) {
-            DataDefintionDTO inputDefinitionDTO=new DataDefintionDTO(input.getName(),input.getType());
-            inputsData.put(inputDefinitionDTO, input.getData());
-        }
-        for (Output output:outputs) {
-            DataDefintionDTO outPutDefinitionDTO=new DataDefintionDTO(output.getName(),output.getType());
-            outPutsData.put(outPutDefinitionDTO, output.getData());
-        }
+        List<DataExecutionDTO> inputsData=new ArrayList<>();
+        List<DataExecutionDTO> outputsData=new ArrayList<>();
 
-        StepExtensionDTO stepExtensionDTO =new StepExtensionDTO(log,inputsData,outPutsData);
+        for(Input input:inputs)
+            inputsData.add(new DataExecutionDTO(input.getName(),input.getType(),input.getData()));
 
+        for (Output output:outputs)
+            outputsData.add(new DataExecutionDTO(output.getName(),output.getType(),output.getData()));
+
+        StepExtensionDTO stepExtensionDTO =new StepExtensionDTO(log,inputsData,outputsData);
         return new StepExecutionDTO(name,runTime, stateAfterRun.toString(),summaryLine, stepExtensionDTO);
     }
 

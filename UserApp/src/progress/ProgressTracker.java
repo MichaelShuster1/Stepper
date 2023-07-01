@@ -4,10 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import controllers.AppController;
-import dto.AvailableFlowDTO;
-import dto.DataDefintionDTO;
-import dto.FlowExecutionDTO;
-import dto.StepExtensionDTO;
+import dto.*;
 import enginemanager.EngineApi;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -99,17 +96,16 @@ public class ProgressTracker extends Task<Boolean> {
                             if(response.code()==200&&response.body()!=null){
 
                                  Gson gson = new GsonBuilder()
-                                         .registerTypeAdapter(DataDefintionDTO.class, new DataDefintionDTODeserializer())
+                                         .registerTypeAdapter(OutputExecutionDTO.class,new DataExecutionDTODeserializer())
+                                         .registerTypeAdapter(DataExecutionDTO.class, new DataExecutionDTODeserializer())
                                          .registerTypeAdapter(StepExtensionDTO.class, new StepExtensionDTODeserializer())
                                         .registerTypeAdapter(FlowExecutionDTO.class, new FlowExecutionDTODeserializer())
                                         .serializeNulls()
                                          .setPrettyPrinting()
                                         .create();
 
-                                System.out.println(response.body());
                                 FlowExecutionDTO flowExecutionDTO =gson
                                         .fromJson(response.body().string(), FlowExecutionDTO.class);
-                                System.out.println(flowExecutionDTO);
                                 if(flowId.equals(currentFlowId)) {
                                     Platform.runLater(()->appController.updateProgressFlow(flowExecutionDTO));
                                 }

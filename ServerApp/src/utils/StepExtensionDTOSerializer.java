@@ -21,28 +21,6 @@ public class StepExtensionDTOSerializer implements JsonSerializer<StepExtensionD
             jsonObject.add("logs", logsArray);
         }
 
-        // Serialize inputs
-        if (stepExtensionDTO.getInputs() != null) {
-            JsonObject inputsJsonObject = new JsonObject();
-            for (Map.Entry<DataDefintionDTO, Object> entry : stepExtensionDTO.getInputs().entrySet()) {
-                JsonElement keyElement = context.serialize(entry.getKey());
-                JsonElement valueElement = context.serialize(entry.getValue());
-                inputsJsonObject.add(keyElement.getAsJsonObject().toString(), valueElement);
-            }
-            jsonObject.add("inputs", inputsJsonObject);
-        }
-
-        // Serialize outputs
-        if (stepExtensionDTO.getOutputs() != null) {
-            JsonObject outputsJsonObject = new JsonObject();
-            for (Map.Entry<DataDefintionDTO, Object> entry : stepExtensionDTO.getOutputs().entrySet()) {
-                JsonElement keyElement = context.serialize(entry.getKey());
-                JsonElement valueElement = context.serialize(entry.getValue());
-                outputsJsonObject.add(keyElement.getAsJsonObject().toString(), valueElement);
-            }
-            jsonObject.add("outputs", outputsJsonObject);
-        }
-
         return jsonObject;
     }
 }

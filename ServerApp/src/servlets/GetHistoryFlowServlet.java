@@ -31,7 +31,7 @@ public class GetHistoryFlowServlet extends HttpServlet {
                 synchronized (this) {
                     flowId=flowId.trim();
                     EngineApi engine = (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
-                    User user = ServletUtils.getUserManager(getServletContext()).getUser(usernameFromSession);
+                    //User user = ServletUtils.getUserManager(getServletContext()).getUser(usernameFromSession);
                     FlowExecutionDTO flowExecutionDTO = engine.getHistoryDataOfFlow(flowId);
                     response.getWriter().println(Constants.GSON_INSTANCE.toJson(flowExecutionDTO));
                     response.setStatus(HttpServletResponse.SC_OK);
