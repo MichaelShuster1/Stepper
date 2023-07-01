@@ -11,6 +11,9 @@ public class Constants {
 
     public final static String LOGIN_PAGE = FULL_SERVER_PATH + "/login";
 
+    public final static String SOMETHING_WRONG = "Something went wrong...";
+
+    public final static String CONNECTION_ERROR = "There was a problem connecting to the server";
 
 
 

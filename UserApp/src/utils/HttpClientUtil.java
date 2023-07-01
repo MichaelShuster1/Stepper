@@ -91,7 +91,7 @@ public class HttpClientUtil {
     }
 
 
-    private static void showErrorAlert(String message, AppController appController) {
+    public static void showErrorAlert(String message, AppController appController) {
         Alert alert =new Alert(Alert.AlertType.ERROR);
 
         ObservableList<String> stylesheets = appController.getPrimaryStage().getScene().getStylesheets();

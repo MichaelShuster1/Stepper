@@ -209,13 +209,13 @@ public class DefinitionController {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                HttpClientUtil.showErrorAlert(Constants.CONNECTION_ERROR, appController);
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
-                    if(response.body()!=null)
-                        response.body().close();
+                    HttpClientUtil.errorMessage(response.body(), appController);
                 }
                 else {
                     if(response.body() != null) {
