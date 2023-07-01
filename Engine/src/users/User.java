@@ -24,8 +24,9 @@ public class User {
             flows.put(flow.getName(), new Flow(flow));
     }
 
-    public void removeFlow(String name) {
-        flows.remove(name);
+    public void removeFlow(String flowName) {
+        if(flows.containsKey(flowName))
+            flows.remove(name);
     }
 
     public void setName(String name) {
@@ -37,7 +38,8 @@ public class User {
     }
 
     public void setCurrentFlow(String flowName) {
-        currentFlow=flows.get(flowName);
+        if(flows.containsKey(flowName))
+            currentFlow=flows.get(flowName);
     }
 
     public String getName() {

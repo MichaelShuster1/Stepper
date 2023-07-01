@@ -2,6 +2,7 @@ package flow;
 
 import datadefinition.*;
 import dto.*;
+import hardcodeddata.HCSteps;
 import initialvalue.InitialValue;
 import step.State;
 import step.Step;
@@ -27,11 +28,8 @@ public class Flow implements Serializable {
     private Map<String, Boolean> freeInputsIsReq;
     private Set<String> freeMandatoryInputs;
     private Map<String,String> initialValues;
-
     private Map<String, InitialValue> initialValueMap;
-
     private Map<String,Integer> flowOutputs;
-
     private Map<String, Continuation> continuations;
 
     public Flow(String name, String description) {
@@ -42,6 +40,49 @@ public class Flow implements Serializable {
         formalOutputs = new HashMap<>();
         numberOfSteps = 0;
         continuations = null;
+    }
+
+    public Flow(Flow other)
+    {
+        this.name= other.name;
+        this.description=other.description;
+        this.readOnly=other.readOnly;
+        this.formalOutputs=other.formalOutputs;
+        this.steps = new ArrayList<>();
+        initSteps(other);
+        this.numberOfSteps=other.numberOfSteps;
+        this.nameToIndex=other.nameToIndex;
+        this.connections = other.connections;
+        this.flowInputs = other.flowInputs;
+        this.flowFreeInputs = other.flowFreeInputs;
+        this.freeInputsIsReq = other.freeInputsIsReq;
+        this.freeMandatoryInputs = new HashSet<>();
+        this.freeMandatoryInputs.addAll(other.freeMandatoryInputs);
+        this.initialValues = other.initialValues;
+        this.initialValueMap = other.initialValueMap;
+        this.flowOutputs = other.flowOutputs;
+        this.continuations = other.continuations;
+    }
+
+
+    private void initSteps(Flow other) {
+        List<Step> definitionSteps = other.getSteps();
+        for(int i = 0; i< definitionSteps.size(); i++) {
+            Step currStep = definitionSteps.get(i);
+            Step newStep = HCSteps.CreateStep(currStep.getDefaultName(), currStep.getName(), currStep.isContinueIfFailing());
+            newStep.setNameToInputIndex(currStep.getNameToInputIndex());
+            newStep.setNameToOutputIndex(currStep.getNameToOutputIndex());
+            List<Input> currStepInputs =  currStep.getInputs();
+            for(int j = 0; j< currStepInputs.size(); j++) {
+                newStep.getInput(j).setData((currStepInputs.get(j)).getData());
+                newStep.getInput(j).setName((currStepInputs.get(j).getName()));
+            }
+            List<Output> currStepOutputs =  currStep.getOutputs();
+            for(int j = 0; j< currStepOutputs.size(); j++) {
+                newStep.getOutput(j).setName((currStepOutputs.get(j)).getName());
+            }
+            steps.add(newStep);
+        }
     }
 
     public void addStep(Step step) {
