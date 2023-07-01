@@ -2,6 +2,7 @@ package utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import dto.DataExecutionDTO;
 import okhttp3.OkHttpClient;
 
 public class Constants {
@@ -12,9 +13,8 @@ public class Constants {
     public final static String SOMETHING_WRONG = "Something went wrong...";
     public final static String CONNECTION_ERROR = "There was a problem connecting to the server";
     public final static Gson GSON_INSTANCE = new GsonBuilder()
+            .registerTypeAdapter(DataExecutionDTO.class,new DataExecutionDTODeserializer())
             .serializeNulls()
             .create();
-
-
 
 }
