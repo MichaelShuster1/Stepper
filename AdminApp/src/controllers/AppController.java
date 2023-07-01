@@ -86,16 +86,16 @@ public class AppController {
         rolesComponentController.setAppController(this);
         setTab(3);
         usersComponentController.StartUsersRefresher();
+        StartUpdatesRefresher();
     }
 
 
     public void StartUpdatesRefresher()
     {
-        TimerTask updatesRefresher=new UpdatesRefresher(historyComponentController::updateHistoryTable,statisticsComponentController::fillTablesData,
-                this,historyComponentController.getHistoryVersion());
-
+        TimerTask updatesRefresher=new UpdatesRefresher(historyComponentController::updateHistoryTable,
+                statisticsComponentController::fillTablesData, this,historyComponentController.getHistoryVersion());
         timer = new Timer();
-        timer.schedule(updatesRefresher, 200, 1000);
+        timer.schedule(updatesRefresher, 1000, 1000);
     }
 
 
