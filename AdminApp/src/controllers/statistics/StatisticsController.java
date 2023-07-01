@@ -126,10 +126,10 @@ public class StatisticsController {
         stepsObservableList.addAll(stepsStatistics);
         stepsTable.setItems(stepsObservableList);
 
-        updateActivatedTimesGraph(stepsStatistics,stepsActivatedTimesGraph);
-        updateAvgRunTimeGraph(stepsStatistics,stepsAvgRunTimeGraph);
-        updateActivatedTimesGraph(flowsStatistics,flowsActivatedTimesGraph);
-        updateAvgRunTimeGraph(flowsStatistics,flowsAvgRunTimeGraph);
+       // updateActivatedTimesGraph(stepsStatistics,stepsActivatedTimesGraph);
+       // updateAvgRunTimeGraph(stepsStatistics,stepsAvgRunTimeGraph);
+       // updateActivatedTimesGraph(flowsStatistics,flowsActivatedTimesGraph);
+       // updateAvgRunTimeGraph(flowsStatistics,flowsAvgRunTimeGraph);
     }
 
     public void createStatisticsTables()

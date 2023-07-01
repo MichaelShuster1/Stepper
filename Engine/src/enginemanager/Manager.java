@@ -472,7 +472,8 @@ public class Manager implements EngineApi, Serializable {
     public List<FlowExecutionDTO> getFlowsHistoryDelta(int historyVersion)
     {
         List<FlowExecutionDTO> flowsList = new ArrayList<>();
-        for(int i = historyVersion ; i < flowsHistory.size() ; i++) {
+        int delta = flowsHistory.size() - historyVersion;
+        for(int i = 0 ; i < delta ; i++) {
             flowsList.add(getHistoryDataOfFlow(flowsHistory.get(i).getID()));
         }
         return flowsList;
