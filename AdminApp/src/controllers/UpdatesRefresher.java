@@ -59,7 +59,7 @@ public class UpdatesRefresher extends TimerTask {
                         try {
                             Type listType = new TypeToken<List<FlowExecutionDTO>>() {}.getType();
                             if(!jsonArray.get(0).isJsonNull()) {
-                                List<FlowExecutionDTO> historyFlows = Constants.GSON_INSTANCE.fromJson(jsonArray.get(0), listType);
+                                List<FlowExecutionDTO> historyFlows = Constants.GSON_INSTANCE.fromJson(jsonArray.get(0).getAsString(), listType);
                                 flowsListConsumer.accept(historyFlows);
                             }
                         }
@@ -68,7 +68,7 @@ public class UpdatesRefresher extends TimerTask {
                         }
                         try {
                             if(!jsonArray.get(0).isJsonNull()) {
-                                StatisticsDTO statisticsDTO = Constants.GSON_INSTANCE.fromJson(jsonArray.get(1), StatisticsDTO.class);
+                                StatisticsDTO statisticsDTO = Constants.GSON_INSTANCE.fromJson(jsonArray.get(1).getAsString(), StatisticsDTO.class);
                                 statisticsConsumer.accept(statisticsDTO);
                             }
                         }
