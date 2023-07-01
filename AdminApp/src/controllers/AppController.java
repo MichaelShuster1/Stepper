@@ -98,6 +98,11 @@ public class AppController {
         timer.schedule(updatesRefresher, 1000, 1000);
     }
 
+    public void StopUpdatesRefresher()
+    {
+        timer.cancel();
+    }
+
 
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -119,6 +124,7 @@ public class AppController {
                 Platform.runLater(primaryStage::close);
                 HttpClientUtil.shutdown();
                 usersComponentController.StopUsersRefresher();
+                timer.cancel();
             }
 
             @Override
@@ -128,6 +134,7 @@ public class AppController {
                         HttpClientUtil.errorMessage(response.body(), AppController.this);
                         HttpClientUtil.shutdown();
                         usersComponentController.StopUsersRefresher();
+                        timer.cancel();
                 }
                 if(response.body()!=null)
                     response.body().close();
@@ -153,6 +160,7 @@ public class AppController {
                 if (result == ButtonType.OK) {
 
                     usersComponentController.StopUsersRefresher();
+                    timer.cancel();
 
                     String url = HttpUrl
                             .parse(Constants.FULL_SERVER_PATH + RESOURCE)
