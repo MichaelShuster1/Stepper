@@ -85,43 +85,81 @@ public class ProgressTracker extends Task<Boolean> {
                             .toString();
 
                     int index = i;
-                    HttpClientUtil.runAsync(finalUrl, new Callback() {
-                        @Override
-                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                            System.out.println("problem with fetching flow history");
-                        }
+                    Response response = HttpClientUtil.runSync(finalUrl);
+                    if(response == null) {
+                        System.out.println("problem with fetching flow history");
+                    }
+                    else {
+                        if (response.code() == 200 && response.body() != null) {
+                            Gson gson = new GsonBuilder()
+                                    .registerTypeAdapter(OutputExecutionDTO.class, new DataExecutionDTODeserializer())
+                                    .registerTypeAdapter(DataExecutionDTO.class, new DataExecutionDTODeserializer())
+                                    .registerTypeAdapter(StepExtensionDTO.class, new StepExtensionDTODeserializer())
+                                    .registerTypeAdapter(FlowExecutionDTO.class, new FlowExecutionDTODeserializer())
+                                    .serializeNulls()
+                                    .setPrettyPrinting()
+                                    .create();
 
-                        @Override
-                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                            if(response.code()==200&&response.body()!=null){
-                                 Gson gson = new GsonBuilder()
-                                         .registerTypeAdapter(DataExecutionDTO.class, new DataExecutionDTODeserializer())
-                                         .registerTypeAdapter(StepExtensionDTO.class, new StepExtensionDTODeserializer())
-                                        .registerTypeAdapter(FlowExecutionDTO.class, new FlowExecutionDTODeserializer())
-                                        .serializeNulls()
-                                         .setPrettyPrinting()
-                                        .create();
-
-                                FlowExecutionDTO flowExecutionDTO =gson
+                            try {
+                                FlowExecutionDTO flowExecutionDTO = gson
                                         .fromJson(response.body().string(), FlowExecutionDTO.class);
-                                if(flowId.equals(currentFlowId)) {
-                                    Platform.runLater(()->appController.updateProgressFlow(flowExecutionDTO));
+
+                                if (flowId.equals(currentFlowId)) {
+                                    Platform.runLater(() -> appController.updateProgressFlow(flowExecutionDTO));
                                 }
 
 
-                                if(flowExecutionDTO.getStateAfterRun() != null) {
-                                    Platform.runLater(()->appController.addRowInHistoryTable(flowExecutionDTO));
+                                if (flowExecutionDTO.getStateAfterRun() != null) {
+                                    Platform.runLater(() -> appController.addRowInHistoryTable(flowExecutionDTO));
                                     flowsId.remove(index);
                                 }
                             }
-                            else
-                                System.out.println("problem with fetching flow history");
+                            catch (Exception e) {}
+                        } else
+                            System.out.println("problem with fetching flow history");
 
-                            if(response.body()!=null)
-                                response.body().close();
+                        if (response.body() != null)
+                            response.body().close();
+                    }
 
-                        }
-                    });
+//                    HttpClientUtil.runAsync(finalUrl, new Callback() {
+//                        @Override
+//                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+//                            System.out.println("problem with fetching flow history");
+//                        }
+//
+//                        @Override
+//                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+//                            if(response.code()==200&&response.body()!=null){
+//                                 Gson gson = new GsonBuilder()
+//                                         .registerTypeAdapter(OutputExecutionDTO.class,new DataExecutionDTODeserializer())
+//                                         .registerTypeAdapter(DataExecutionDTO.class, new DataExecutionDTODeserializer())
+//                                         .registerTypeAdapter(StepExtensionDTO.class, new StepExtensionDTODeserializer())
+//                                        .registerTypeAdapter(FlowExecutionDTO.class, new FlowExecutionDTODeserializer())
+//                                        .serializeNulls()
+//                                         .setPrettyPrinting()
+//                                        .create();
+//
+//                                FlowExecutionDTO flowExecutionDTO =gson
+//                                        .fromJson(response.body().string(), FlowExecutionDTO.class);
+//                                if(flowId.equals(currentFlowId)) {
+//                                    Platform.runLater(()->appController.updateProgressFlow(flowExecutionDTO));
+//                                }
+//
+//
+//                                if(flowExecutionDTO.getStateAfterRun() != null) {
+//                                    Platform.runLater(()->appController.addRowInHistoryTable(flowExecutionDTO));
+//                                    flowsId.remove(index);
+//                                }
+//                            }
+//                            else
+//                                System.out.println("problem with fetching flow history");
+//
+//                            if(response.body()!=null)
+//                                response.body().close();
+//
+//                        }
+//                    });
 
                 }
             }
