@@ -658,6 +658,14 @@ public class ExecutionController {
         progressBarView.setProgress(flowExecutionDTO.getProgress());
         if(flowExecutionDTO.getStateAfterRun()!=null)
         {
+            if(isAnimationsOn.get() && !elementLogic.isTableClicked() && !isClicked) {
+                createFadeAnimation(elementDetailsView);
+            }
+            progressBarView.setProgress(1);
+            hBoxView.getChildren().remove(executeButton);
+            rerunButton.setOnAction(e->reRunFlow(flowExecutionDTO));
+            hBoxView.getChildren().add(rerunButton);
+
             String finalUrl = HttpUrl
                     .parse(Constants.FULL_SERVER_PATH + "/continuation")
                     .newBuilder()
@@ -697,13 +705,6 @@ public class ExecutionController {
 
                 }
             });
-            if(isAnimationsOn.get() && !elementLogic.isTableClicked() && !isClicked) {
-                createFadeAnimation(elementDetailsView);
-            }
-            progressBarView.setProgress(1);
-            hBoxView.getChildren().remove(executeButton);
-            rerunButton.setOnAction(e->reRunFlow(flowExecutionDTO));
-            hBoxView.getChildren().add(rerunButton);
         }
 
     }

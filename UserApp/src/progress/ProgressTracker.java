@@ -95,7 +95,6 @@ public class ProgressTracker extends Task<Boolean> {
                         public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                             if(response.code()==200&&response.body()!=null){
                                  Gson gson = new GsonBuilder()
-                                         .registerTypeAdapter(OutputExecutionDTO.class,new DataExecutionDTODeserializer())
                                          .registerTypeAdapter(DataExecutionDTO.class, new DataExecutionDTODeserializer())
                                          .registerTypeAdapter(StepExtensionDTO.class, new StepExtensionDTODeserializer())
                                         .registerTypeAdapter(FlowExecutionDTO.class, new FlowExecutionDTODeserializer())
