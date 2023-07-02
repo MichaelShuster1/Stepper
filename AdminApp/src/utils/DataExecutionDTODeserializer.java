@@ -16,8 +16,6 @@ public class DataExecutionDTODeserializer implements JsonDeserializer<DataExecut
         JsonObject jsonObject = json.getAsJsonObject();
 
 
-
-
         // Deserialize data
         String name = jsonObject.get("name").getAsString();
         String type = jsonObject.get("type").getAsString();

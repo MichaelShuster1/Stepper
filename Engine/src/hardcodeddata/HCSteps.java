@@ -19,7 +19,8 @@ public enum HCSteps {
     FILE_DUMPER("File Dumper"),
     FILE_DELETER("Files Deleter"),
     ZIPPER("Zipper"),
-    COMMAND_LINE("Command Line");
+    COMMAND_LINE("Command Line"),
+    HTTP_CALL("HTTP Call");
 
     private String stepName;
 
@@ -82,6 +83,9 @@ public enum HCSteps {
                 break;
             case "Command Line":
                 newStep = new CommandLine(finalName, continueIfFailing);
+                break;
+            case "HTTP Call":
+                newStep =new HttpCall(finalName,continueIfFailing);
                 break;
 
         }

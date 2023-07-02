@@ -6,14 +6,15 @@ import okhttp3.*;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public class HttpCall extends Step{
 
 
-    protected HttpCall(String name, boolean continueIfFailing) {
+    public HttpCall(String name, boolean continueIfFailing) {
         super(name, false, continueIfFailing);
-        defaultName="HttpCall";
+        defaultName="HTTP Call";
 
         DataString dataString = new DataString("RESOURCE");
         inputs.add(new Input(dataString, true, true,
@@ -77,7 +78,7 @@ public class HttpCall extends Step{
         if(method==null)
             method="GET";
 
-        String finalUrl=protocol+"//"+address+"/"+resource;
+        String finalUrl=protocol+"://"+address+"/"+resource;
         Request request=buildRequest(finalUrl,method,body);
 
         OkHttpClient httpClient=new OkHttpClient();
@@ -103,21 +104,29 @@ public class HttpCall extends Step{
            summaryLine="Failed to reach the given destination";
            addLineToLog("Failed to reach the given destination");
         }
+        runTime = System.currentTimeMillis() - startTime;
     }
 
     private Request buildRequest(String finalUrl,String method,String body)
     {
         Request request;
-        RequestBody requestBody=null;
+        RequestBody requestBody=RequestBody.create(null, new byte[0]);
 
         if(body!=null){
             requestBody=RequestBody.create(MediaType.parse("application/json"), body);
         }
 
-        request =new Request.Builder()
-                .url(finalUrl)
-                .method(method,requestBody)
-                .build();
+        if(!method.equals("GET")) {
+            request = new Request.Builder()
+                    .url(finalUrl)
+                    .method(method, requestBody)
+                    .build();
+        }
+        else{
+            request = new Request.Builder()
+                    .url(finalUrl)
+                    .build();
+        }
 
         return request;
     }

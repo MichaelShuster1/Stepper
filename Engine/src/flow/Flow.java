@@ -403,6 +403,10 @@ public class Flow implements Serializable {
             case "DataString":
                 input.setData(rawData);
                 break;
+            case "DataJson":
+                //need to check here if valid json
+                input.setData(rawData);
+                break;
             case "DataEnumerator":
                 try {
                     input.setData(rawData);

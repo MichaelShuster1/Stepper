@@ -94,7 +94,6 @@ public class ProgressTracker extends Task<Boolean> {
                         @Override
                         public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                             if(response.code()==200&&response.body()!=null){
-
                                  Gson gson = new GsonBuilder()
                                          .registerTypeAdapter(OutputExecutionDTO.class,new DataExecutionDTODeserializer())
                                          .registerTypeAdapter(DataExecutionDTO.class, new DataExecutionDTODeserializer())
@@ -118,20 +117,13 @@ public class ProgressTracker extends Task<Boolean> {
                             }
                             else
                                 System.out.println("problem with fetching flow history");
+
+                            if(response.body()!=null)
+                                response.body().close();
+
                         }
                     });
 
-                    /*
-                    if(flowId.equals(currentFlowId)) {
-                        Platform.runLater(()->appController.updateProgressFlow(flowExecutionDTO));
-                    }
-
-
-                    if(flowExecutionDTO.getStateAfterRun() != null) {
-                        Platform.runLater(()->appController.addRowInHistoryTable(flowExecutionDTO));
-                        flowsId.remove(i);
-                    }
-                    */
                 }
             }
             try {

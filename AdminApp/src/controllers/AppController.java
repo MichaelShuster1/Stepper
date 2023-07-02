@@ -23,7 +23,6 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import okhttp3.*;
-import progress.ProgressTracker;
 import utils.Constants;
 import utils.HttpClientUtil;
 
@@ -69,8 +68,6 @@ public class AppController {
 
     @FXML
     private TabPane tabPaneView;
-
-    private ProgressTracker progressTracker;
 
     private Stage primaryStage;
 
