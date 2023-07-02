@@ -296,6 +296,10 @@ public class ExecutionController {
                 String inputDefaultName = freeInputExecutionDTO.getDefaultName();
                 result = getStringInputFromUser(inputDialog, inputDefaultName);
                 break;
+            case JSON:
+                inputDialog.setContentText("Please enter the json here:");
+                result = inputDialog.showAndWait();
+                break;
         }
 
         return result;

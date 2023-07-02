@@ -75,7 +75,6 @@ public class ProgressTracker extends Task<Boolean> {
             synchronized (flowsId) {
                 for (int i = 0;i<flowsId.size();i++) {
                     String flowId = flowsId.get(i);
-                    //FlowExecutionDTO flowExecutionDTO=engine.getHistoryDataOfFlow(flowId);
 
                     String finalUrl = HttpUrl
                             .parse(Constants.FULL_SERVER_PATH + "/get-history")
