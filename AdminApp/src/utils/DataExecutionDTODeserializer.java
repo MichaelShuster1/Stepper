@@ -28,8 +28,16 @@ public class DataExecutionDTODeserializer implements JsonDeserializer<DataExecut
         switch (DataType.valueOf(type.toUpperCase()))
         {
             case LIST:
-                Type listType = new TypeToken<java.util.List<File>>() {}.getType();
-                data=context.deserialize(dataElement,listType);
+                Type listType;
+                try {
+                    listType= new TypeToken<java.util.List<File>>() {}.getType();
+                    data = context.deserialize(dataElement, listType);
+                }
+                catch (Exception e)
+                {
+                    listType= new TypeToken<java.util.List<String>>() {}.getType();
+                    data=context.deserialize(dataElement,listType);
+                }
                 break;
             case RELATION:
                 data=context.deserialize(dataElement, Relation.class);
