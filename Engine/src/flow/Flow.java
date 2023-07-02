@@ -1,5 +1,6 @@
 package flow;
 
+import com.google.gson.JsonParser;
 import datadefinition.*;
 import dto.*;
 import hardcodeddata.HCSteps;
@@ -404,8 +405,15 @@ public class Flow implements Serializable {
                 input.setData(rawData);
                 break;
             case "DataJson":
-                //need to check here if valid json
-                input.setData(rawData);
+                JsonParser jsonParser = new JsonParser();
+                try {
+                    jsonParser.parse(rawData);
+                    input.setData(rawData);
+                } catch (Exception e) {
+                   message = "Input processing failed due to: "
+                           + "the provided textual data isn't a valid Json format";
+                   return new ResultDTO(false, message);
+                }
                 break;
             case "DataEnumerator":
                 try {
