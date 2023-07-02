@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class FlowExecution implements  Runnable {
-    private String flowId;
+    private final String flowId;
     private step.State stateAfterRun;
     private Long runTime;
     private String activationTime;
