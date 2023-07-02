@@ -1,5 +1,6 @@
 package flow;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import datadefinition.*;
 import dto.*;
@@ -13,6 +14,8 @@ import javafx.util.Pair;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static jdk.nashorn.internal.runtime.JSType.isNumber;
 
 
 public class Flow implements Serializable {
@@ -407,7 +410,9 @@ public class Flow implements Serializable {
             case "DataJson":
                 JsonParser jsonParser = new JsonParser();
                 try {
-                    jsonParser.parse(rawData);
+                    JsonElement jsonElement = jsonParser.parse(rawData);
+                    if (jsonElement.isJsonPrimitive())
+                        throw new RuntimeException();
                     input.setData(rawData);
                 } catch (Exception e) {
                    message = "Input processing failed due to: "
