@@ -7,6 +7,7 @@
           <element id="module-output" name="ServerApp" />
           <element id="module-output" name="DTO" />
           <element id="module-output" name="engine" />
+          <element id="module-output" name="UserApp" />
         </element>
         <element id="directory" name="lib">
           <element id="library" level="project" name="okio-2.8.0" />
@@ -14,6 +15,10 @@
           <element id="library" level="project" name="kotlin-stdlib-1.4.10" />
           <element id="library" level="project" name="gson-2.8.8" />
           <element id="library" level="project" name="annotations-13.0" />
+          <element id="library" level="project" name="slf4j-api-2.0.6" />
+          <element id="library" level="project" name="json-smart-2.4.8" />
+          <element id="library" level="project" name="json-path-2.7.0" />
+          <element id="library" level="project" name="accessors-smart-2.4.8" />
         </element>
       </element>
       <element id="javaee-facet-resources" facet="ServerApp/web/Web" />
