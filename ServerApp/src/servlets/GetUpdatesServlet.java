@@ -47,10 +47,12 @@ public class GetUpdatesServlet extends HttpServlet {
         }
 
         JsonArray jsonArray=new JsonArray();
-        List<FlowExecutionDTO> flowHistoryList = engine.getFlowsHistoryDelta(historyVersion);
-        jsonArray.add(gson.toJson(flowHistoryList));
-        StatisticsDTO statisticsDTO =engine.getStatistics();
-        jsonArray.add(gson.toJson(statisticsDTO));
+        synchronized (this) {
+            List<FlowExecutionDTO> flowHistoryList = engine.getFlowsHistoryDelta(historyVersion);
+            jsonArray.add(gson.toJson(flowHistoryList));
+            StatisticsDTO statisticsDTO = engine.getStatistics();
+            jsonArray.add(gson.toJson(statisticsDTO));
+        }
         response.setStatus(HttpServletResponse.SC_OK);
         response.getWriter().print(jsonArray.toString());
     }
