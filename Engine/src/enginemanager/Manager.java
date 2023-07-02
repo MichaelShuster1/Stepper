@@ -178,7 +178,8 @@ public class Manager implements EngineApi, Serializable {
 
                 if(targetIndex==null) {
 
-                    targetIndex = flowNames2Index.get(continuation.getTargetFlow());
+                    if(flowNames2Index != null)
+                       targetIndex = flowNames2Index.get(continuation.getTargetFlow());
 
                     if (targetIndex == null)
                         throw new ContinuationException("The flow \"" + name +
