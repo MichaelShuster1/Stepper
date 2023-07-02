@@ -1,4 +1,7 @@
+import dto.FlowExecutionDTO;
 import dto.ResultDTO;
+import enginemanager.EngineApi;
+import enginemanager.Manager;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -10,6 +13,7 @@ import utils.Constants;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 
 @WebServlet(name="test",urlPatterns = "/test")
 public class test  extends HttpServlet {
@@ -30,8 +34,9 @@ public class test  extends HttpServlet {
             requestBody.append(line);
         }
         System.out.println(requestBody);
-        ResultDTO resultDTO =new ResultDTO(requestBody.toString());
-        response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
+        EngineApi engine=(Manager)getServletContext().getAttribute(Constants.FLOW_MANAGER);
+        List<FlowExecutionDTO> flowExecutionDTOList =engine.getFlowsHistoryDelta(0);
+        response.getWriter().print(Constants.GSON_INSTANCE.toJson(flowExecutionDTOList));
     }
 
     @Override

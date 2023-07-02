@@ -2,7 +2,6 @@ package utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import dto.StepExtensionDTO;
 
 public class Constants {
     public static final String ADMIN_CONNECTED = "AdminConnected";
@@ -19,8 +18,5 @@ public class Constants {
 
     public static final String UNAUTHORIZED_ACCESS = "Unauthorized access";
 
-    public final static Gson GSON_INSTANCE = new GsonBuilder()
-            //.registerTypeAdapter(StepExtensionDTO.class, new StepExtensionDTOSerializer())
-            // Other Gson configuration
-            .create();
+    public final static Gson GSON_INSTANCE = new Gson();
 }
