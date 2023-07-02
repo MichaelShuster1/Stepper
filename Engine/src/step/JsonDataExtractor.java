@@ -4,7 +4,7 @@ import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 import datadefinition.*;
 
-import java.io.File;
+
 
 public class JsonDataExtractor extends Step{
     public JsonDataExtractor(String name, boolean continue_if_failing) {

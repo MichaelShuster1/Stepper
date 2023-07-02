@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="accessors-smart-2.4.8">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/DTO/lib/accessors-smart-2.4.8.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
