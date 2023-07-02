@@ -7,7 +7,6 @@
           <element id="module-output" name="ServerApp" />
           <element id="module-output" name="DTO" />
           <element id="module-output" name="engine" />
-          <element id="module-output" name="UserApp" />
         </element>
         <element id="directory" name="lib">
           <element id="library" level="project" name="okio-2.8.0" />
