@@ -1,6 +1,7 @@
 package controllers.statistics;
 
 import controllers.AppController;
+import dto.AvailableFlowDTO;
 import dto.StatisticsDTO;
 import dto.StatisticsUnitDTO;
 import enginemanager.EngineApi;
@@ -112,10 +113,12 @@ public class StatisticsController {
     }
 
     public void fillTablesData(StatisticsDTO statistics) {
-
-        //StatisticsDTO statistics = engine.getStatistics();
-
         Platform.runLater(()->{
+
+            updateStatisticsTable(flowsObservableList,flowsTable,statistics.getFlowsStatistics());
+            updateStatisticsTable(stepsObservableList,stepsTable,statistics.getStepsStatistics());
+
+            /*
             List<StatisticsUnitDTO> flowsStatistics = statistics.getFlowsStatistics();
             List<StatisticsUnitDTO> stepsStatistics= statistics.getStepsStatistics();
 
@@ -124,16 +127,44 @@ public class StatisticsController {
             flowsObservableList.addAll(flowsStatistics);
             flowsTable.setItems(flowsObservableList);
 
+
             if(!stepsObservableList.isEmpty())
                 stepsObservableList.clear();
             stepsObservableList.addAll(stepsStatistics);
             stepsTable.setItems(stepsObservableList);
+            */
         });
 
         //updateActivatedTimesGraph(stepsStatistics,stepsActivatedTimesGraph);
         //updateAvgRunTimeGraph(stepsStatistics,stepsAvgRunTimeGraph);
         //updateActivatedTimesGraph(flowsStatistics,flowsActivatedTimesGraph);
         //updateAvgRunTimeGraph(flowsStatistics,flowsAvgRunTimeGraph);
+    }
+
+
+    private void updateStatisticsTable(ObservableList<StatisticsUnitDTO> list,TableView<StatisticsUnitDTO> table,List<StatisticsUnitDTO> data)
+    {
+        String selectedName=null;
+        StatisticsUnitDTO statisticsUnit=table.getSelectionModel().getSelectedItem();
+
+        if(statisticsUnit != null)
+            selectedName = statisticsUnit.getName();
+
+        if(!list.isEmpty())
+            list.clear();
+        list.addAll(data);
+        table.setItems(list);
+
+        if(selectedName != null) {
+            int size=list.size();
+            boolean found=false;
+            for(int i=0;i<size&&!found;i++) {
+                if(list.get(i).getName().equals(selectedName)) {
+                    table.getSelectionModel().select(i);
+                    found=true;
+                }
+            }
+        }
     }
 
     public void createStatisticsTables()
