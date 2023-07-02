@@ -8,7 +8,8 @@ public enum DataType {
     DOUBLE("Double"),
     ENUMERATOR("Enumerator"),
     MAPPING("Mapping"),
-    RELATION("Relation");
+    RELATION("Relation"),
+    JSON("Json");
 
     private final String type;
     DataType(String type) {
