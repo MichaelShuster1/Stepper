@@ -9,6 +9,7 @@ public class User {
     private String name;
     private Map<String, Flow> flows;
     private Flow currentFlow;
+
     //private List<Role> roles
 
 
@@ -16,6 +17,7 @@ public class User {
         this.name = name;
         this.flows = new HashMap<>();
         currentFlow =null;
+
     }
 
     public void addFlow(Flow flow)
@@ -53,4 +55,11 @@ public class User {
     public Flow getCurrentFlow() {
         return currentFlow;
     }
+
+
+
+
+
+
+
 }

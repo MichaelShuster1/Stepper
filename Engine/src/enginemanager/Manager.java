@@ -426,6 +426,7 @@ public class Manager implements EngineApi, Serializable {
         flowExecutions.put(flowID,flowExecution);
         threadPool.execute(flowExecution);
 
+
         user.getCurrentFlow().resetFlow();
         return flowID;
     }
