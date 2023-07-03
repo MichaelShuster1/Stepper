@@ -30,7 +30,6 @@ public class AvailableFlowsServlet extends HttpServlet {
             synchronized (this) {
                 EngineApi engine = (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
                 User user=userManager.getUser(usernameFromSession);
-                //engine.updateUserFlows(userManager.getUser(usernameFromSession));
                 List<AvailableFlowDTO> flows = engine.getAvailableFlows(user);
                 if (flows != null) {
                     response.getWriter().println(gson.toJson(flows));
