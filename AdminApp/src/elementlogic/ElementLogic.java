@@ -311,10 +311,6 @@ public class ElementLogic {
         if(flowExecutionDTO==null)
             return;
 
-        UserDetailsDTO userDetails=flowExecutionDTO.getUserDetails();
-        String isManager=userDetails.getManager()? "yes":"no";
-        addKeyValueLine("User name: ", userDetails.getUserName());
-        addKeyValueLine("Is user Manager: ",isManager);
 
         updateFlowNameIDAndState();
         if(flowExecutionDTO.getStateAfterRun()!=null)
@@ -343,7 +339,13 @@ public class ElementLogic {
 
     private void updateFlowNameIDAndState() {
         addTitleLine("FLOW EXECUTION DATA:\n");
-        addKeyValueLine("Flows unique ID: ",flowExecutionDTO.getId());
+
+        UserDetailsDTO userDetails=flowExecutionDTO.getUserDetails();
+        String isManager=userDetails.getManager()? "yes":"no";
+        addKeyValueLine("Executed by: ", userDetails.getUserName());
+        addKeyValueLine("Is Manager: ",isManager);
+
+        addKeyValueLine("Flow unique ID: ",flowExecutionDTO.getId());
         addKeyValueLine("Flow name: ",flowExecutionDTO.getName());
         if(flowExecutionDTO.getStateAfterRun()!=null)
             addKeyValueLine("Flow's final state : " , flowExecutionDTO.getStateAfterRun());
