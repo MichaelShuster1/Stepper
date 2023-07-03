@@ -1,22 +1,21 @@
 package users;
 
+import dto.AvailableFlowDTO;
 import dto.UserInfoDTO;
 import flow.Flow;
+import roles.Role;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class User {
     private String name;
-
     boolean isManager;
-
     private int numOfFlowsPerformed;
-
     private Map<String, Flow> flows;
     private Flow currentFlow;
-
-    //private List<Role> roles
 
 
     public User(String name) {
@@ -87,5 +86,6 @@ public class User {
     {
         return  new UserInfoDTO(name,flows.keySet().size(),numOfFlowsPerformed);
     }
+
 
 }

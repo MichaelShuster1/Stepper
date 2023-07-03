@@ -14,6 +14,7 @@ public class Role {
         this.name = name;
         this.description = description;
         this.flowsAssigned=new HashSet<>();
+        this.usersAssigned=new HashSet<>();
     }
 
     public void addFlow(String flowName){

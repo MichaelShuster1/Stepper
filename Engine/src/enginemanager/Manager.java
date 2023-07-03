@@ -34,7 +34,6 @@ public class Manager implements EngineApi, Serializable {
     private ExecutorService threadPool;
     private Map<String,Integer> flowNames2Index;
     private int historyVersion;
-
     private RoleManager roleManager;
 
     public Manager() {
@@ -163,7 +162,7 @@ public class Manager implements EngineApi, Serializable {
         roleManager.getRole("All Flows").addFlows(nameSet);
 
         nameSet.clear();
-       nameSet = flowList.stream()
+        nameSet = flowList.stream()
                 .filter(Flow::isReadOnly)
                 .map(Flow::getName)
                 .collect(Collectors.toSet());
@@ -373,15 +372,26 @@ public class Manager implements EngineApi, Serializable {
     }
 
     @Override
-    public List<AvailableFlowDTO> getAvailableFlows() {
+    public List<AvailableFlowDTO> getAvailableFlows(User user) {
+
+        return user.getFlows()
+                .values()
+                .stream()
+                .map(flow -> new AvailableFlowDTO(flow.getName(),flow.getDescription(),
+                        flow.getNumberOfInputs(),flow.getNumberOfSteps(),flow.getNumberOfContinuations()))
+                .collect(Collectors.toList());
+
+        /*
+        List<Flow> flowsList=new ArrayList<>(user.getFlows().values());
         List<AvailableFlowDTO> availableFlows = new ArrayList<>();
-        for(Flow flow : flows) {
+        for(Flow flow : flowsList) {
             AvailableFlowDTO currFlow = new AvailableFlowDTO(flow.getName(),flow.getDescription(),
                     flow.getNumberOfInputs(),flow.getNumberOfSteps(),flow.getNumberOfContinuations());
             availableFlows.add(currFlow);
         }
 
         return availableFlows;
+        */
     }
 
     @Override
@@ -584,6 +594,7 @@ public class Manager implements EngineApi, Serializable {
         for(Flow flow: flows)
             user.addFlow(flow);
     }
+
 
     public int getHistoryVersion() {
         return historyVersion;

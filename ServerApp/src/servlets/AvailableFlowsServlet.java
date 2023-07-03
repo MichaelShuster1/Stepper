@@ -9,6 +9,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import users.User;
 import users.UserManager;
 import utils.Constants;
 import utils.ServletUtils;
@@ -28,8 +29,9 @@ public class AvailableFlowsServlet extends HttpServlet {
 
             synchronized (this) {
                 EngineApi engine = (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
-                engine.updateUserFlows(userManager.getUser(usernameFromSession));
-                List<AvailableFlowDTO> flows = engine.getAvailableFlows();
+                User user=userManager.getUser(usernameFromSession);
+                //engine.updateUserFlows(userManager.getUser(usernameFromSession));
+                List<AvailableFlowDTO> flows = engine.getAvailableFlows(user);
                 if (flows != null) {
                     response.getWriter().println(gson.toJson(flows));
                     response.setStatus(HttpServletResponse.SC_OK);

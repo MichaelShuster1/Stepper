@@ -14,7 +14,7 @@ public interface EngineApi {
 
     List<String> getFlowsNames();
 
-    List<AvailableFlowDTO> getAvailableFlows();
+    List<AvailableFlowDTO> getAvailableFlows(User user);
 
     int getFlowIndexByName(String name);
 
