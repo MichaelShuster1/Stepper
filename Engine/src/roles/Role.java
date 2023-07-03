@@ -8,6 +8,7 @@ public class Role {
     private final String name;
     private final String description;
     private Set<String> flowsAssigned;
+    private Set<String> usersAssigned;
 
     public Role(String name, String description) {
         this.name = name;
@@ -21,6 +22,14 @@ public class Role {
 
     public void removeFlow(String flowName){
         flowsAssigned.remove(flowName);
+    }
+
+    public void addUser(String userName){
+        usersAssigned.add(userName);
+    }
+
+    public void removeUser(String userName){
+        usersAssigned.add(userName);
     }
 
     public String getName() {

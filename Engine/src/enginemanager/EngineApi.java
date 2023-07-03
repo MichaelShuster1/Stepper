@@ -12,7 +12,6 @@ import java.util.List;
 public interface EngineApi {
     void loadXmlFile(InputStream inputStream) throws Exception;
 
-
     List<String> getFlowsNames();
 
     List<AvailableFlowDTO> getAvailableFlows();
@@ -54,10 +53,6 @@ public interface EngineApi {
     void doContinuation(User user, FlowExecution flowExecution, String targetName);
 
     FlowExecution getFlowExecution(String ID);
-
-    List<String> getEnumerationAllowedValues(User user, String inputName);
-
-    String getInputDefaultName(User user , String inputName);
 
     void endProcess();
 

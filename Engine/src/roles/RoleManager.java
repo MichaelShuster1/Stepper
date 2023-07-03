@@ -1,11 +1,7 @@
 package roles;
 
-import users.User;
-
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class RoleManager {
     public Map<String,Role> roles;

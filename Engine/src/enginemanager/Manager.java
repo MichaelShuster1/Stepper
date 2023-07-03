@@ -33,12 +33,9 @@ public class Manager implements EngineApi, Serializable {
     private Flow currentFlow;
     private ExecutorService threadPool;
     private Map<String,Integer> flowNames2Index;
-
     private int historyVersion;
 
     private RoleManager roleManager;
-
-
 
     public Manager() {
         flows = new ArrayList<>();
@@ -133,6 +130,7 @@ public class Manager implements EngineApi, Serializable {
         }
         createContinuations(continuationMap,flowList, flowNames);
         updateRoles(flowList);
+
 
         currentFlow=null;
 
@@ -471,10 +469,6 @@ public class Manager implements EngineApi, Serializable {
         return user.getCurrentFlow().getInputData(inputName);
     }
 
-    @Override
-    public List<String> getEnumerationAllowedValues(User user,String inputName) {
-        return user.getCurrentFlow().getEnumerationAllowedValues(inputName);
-    }
 
     @Override
     public List<FlowExecutionDTO> getFlowsHistoryDelta(int historyVersion)
@@ -532,7 +526,6 @@ public class Manager implements EngineApi, Serializable {
     }
 
 
-
     private File checkXMLPathAndGetFile(String path) {
         File file = new File(path);
 
@@ -585,11 +578,6 @@ public class Manager implements EngineApi, Serializable {
         return flowExecutions.get(ID);
     }
 
-
-    @Override
-    public String getInputDefaultName(User user,String inputName) {
-        return user.getCurrentFlow().getInputDefaultName(inputName);
-    }
 
     @Override
     public void updateUserFlows(User user) {
