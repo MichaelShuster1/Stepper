@@ -5,8 +5,11 @@ import dto.UserInfoDTO;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.cell.TextFieldListCell;
@@ -16,22 +19,16 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class UsersController {
     @FXML
     private ListView<UserInfoDTO> usersListView;
-
     @FXML
     private VBox userSelectedView;
-
-
     private AppController appController;
-
     private Timer timer;
+    private List<CheckBox> checkBoxes;
 
     @FXML
     public void initialize() {
@@ -51,6 +48,9 @@ public class UsersController {
         });
 
         usersListView.setOnMouseClicked(e->rowClick(new ActionEvent()));
+        checkBoxes=new ArrayList<>();
+        checkBoxes.add(new CheckBox("Read Only Flows"));
+        checkBoxes.add(new CheckBox("All Flows"));
     }
 
     @FXML
@@ -78,7 +78,7 @@ public class UsersController {
                     for(UserInfoDTO user:usersFromList) {
                         if(user.getName().equals(selectedUserName)) {
                             usersListView.getSelectionModel().select(index);
-                            rowClick(new ActionEvent());
+                            //rowClick(new ActionEvent());
                         }
                         index++;
                     }
@@ -102,6 +102,10 @@ public class UsersController {
         timer.cancel();
     }
 
+    public void addRole(String roleName){
+        checkBoxes.add(new CheckBox(roleName));
+    }
+
 
 
     private void rowClick(ActionEvent event) {
@@ -113,6 +117,14 @@ public class UsersController {
                     , userInfoDTO.getNumOfDefinedFlows().toString());
             addKeyValueLine("Number of flows that had been executed by the user: "
                     ,userInfoDTO.getNumOfFlowsPerformed().toString());
+
+            addTitleLine("MANAGER:");
+            addCheckBox("Manager");
+
+            addTitleLine("ROLES:");
+
+            addCheckBox("Read Only Flows");
+            addCheckBox("All Flows");
         }
     }
 
@@ -148,6 +160,13 @@ public class UsersController {
         hBox.getChildren().add(data);
 
         userSelectedView.getChildren().add(hBox);
+    }
+
+    private void addCheckBox(String name)
+    {
+        CheckBox checkBox=new CheckBox(name);
+        userSelectedView.getChildren().add(checkBox);
+        VBox.setMargin(checkBox, new Insets(10, 0, 0, 0));
     }
 
     public void setAppController(AppController appController) {

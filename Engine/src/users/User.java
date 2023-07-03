@@ -102,6 +102,7 @@ public class User {
         Set<String> flows = role.getFlowsAssigned();
         for (String flowName : flows)
             addFlowAppearance(flowName);
+        roles.put(role.getName(),role);
     }
 
     public void removeRole(String name) {
@@ -112,6 +113,7 @@ public class User {
             if (flowsAppearance.get(flowName) == 0)
                 flowsAppearance.remove(flowName);
         }
+        roles.remove(name);
     }
 
 

@@ -16,6 +16,10 @@ public interface EngineApi {
 
     List<AvailableFlowDTO> getAvailableFlows(User user);
 
+    void AddRoleToUser(User user,String roleName);
+
+    void RemoveRoleFromUser(User user,String roleName);
+
     int getFlowIndexByName(String name);
 
     FlowDefinitionDTO getFlowDefinition(int flowIndex);
