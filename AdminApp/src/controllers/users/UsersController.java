@@ -55,6 +55,7 @@ public class UsersController {
         checkBoxes=new ArrayList<>();
         checkBoxes.add(new CheckBox("Read Only Flows"));
         checkBoxes.add(new CheckBox("All Flows"));
+        checkBoxManager=new CheckBox("Manager");
     }
 
     @FXML
