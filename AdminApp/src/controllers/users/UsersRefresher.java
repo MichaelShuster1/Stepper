@@ -3,6 +3,7 @@ package controllers.users;
 import com.google.gson.reflect.TypeToken;
 import controllers.AppController;
 import dto.AvailableFlowDTO;
+import dto.UserInfoDTO;
 import okhttp3.*;
 import utils.Constants;
 import utils.HttpClientUtil;
@@ -15,12 +16,12 @@ import java.util.TimerTask;
 import java.util.function.Consumer;
 
 public class UsersRefresher  extends TimerTask {
-    private final Consumer<List<String>> usersListConsumer;
+    private final Consumer<List<UserInfoDTO>> usersListConsumer;
 
     private final AppController appController;
 
 
-    public UsersRefresher(Consumer<List<String>> usersListConsumer,AppController appController) {
+    public UsersRefresher(Consumer<List<UserInfoDTO>> usersListConsumer,AppController appController) {
         this.appController=appController;
         this.usersListConsumer = usersListConsumer;
     }
@@ -47,8 +48,8 @@ public class UsersRefresher  extends TimerTask {
                 if(response.code() == 200) {
                     if(response.body() != null) {
                         String jsonArrayOfUsers = response.body().string();
-                        Type listType = new TypeToken<List<String>>() {}.getType();
-                        List<String> usersList = Constants.GSON_INSTANCE.fromJson(jsonArrayOfUsers , listType);
+                        Type listType = new TypeToken<List<UserInfoDTO>>() {}.getType();
+                        List<UserInfoDTO> usersList = Constants.GSON_INSTANCE.fromJson(jsonArrayOfUsers , listType);
                         usersListConsumer.accept(usersList);
                         response.body().close();
                     }

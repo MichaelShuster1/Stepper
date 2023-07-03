@@ -72,7 +72,8 @@ public class Manager implements EngineApi, Serializable {
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
             stepper = (STStepper) jaxbUnmarshaller.unmarshal(inputStream);
             createFlows(stepper);
-            createThreadPool(stepper);
+            if(flowNames2Index==null)
+                createThreadPool(stepper);
         } catch (Exception e) {
             throw e;
         }
@@ -87,8 +88,7 @@ public class Manager implements EngineApi, Serializable {
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
             stepper = (STStepper) jaxbUnmarshaller.unmarshal(file);
             createFlows(stepper);
-            if(flowNames2Index==null)
-                createThreadPool(stepper);
+            createThreadPool(stepper);
         } catch (JAXBException e) {
             throw e;
         }

@@ -1,6 +1,7 @@
 package controllers.users;
 
 import controllers.AppController;
+import dto.UserInfoDTO;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -8,6 +9,7 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -21,7 +23,7 @@ import java.util.TimerTask;
 
 public class UsersController {
     @FXML
-    private ListView<String> usersListView;
+    private ListView<UserInfoDTO> usersListView;
 
     @FXML
     private VBox userSelectedView;
@@ -36,6 +38,18 @@ public class UsersController {
         usersListView.setOrientation(Orientation.VERTICAL);
         Label placeholderLabel = new Label("No users in the system");
         usersListView.setPlaceholder(placeholderLabel);
+        usersListView.setCellFactory(listView -> new TextFieldListCell<UserInfoDTO>() {
+            @Override
+            public void updateItem(UserInfoDTO userInfoDTO, boolean empty) {
+                super.updateItem(userInfoDTO, empty);
+                if (empty || userInfoDTO == null) {
+                    setText(null);
+                } else {
+                    setText(userInfoDTO.getName());
+                }
+            }
+        });
+
         usersListView.setOnMouseClicked(e->rowClick(new ActionEvent()));
     }
 
@@ -44,15 +58,32 @@ public class UsersController {
         System.out.println("save click");
     }
 
-    public void updateUsersList(List<String> usersName)
+    public void updateUsersList(List<UserInfoDTO> usersFromRequest)
     {
-        if(usersName!=null) {
+        if(usersFromRequest!=null) {
             Platform.runLater(() -> {
-                Collection<String> users = usersListView.getItems();
-                for (String userName : usersName) {
-                    if (!users.contains(userName))
-                        users.add(userName);
+                UserInfoDTO selectedUser=usersListView.getSelectionModel().getSelectedItem();
+                String selectedUserName=null;
+                if(selectedUser!=null)
+                    selectedUserName=selectedUser.getName();
+
+                Collection<UserInfoDTO> usersFromList=usersListView.getItems();
+
+                if(!usersFromList.isEmpty())
+                    usersFromList.clear();
+                usersFromList.addAll(usersFromRequest);
+
+                if(selectedUserName!=null){
+                    int index=0,size=usersFromList.size();
+                    for(UserInfoDTO user:usersFromList) {
+                        if(user.getName().equals(selectedUserName)) {
+                            usersListView.getSelectionModel().select(index);
+                            rowClick(new ActionEvent());
+                        }
+                        index++;
+                    }
                 }
+
             });
         }
     }
@@ -76,7 +107,12 @@ public class UsersController {
     private void rowClick(ActionEvent event) {
         if(!usersListView.getSelectionModel().isEmpty()) {
             userSelectedView.getChildren().clear();
-            addTitleLine(usersListView.getSelectionModel().getSelectedItem());
+            UserInfoDTO userInfoDTO=usersListView.getSelectionModel().getSelectedItem();
+            addTitleLine(userInfoDTO.getName());
+            addKeyValueLine("Number of flows that the user can run: "
+                    , userInfoDTO.getNumOfDefinedFlows().toString());
+            addKeyValueLine("Number of flows that had been executed by the user: "
+                    ,userInfoDTO.getNumOfFlowsPerformed().toString());
         }
     }
 
@@ -95,6 +131,22 @@ public class UsersController {
         Label label = new Label(title);
         label.setFont(Font.font("System", FontWeight.BOLD,14));
         hBox.getChildren().add(label);
+        userSelectedView.getChildren().add(hBox);
+    }
+
+    private void addKeyValueLine(String name, String value)
+    {
+        HBox hBox = getNewHbox();
+
+        Label key =new Label(name);
+        key.setFont(Font.font("System", FontWeight.BOLD,12));
+
+        Label data =new Label(value);
+        data.setAlignment(Pos.TOP_LEFT);
+
+        hBox.getChildren().add(key);
+        hBox.getChildren().add(data);
+
         userSelectedView.getChildren().add(hBox);
     }
 
