@@ -90,7 +90,7 @@ public class User {
 
     public UserInfoDTO getUserInformation()
     {
-        return  new UserInfoDTO(name,flows.keySet().size(),numOfFlowsPerformed);
+        return  new UserInfoDTO(name,flows.keySet().size(),numOfFlowsPerformed, roles.keySet());
     }
 
     public void addFlowAppearance (String flowName) {
@@ -99,10 +99,12 @@ public class User {
     }
 
     public void addRole(Role role) {
-        Set<String> flows = role.getFlowsAssigned();
-        for (String flowName : flows)
-            addFlowAppearance(flowName);
-        roles.put(role.getName(),role);
+        if(!roles.containsKey(role.getName())) {
+            Set<String> flows = role.getFlowsAssigned();
+            for (String flowName : flows)
+                addFlowAppearance(flowName);
+            roles.put(role.getName(), role);
+        }
     }
 
     public void removeRole(String name) {
