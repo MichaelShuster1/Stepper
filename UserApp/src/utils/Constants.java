@@ -2,6 +2,7 @@ package utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import dto.DataExecutionDTO;
 
 public class Constants {
     public final static String BASE_DOMAIN = "localhost";
@@ -19,6 +20,7 @@ public class Constants {
 
     // GSON instance
     public final static Gson GSON_INSTANCE = new GsonBuilder()
+            .registerTypeAdapter(DataExecutionDTO.class,new DataExecutionDTODeserializer())
             .serializeNulls()
             .create();
 }

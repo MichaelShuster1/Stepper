@@ -6,17 +6,16 @@ public class FlowExecutionDTO extends FlowExecutionDetailsDTO{
     private final List<StepExecutionDTO> steps;
     private final List<FreeInputExecutionDTO> freeInputs;
     private final List<DataExecutionDTO> outputs;
+    private final double progress;
 
-    private double progress;
-
-    public FlowExecutionDTO(FlowExecutionDetailsDTO other, List<StepExecutionDTO> steps, List<FreeInputExecutionDTO> freeInputs, List<DataExecutionDTO> outputs,double progress) {
+    public FlowExecutionDTO(FlowExecutionDetailsDTO other, List<StepExecutionDTO> steps,
+                            List<FreeInputExecutionDTO> freeInputs, List<DataExecutionDTO> outputs,double progress) {
         super(other);
         this.steps = steps;
         this.freeInputs = freeInputs;
         this.outputs = outputs;
         this.progress=progress;
     }
-
 
 
 

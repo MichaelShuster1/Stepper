@@ -25,7 +25,6 @@ public class FlowExecution implements  Runnable {
     private FlowExecutionDTO executionData;
     private final Manager manager;
     private int index;
-
     private User user;
 
     public FlowExecution(Manager manager, User user) {
@@ -155,8 +154,11 @@ public class FlowExecution implements  Runnable {
     public FlowExecutionDTO getFlowHistoryData()
     {
         FlowExecutionDetailsDTO executionDetails;
-        if(finished)
-            executionDetails = new FlowExecutionDetailsDTO(flowDefinition.getName(),flowId, stateAfterRun.toString(),activationTime,runTime);
+        if(finished) {
+            UserDetailsDTO userDetails=new UserDetailsDTO(user.getName(),user.isManager());
+            executionDetails = new FlowExecutionDetailsDTO(flowDefinition.getName(), flowId,
+                    stateAfterRun.toString(), activationTime, runTime,userDetails);
+        }
         else
             executionDetails = new FlowExecutionDetailsDTO(flowDefinition.getName(),flowId,activationTime);
         List<StepExecutionDTO> steps = getStepsExecutionDTO();
