@@ -3,6 +3,7 @@ package controllers.users;
 import controllers.AppController;
 import dto.UserInfoDTO;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -15,6 +16,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.stage.Stage;
 import okhttp3.*;
 import utils.Constants;
 import utils.HttpClientUtil;
@@ -33,6 +35,8 @@ public class UsersController {
     private List<CheckBox> checkBoxes;
     private CheckBox checkBoxManager;
     private String userName;
+
+    private Stage primaryStage;
 
     @FXML
     public void initialize() {
@@ -81,8 +85,10 @@ public class UsersController {
                 .build()
                 .toString();
 
-        MediaType mediaType = MediaType.parse("application/json");
-        RequestBody requestBody=RequestBody.create(mediaType, Constants.GSON_INSTANCE.toJson(rolesChoice));
+
+        RequestBody requestBody =new FormBody.Builder()
+                .add("roles",Constants.GSON_INSTANCE.toJson(rolesChoice))
+                .build();
 
         HttpClientUtil.runAsyncPost(finalUrl,requestBody,new Callback() {
             @Override
@@ -92,9 +98,22 @@ public class UsersController {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if(response.code()!=200){
-                    HttpClientUtil.errorMessage(response.body(),appController);
+                if(response.code()==200){
+                    Platform.runLater(()->{
+                        Alert alert =new Alert(Alert.AlertType.INFORMATION);
+                        ObservableList<String> stylesheets = primaryStage.getScene().getStylesheets();
+                        if(stylesheets.size()!=0)
+                            alert.getDialogPane().getStylesheets().add(stylesheets.get(0));
+
+                        alert.setTitle("Message");
+                        alert.setContentText("the changes were updated successfully");
+                        alert.showAndWait();
+
+                    });
                 }
+                else
+                    HttpClientUtil.errorMessage(response.body(),appController);
+
             }
         });
 
@@ -149,7 +168,9 @@ public class UsersController {
         checkBoxes.add(new CheckBox(roleName));
     }
 
-
+    public void setStage(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+    }
 
     private void rowClick(ActionEvent event) {
         if(!usersListView.getSelectionModel().isEmpty()) {

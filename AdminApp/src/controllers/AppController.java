@@ -104,6 +104,7 @@ public class AppController {
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
         historyComponentController.setStage(primaryStage);
+        usersComponentController.setStage(primaryStage);
 
         final String RESOURCE ="/admin";
 
