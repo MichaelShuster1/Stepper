@@ -96,7 +96,6 @@ public class User {
     }
 
     public void addFlowAppearance (String flowName) {
-        if(flowsAppearance.containsKey(flowName))
             flowsAppearance.compute(flowName, (k, v) -> v == null ? 1 : v + 1);
     }
 
