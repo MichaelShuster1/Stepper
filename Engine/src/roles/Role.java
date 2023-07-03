@@ -1,6 +1,7 @@
 package roles;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class Role {
@@ -38,4 +39,6 @@ public class Role {
     public String getDescription() {
         return description;
     }
+
+    public void addFlows(Set<String> flows) {flowsAssigned.addAll(flows);}
 }

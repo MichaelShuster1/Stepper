@@ -7,6 +7,8 @@ import flow.FlowExecution;
 import flow.FlowHistory;
 import generated.*;
 import hardcodeddata.HCSteps;
+import roles.Role;
+import roles.RoleManager;
 import step.*;
 import exception.*;
 import javafx.util.Pair;
@@ -33,7 +35,7 @@ public class Manager implements EngineApi, Serializable {
     private Map<String,Integer> flowNames2Index;
     private int historyVersion;
 
-
+    private RoleManager roleManager;
 
     public Manager() {
         flows = new ArrayList<>();
@@ -42,6 +44,15 @@ public class Manager implements EngineApi, Serializable {
         stepsStatistics = new LinkedHashMap<>();
         flowExecutions=new HashMap<>();
         historyVersion = 0;
+        roleManager = new RoleManager();
+        createDefaultRoles();
+    }
+
+    private void createDefaultRoles() {
+        Role readOnlyRole = new Role("Read Only Flows", "Permission to use all the available read-only flows in the system");
+        Role allFlows = new Role("All Flows", "Permission to use all the available flows in the system");
+        roleManager.addRole(readOnlyRole);
+        roleManager.addRole(allFlows);
     }
 
     @Override
@@ -118,7 +129,7 @@ public class Manager implements EngineApi, Serializable {
             }
         }
         createContinuations(continuationMap,flowList, flowNames);
-
+        updateRoles(flowList);
 
 
         currentFlow=null;
@@ -142,6 +153,22 @@ public class Manager implements EngineApi, Serializable {
             setFlowsContinuations(continuationMap);
             flowsStatistics.putAll(statisticsMap);
         }
+    }
+
+    private void updateRoles(List<Flow> flowList) {
+        Set<String> nameSet = flowList.stream()
+                .map(Flow::getName)
+                .collect(Collectors.toSet());
+
+        roleManager.getRole("All Flows").addFlows(nameSet);
+
+        nameSet.clear();
+       nameSet = flowList.stream()
+                .filter(Flow::isReadOnly)
+                .map(Flow::getName)
+                .collect(Collectors.toSet());
+
+        roleManager.getRole("Read Only Flows").addFlows(nameSet);
     }
 
     private void setFlowsContinuations(Map<String, List<Continuation>> continuationMap) {

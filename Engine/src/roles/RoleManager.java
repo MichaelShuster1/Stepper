@@ -14,6 +14,7 @@ public class RoleManager {
         roles.put(role.getName(), role);
     }
 
+
     public synchronized void removeRole(String name) {
         roles.remove(name);
     }
