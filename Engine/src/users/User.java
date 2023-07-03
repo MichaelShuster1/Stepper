@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class User {
     private String name;
@@ -17,6 +18,10 @@ public class User {
     private Map<String, Flow> flows;
     private Flow currentFlow;
 
+    private Map<String, Role> roles;
+    private Map<String, Integer> flowsAppearance;
+
+
 
     public User(String name) {
         this.name = name;
@@ -24,6 +29,7 @@ public class User {
         currentFlow =null;
         isManager = false;
         numOfFlowsPerformed = 0;
+        flowsAppearance = new HashMap<>();
     }
 
     public void addFlow(Flow flow)
@@ -85,6 +91,27 @@ public class User {
     public UserInfoDTO getUserInformation()
     {
         return  new UserInfoDTO(name,flows.keySet().size(),numOfFlowsPerformed);
+    }
+
+    public void addFlowAppearance (String flowName) {
+        if(flowsAppearance.containsKey(flowName))
+            flowsAppearance.compute(flowName, (k, v) -> v == null ? 1 : v + 1);
+    }
+
+    public void addRole(Role role) {
+        Set<String> flows = role.getFlowsAssigned();
+        for (String flowName : flows)
+            addFlowAppearance(flowName);
+    }
+
+    public void removeRole(String name) {
+        Role role = roles.get(name);
+        Set<String> flows = role.getFlowsAssigned();
+        for(String flowName : flows) {
+            flowsAppearance.compute(flowName, (k, v) -> v == null ? 0 : v - 1);
+            if (flowsAppearance.get(flowName) == 0)
+                flowsAppearance.remove(flowName);
+        }
     }
 
 
