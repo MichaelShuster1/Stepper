@@ -397,10 +397,15 @@ public class Manager implements EngineApi, Serializable {
     @Override
     public void updateUserRoles(User user,Set<String> roleNames){
 
+        Set<String> toRemove = new HashSet<>();
         Set<String> userRoles = user.getRoles().keySet();
         for(String userRole : userRoles) {
             if(!roleNames.contains(userRole))
-                user.removeRole(userRole);
+                toRemove.add(userRole);
+        }
+
+        for(String roleName : toRemove) {
+            user.removeRole(roleName);
         }
 
         if(!roleNames.contains("Manager") && user.isManager())
@@ -616,11 +621,15 @@ public class Manager implements EngineApi, Serializable {
     public void updateUserFlows(User user) {
         Set<String> currentUserFlows = user.getFlows().keySet();
         Set<String> newUserFlowState = user.getFlowsAppearance().keySet();
+        Set<String> toRemove = new HashSet<>();
 
         for(String currentFlow : currentUserFlows) {
             if(!newUserFlowState.contains(currentFlow))
-                user.removeFlow(currentFlow);
+                toRemove.add(currentFlow);
         }
+
+        for(String flowName : toRemove)
+            user.removeFlow(flowName);
 
         for(String newUserFlow : newUserFlowState) {
             if(!currentUserFlows.contains(newUserFlow))
@@ -636,4 +645,5 @@ public class Manager implements EngineApi, Serializable {
     public void setHistoryVersion(int historyVersion) {
         this.historyVersion = historyVersion;
     }
+
 }

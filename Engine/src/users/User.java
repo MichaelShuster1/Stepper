@@ -41,7 +41,7 @@ public class User {
 
     public void removeFlow(String flowName) {
         if(flows.containsKey(flowName))
-            flows.remove(name);
+            flows.remove(flowName);
     }
 
     public void setName(String name) {
@@ -96,7 +96,7 @@ public class User {
     }
 
     public void addFlowAppearance (String flowName) {
-            flowsAppearance.compute(flowName, (k, v) -> v == null ? 1 : v + 1);
+        flowsAppearance.compute(flowName, (k, v) -> v == null ? 1 : v + 1);
     }
 
     public void addRole(Role role) {
