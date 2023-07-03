@@ -20,6 +20,7 @@ import utils.SessionUtils;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Set;
 
 @WebServlet("/roles")
 public class RolesServlet extends HttpServlet {
@@ -35,8 +36,21 @@ public class RolesServlet extends HttpServlet {
             }
             else {
                 EngineApi engine = (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
-                UserManager userManager = ServletUtils.getUserManager(getServletContext());
-
+                User user = ServletUtils.getUserManager(getServletContext()).getUser(username);
+                Type setType = new TypeToken<Set<String>>() {}.getType();
+                try {
+                    Set<String> roleNames = Constants.GSON_INSTANCE.fromJson(jsonRoles, setType);
+                    synchronized (this) {
+                        engine.updateUserRoles(user, roleNames);
+                    }
+                    response.setStatus(HttpServletResponse.SC_OK);
+                }
+                catch (Exception e) {
+                    response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    response.setContentType(Constants.JSON_FORMAT);
+                    ResultDTO resultDTO=new ResultDTO("Server failed to update user roles");
+                    response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
+                }
             }
     }
 }

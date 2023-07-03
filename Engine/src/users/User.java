@@ -118,5 +118,7 @@ public class User {
         roles.remove(name);
     }
 
-
+    public Map<String, Role> getRoles() {
+        return roles;
+    }
 }
