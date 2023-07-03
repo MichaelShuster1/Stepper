@@ -395,14 +395,25 @@ public class Manager implements EngineApi, Serializable {
     }
 
     @Override
-    public void AddRoleToUser(User user,String roleName){
-        user.addRole(roleManager.getRole(roleName));
+    public void updateUserRoles(User user,Set<String> roleNames){
+
+        Set<String> userRoles = user.getRoles().keySet();
+        for(String userRole : userRoles) {
+            if(!roleNames.contains(userRole))
+                user.removeRole(userRole);
+        }
+
+        if(!roleNames.contains("Manager") && user.isManager())
+            user.setManager(false);
+
+        for(String roleName: roleNames) {
+            if (!roleName.equals("Manager"))
+                user.addRole(roleManager.getRole(roleName));
+            else
+                user.setManager(true);
+        }
     }
 
-    @Override
-    public void RemoveRoleFromUser(User user,String roleName){
-        user.removeRole(roleName);
-    }
 
     @Override
     public FlowDefinitionDTO getFlowDefinition(int flowIndex) {

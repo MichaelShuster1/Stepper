@@ -8,6 +8,7 @@ import users.User;
 import javax.xml.bind.JAXBException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Set;
 
 public interface EngineApi {
     void loadXmlFile(InputStream inputStream) throws Exception;
@@ -16,9 +17,7 @@ public interface EngineApi {
 
     List<AvailableFlowDTO> getAvailableFlows(User user);
 
-    void AddRoleToUser(User user,String roleName);
-
-    void RemoveRoleFromUser(User user,String roleName);
+    void updateUserRoles(User user, Set<String> roleNames);
 
     int getFlowIndexByName(String name);
 
