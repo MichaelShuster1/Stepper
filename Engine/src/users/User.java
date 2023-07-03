@@ -123,4 +123,8 @@ public class User {
     public Map<String, Role> getRoles() {
         return roles;
     }
+
+    public Map<String, Integer> getFlowsAppearance() {
+        return flowsAppearance;
+    }
 }

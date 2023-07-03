@@ -412,6 +412,8 @@ public class Manager implements EngineApi, Serializable {
             else
                 user.setManager(true);
         }
+
+        updateUserFlows(user);
     }
 
 
@@ -610,10 +612,20 @@ public class Manager implements EngineApi, Serializable {
     }
 
 
-    @Override
+
     public void updateUserFlows(User user) {
-        for(Flow flow: flows)
-            user.addFlow(flow);
+        Set<String> currentUserFlows = user.getFlows().keySet();
+        Set<String> newUserFlowState = user.getFlowsAppearance().keySet();
+
+        for(String currentFlow : currentUserFlows) {
+            if(!newUserFlowState.contains(currentFlow))
+                user.removeFlow(currentFlow);
+        }
+
+        for(String newUserFlow : newUserFlowState) {
+            if(!currentUserFlows.contains(newUserFlow))
+                user.addFlow(flows.get(getFlowIndexByName(newUserFlow)));
+        }
     }
 
 
