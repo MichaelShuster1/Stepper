@@ -30,6 +30,7 @@ public class User {
         isManager = false;
         numOfFlowsPerformed = 0;
         flowsAppearance = new HashMap<>();
+        roles=new HashMap<>();
     }
 
     public void addFlow(Flow flow)
@@ -90,7 +91,8 @@ public class User {
 
     public UserInfoDTO getUserInformation()
     {
-        return  new UserInfoDTO(name,flows.keySet().size(),numOfFlowsPerformed, roles.keySet());
+        return  new UserInfoDTO(name,flows.keySet().size(),numOfFlowsPerformed,
+                roles.keySet(),isManager);
     }
 
     public void addFlowAppearance (String flowName) {

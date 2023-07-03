@@ -8,18 +8,20 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import okhttp3.*;
+import utils.Constants;
+import utils.HttpClientUtil;
 
+import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class UsersController {
     @FXML
@@ -29,6 +31,8 @@ public class UsersController {
     private AppController appController;
     private Timer timer;
     private List<CheckBox> checkBoxes;
+    private CheckBox checkBoxManager;
+    private String userName;
 
     @FXML
     public void initialize() {
@@ -55,7 +59,45 @@ public class UsersController {
 
     @FXML
     private void SaveButtonClicked(ActionEvent event) {
-        System.out.println("save click");
+        Set<String> rolesChoice=checkBoxes.stream()
+                .filter(CheckBox::isSelected)
+                .map(Labeled::getText)
+                .collect(Collectors.toSet());
+
+        if (checkBoxManager.isSelected()) {
+            rolesChoice.add("Manager");
+        }
+
+        System.out.println(rolesChoice);
+
+
+        String RESOURCE="/roles";
+
+        String finalUrl = HttpUrl
+                .parse(Constants.FULL_SERVER_PATH + RESOURCE)
+                .newBuilder()
+                .addQueryParameter("userName", userName)
+                .build()
+                .toString();
+
+        MediaType mediaType = MediaType.parse("application/json");
+        RequestBody requestBody=RequestBody.create(mediaType, Constants.GSON_INSTANCE.toJson(rolesChoice));
+
+        HttpClientUtil.runAsyncPost(finalUrl,requestBody,new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                HttpClientUtil.showErrorAlert(Constants.CONNECTION_ERROR,appController);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(response.code()!=200){
+                    HttpClientUtil.errorMessage(response.body(),appController);
+                }
+            }
+        });
+
+
     }
 
     public void updateUsersList(List<UserInfoDTO> usersFromRequest)
@@ -112,19 +154,24 @@ public class UsersController {
         if(!usersListView.getSelectionModel().isEmpty()) {
             userSelectedView.getChildren().clear();
             UserInfoDTO userInfoDTO=usersListView.getSelectionModel().getSelectedItem();
-            addTitleLine(userInfoDTO.getName());
+            userName=userInfoDTO.getName();
+            addTitleLine(userName);
             addKeyValueLine("Number of flows that the user can run: "
                     , userInfoDTO.getNumOfDefinedFlows().toString());
             addKeyValueLine("Number of flows that had been executed by the user: "
                     ,userInfoDTO.getNumOfFlowsPerformed().toString());
 
             addTitleLine("MANAGER:");
-            addCheckBox("Manager");
+            checkBoxManager.setSelected(userInfoDTO.getManager());
+            addCheckBox(checkBoxManager);
 
             addTitleLine("ROLES:");
 
-            addCheckBox("Read Only Flows");
-            addCheckBox("All Flows");
+            for(CheckBox checkBox :checkBoxes){
+                checkBox.setSelected(userInfoDTO.getRoles().contains(checkBox.getText()));
+                addCheckBox(checkBox);
+            }
+
         }
     }
 
@@ -162,9 +209,8 @@ public class UsersController {
         userSelectedView.getChildren().add(hBox);
     }
 
-    private void addCheckBox(String name)
+    private void addCheckBox(CheckBox checkBox)
     {
-        CheckBox checkBox=new CheckBox(name);
         userSelectedView.getChildren().add(checkBox);
         VBox.setMargin(checkBox, new Insets(10, 0, 0, 0));
     }
