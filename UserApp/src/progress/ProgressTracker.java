@@ -90,6 +90,7 @@ public class ProgressTracker extends Task<Boolean> {
                     }
                     else {
                         if (response.code() == 200 && response.body() != null) {
+                            /*
                             Gson gson = new GsonBuilder()
                                     .registerTypeAdapter(OutputExecutionDTO.class, new DataExecutionDTODeserializer())
                                     .registerTypeAdapter(DataExecutionDTO.class, new DataExecutionDTODeserializer())
@@ -98,9 +99,10 @@ public class ProgressTracker extends Task<Boolean> {
                                     .serializeNulls()
                                     .setPrettyPrinting()
                                     .create();
+                             */
 
                             try {
-                                FlowExecutionDTO flowExecutionDTO = gson
+                                FlowExecutionDTO flowExecutionDTO = Constants.GSON_INSTANCE
                                         .fromJson(response.body().string(), FlowExecutionDTO.class);
 
                                 if (flowId.equals(currentFlowId)) {
@@ -113,7 +115,9 @@ public class ProgressTracker extends Task<Boolean> {
                                     flowsId.remove(index);
                                 }
                             }
-                            catch (Exception e) {}
+                            catch (Exception e) {
+                                System.out.println(e.getMessage());
+                            }
                         } else
                             System.out.println("problem with fetching flow history");
 

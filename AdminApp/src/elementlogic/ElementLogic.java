@@ -311,6 +311,11 @@ public class ElementLogic {
         if(flowExecutionDTO==null)
             return;
 
+        UserDetailsDTO userDetails=flowExecutionDTO.getUserDetails();
+        String isManager=userDetails.getManager()? "yes":"no";
+        addKeyValueLine("User name: ", userDetails.getUserName());
+        addKeyValueLine("Is user Manager: ",isManager);
+
         updateFlowNameIDAndState();
         if(flowExecutionDTO.getStateAfterRun()!=null)
             addKeyValueLine("Flow total run time: " , flowExecutionDTO.getRunTime() + " ms");
