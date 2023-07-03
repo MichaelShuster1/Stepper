@@ -25,7 +25,7 @@ public class FlowExecution implements  Runnable {
     private FlowExecutionDTO executionData;
     private final Manager manager;
     private int index;
-    private User user;
+    private final User user;
 
     public FlowExecution(Manager manager, User user) {
         this.flowDefinition = user.getCurrentFlow();
