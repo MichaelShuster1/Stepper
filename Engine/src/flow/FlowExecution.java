@@ -9,6 +9,7 @@ import javafx.concurrent.Task;
 import javafx.util.Pair;
 import step.State;
 import step.Step;
+import users.User;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -25,12 +26,15 @@ public class FlowExecution implements  Runnable {
     private final Manager manager;
     private int index;
 
-    public FlowExecution(Flow flowDefinition,Manager manager) {
-        this.flowDefinition = flowDefinition;
+    private User user;
+
+    public FlowExecution(Manager manager, User user) {
+        this.flowDefinition = user.getCurrentFlow();
         this.manager=manager;
         flowId = generateFlowId();
         initSteps();
         finished = false;
+        this.user = user;
     }
 
     private void initSteps() {
@@ -90,7 +94,7 @@ public class FlowExecution implements  Runnable {
         executionData = getFlowHistoryData();
         finished = true;
 
-
+        user.incrementNumOfFlowsPerformed();
         synchronized (manager)
         {
             manager.addFlowHistory(this);

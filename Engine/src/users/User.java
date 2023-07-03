@@ -7,6 +7,11 @@ import java.util.Map;
 
 public class User {
     private String name;
+
+    boolean isManager;
+
+    private int numOfFlowsPerformed;
+
     private Map<String, Flow> flows;
     private Flow currentFlow;
 
@@ -17,7 +22,7 @@ public class User {
         this.name = name;
         this.flows = new HashMap<>();
         currentFlow =null;
-
+        isManager = false;
     }
 
     public void addFlow(Flow flow)
@@ -56,10 +61,24 @@ public class User {
         return currentFlow;
     }
 
+    public boolean isManager() {
+        return isManager;
+    }
 
+    public void setManager(boolean manager) {
+        isManager = manager;
+    }
 
+    public int getNumOfFlowsPerformed() {
+        return numOfFlowsPerformed;
+    }
 
+    public void setNumOfFlowsPerformed(int numOfFlowsPerformed) {
+        this.numOfFlowsPerformed = numOfFlowsPerformed;
+    }
 
-
+    public synchronized void incrementNumOfFlowsPerformed() {
+        numOfFlowsPerformed++;
+    }
 
 }

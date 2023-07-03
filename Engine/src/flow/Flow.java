@@ -15,8 +15,6 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static jdk.nashorn.internal.runtime.JSType.isNumber;
-
 
 public class Flow implements Serializable {
     private final String name;
