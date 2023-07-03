@@ -612,7 +612,7 @@ public class ExecutionController {
                     appController.addFlowId(flowId);
                 }
                 else
-                    HttpClientUtil.showErrorAlert(Constants.CONNECTION_ERROR,appController);
+                    HttpClientUtil.errorMessage(response.body(), appController);
 
                 if(response.body()!=null)
                     response.body().close();

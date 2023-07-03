@@ -24,6 +24,7 @@ public class User {
         this.flows = new HashMap<>();
         currentFlow =null;
         isManager = false;
+        numOfFlowsPerformed = 0;
     }
 
     public void addFlow(Flow flow)
