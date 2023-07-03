@@ -32,4 +32,8 @@ public class Role {
     }
 
     public void addFlows(Set<String> flows) {flowsAssigned.addAll(flows);}
+
+    public Set<String> getFlowsAssigned() {
+        return flowsAssigned;
+    }
 }
