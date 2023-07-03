@@ -1,5 +1,6 @@
 package users;
 
+import dto.UserInfoDTO;
 import flow.Flow;
 
 import java.util.HashMap;
@@ -79,6 +80,11 @@ public class User {
 
     public synchronized void incrementNumOfFlowsPerformed() {
         numOfFlowsPerformed++;
+    }
+
+    public UserInfoDTO getUserInformation()
+    {
+        return  new UserInfoDTO(name,flows.keySet().size(),numOfFlowsPerformed);
     }
 
 }
