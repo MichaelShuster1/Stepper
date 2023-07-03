@@ -12,7 +12,6 @@ import java.util.List;
 public interface EngineApi {
     void loadXmlFile(InputStream inputStream) throws Exception;
 
-    void loadXmlFile(String path) throws JAXBException;
 
     List<String> getFlowsNames();
 
@@ -43,10 +42,6 @@ public interface EngineApi {
     FlowExecutionDTO getHistoryDataOfFlow(String id);
 
     StatisticsDTO getStatistics();
-
-    ResultDTO saveDataOfSystemToFile(String path);
-
-    ResultDTO loadDataOfSystemFromFile(String path);
 
     int getCurrInitializedFlowsCount();
 

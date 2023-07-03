@@ -90,22 +90,6 @@ public class Manager implements EngineApi, Serializable {
         }
     }
 
-    @Override
-    public void loadXmlFile(String path) throws JAXBException {
-        STStepper stepper;
-        try {
-            File file = checkXMLPathAndGetFile(path);
-            JAXBContext jaxbContext = JAXBContext.newInstance(STStepper.class);
-            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            stepper = (STStepper) jaxbUnmarshaller.unmarshal(file);
-            createFlows(stepper);
-            createThreadPool(stepper);
-        } catch (JAXBException e) {
-            throw e;
-        }
-    }
-
-
     private void createThreadPool(STStepper stepper)
     {
         int threadPoolSize=stepper.getSTThreadPool();
@@ -416,10 +400,6 @@ public class Manager implements EngineApi, Serializable {
 
     @Override
     public InputsDTO getFlowInputs(User user,String flowName) {
-        //currentFlow = flows.get(flowIndex);
-        //return currentFlow.getInputList();
-        int flowIndex=flowNames2Index.get(flowName);
-        //user.addFlow(flows.get(flowIndex));
         user.setCurrentFlow(flowName);
         return user.getCurrentFlow().getInputList();
     }
@@ -434,7 +414,6 @@ public class Manager implements EngineApi, Serializable {
 
     @Override
     public ResultDTO processInput(User user,String inputName, String data) {
-        //return currentFlow.processInput(inputName, data);
         return user.getCurrentFlow().processInput(inputName,data);
     }
 
@@ -510,56 +489,6 @@ public class Manager implements EngineApi, Serializable {
 
 
 
-    @Override
-    public ResultDTO saveDataOfSystemToFile(String FILE_NAME) {
-        try (ObjectOutputStream out =
-                     new ObjectOutputStream(
-                             new FileOutputStream(FILE_NAME))) {
-            out.writeObject(flows);
-            out.writeObject(flowsHistory);
-            out.writeObject(flowsStatistics);
-            out.writeObject(stepsStatistics);
-            out.flush();
-            return new ResultDTO(true, "System's parameters saved successfully");
-        } catch (Exception e) {
-            return new ResultDTO(false, "The System's parameters saving failed " +
-                    "because: " + e.getMessage());
-        }
-    }
-
-    @Override
-    public ResultDTO loadDataOfSystemFromFile(String FILE_NAME) {
-        File file = new File(FILE_NAME);
-        Manager manager = null;
-        if (file.exists()) {
-            try (ObjectInputStream in =
-                         new ObjectInputStream(
-                                 new FileInputStream(FILE_NAME))) {
-                flows = (List<Flow>) in.readObject();
-                flowsHistory = (List<FlowHistory>) in.readObject();
-                flowsStatistics = (Map<String, Statistics>) in.readObject();
-                stepsStatistics = (Map<String, Statistics>) in.readObject();
-
-                return new ResultDTO(true, "Loaded the system successfully");
-            }
-            catch (IOException  e) {
-                return new ResultDTO(false, "Failed to load data from the given file " +
-                        "because: " + e.getMessage());
-            }
-            catch (ClassNotFoundException e) {
-                return new ResultDTO(false, "Failed to load data from the given file " +
-                        "because: " + e.getMessage());
-            }
-            catch (NoClassDefFoundError e){
-                return new ResultDTO(false, "Failed to load data from the given file " +
-                        "because: " + e.getMessage());
-            }
-
-
-
-        }
-        return new ResultDTO(false, "The file in the given path doesn't exist");
-    }
 
     public void addFlowHistory(FlowExecution currentFlow) {
         FlowHistory flowHistory = new FlowHistory(currentFlow.getName(),
