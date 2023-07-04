@@ -77,13 +77,22 @@ public class AppController {
 
     @FXML
     public void initialize() {
+        initUsersController();
+        initRolesController();
         historyComponentController.setAppController(this);
         statisticsComponentController.setAppController(this);
-        usersComponentController.setAppController(this);
-        rolesComponentController.setAppController(this);
         setTab(3);
-        usersComponentController.StartUsersRefresher();
         StartUpdatesRefresher();
+    }
+
+    private void initUsersController(){
+        usersComponentController.setAppController(this);
+        usersComponentController.StartUsersRefresher();
+    }
+
+    private void initRolesController(){
+        rolesComponentController.setAppController(this);
+        rolesComponentController.setRolesOption(usersComponentController::addRole);
     }
 
 

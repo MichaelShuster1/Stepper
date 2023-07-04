@@ -25,6 +25,7 @@ import utils.Constants;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class RolesController {
@@ -35,6 +36,8 @@ public class RolesController {
     private AppController appController;
 
     private List<CheckBox> checkBoxes;
+
+    private Consumer<String> rolesOption;
 
 
     @FXML
@@ -224,13 +227,17 @@ public class RolesController {
                 System.out.println("Name: " + name);
                 System.out.println("Email: " + description);
                 System.out.println("Selected Options: " + selectedOptions);
+                rolesOption.accept(name);
+                RoleInfoDTO roleInfo=new RoleInfoDTO(name,description,null,null);
+                rolesListView.getItems().add(roleInfo);
             }
         });
-
     }
-
-
     public void setAppController(AppController appController) {
         this.appController = appController;
+    }
+
+    public void setRolesOption(Consumer<String> rolesOption){
+        this.rolesOption=rolesOption;
     }
 }
