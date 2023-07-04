@@ -5,11 +5,7 @@ import dto.UserInfoDTO;
 import flow.Flow;
 import roles.Role;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class User {
     private String name;
@@ -21,6 +17,8 @@ public class User {
     private Map<String, Role> roles;
     private Map<String, Integer> flowsAppearance;
 
+    boolean isAllFlows;
+
 
 
     public User(String name) {
@@ -31,6 +29,7 @@ public class User {
         numOfFlowsPerformed = 0;
         flowsAppearance = new HashMap<>();
         roles=new HashMap<>();
+        isAllFlows = false;
     }
 
     public void addFlow(Flow flow)
@@ -42,7 +41,7 @@ public class User {
     public void removeFlow(String flowName) {
         if(flows.containsKey(flowName)) {
             flows.remove(flowName);
-            if(currentFlow.getName().equals(flowName))
+            if(currentFlow != null && currentFlow.getName().equals(flowName))
                 currentFlow = null;
         }
     }
@@ -94,8 +93,14 @@ public class User {
 
     public UserInfoDTO getUserInformation()
     {
-        return  new UserInfoDTO(name,flows.keySet().size(),numOfFlowsPerformed,
-                roles.keySet(),isManager);
+        Set<String> rolesSet = new HashSet<>();
+        rolesSet.addAll(roles.keySet());
+        if(isAllFlows)
+            rolesSet.add("All Flows");
+        else
+            rolesSet.remove("All Flows");
+        return new UserInfoDTO(name,flows.keySet().size(),numOfFlowsPerformed,
+                rolesSet,isManager);
     }
 
     public void addFlowAppearance (String flowName) {
@@ -112,15 +117,14 @@ public class User {
         }
     }
 
-    public void removeRole(String name) {
-        Role role = roles.get(name);
+    public void removeRole(Role role) {
         Set<String> flows = role.getFlowsAssigned();
-        for(String flowName : flows) {
+        for (String flowName : flows) {
             flowsAppearance.compute(flowName, (k, v) -> v == null ? 0 : v - 1);
             if (flowsAppearance.get(flowName) == 0)
                 flowsAppearance.remove(flowName);
         }
-        roles.remove(name);
+        roles.remove(role.getName());
         role.removeUser(name);
     }
 
@@ -133,6 +137,14 @@ public class User {
         return flowsAppearance;
     }
 
+    public boolean isAllFlows() {
+        return isAllFlows;
+    }
+
+    public void setAllFlows(boolean allFlows) {
+        isAllFlows = allFlows;
+    }
+
     public synchronized void updateUserFlow(Flow flow, String roleName) {
         if(roles.containsKey(roleName)) {
             addFlow(flow);
@@ -142,6 +154,8 @@ public class User {
 
 
     public boolean haveRole(String roleName) {
+        if(roleName.equals("All Flows"))
+            return isAllFlows;
         return roles.containsKey(roleName);
     }
 

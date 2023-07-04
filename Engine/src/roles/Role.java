@@ -39,7 +39,7 @@ public class Role {
     }
 
     public void removeUser(String userName){
-        usersAssigned.add(userName);
+        usersAssigned.remove(userName);
     }
 
     public String getName() {
