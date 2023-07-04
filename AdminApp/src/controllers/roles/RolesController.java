@@ -279,6 +279,7 @@ public class RolesController {
                 String description = descriptionTextField.getText();
                 Set<String> selectedFlows = new HashSet<>(listView.getSelectionModel().getSelectedItems());
 
+
                 RoleInfoDTO roleInfo=new RoleInfoDTO(name,description,selectedFlows,null);
                 processNewRoleInput(roleInfo);
             }
@@ -299,7 +300,7 @@ public class RolesController {
                 .build();
 
 
-        HttpClientUtil.runAsyncPut(finalUrl,requestBody,new Callback() {
+        HttpClientUtil.runAsyncPost(finalUrl,requestBody,new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 HttpClientUtil.showErrorAlert(Constants.CONNECTION_ERROR,appController);
