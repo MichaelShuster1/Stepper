@@ -103,7 +103,8 @@ public class LoginController {
                             errorMessageProperty.set(Constants.SOMETHING_WRONG + "please try again");
                         });
                     }
-                } else {
+                }
+                else {
                     Platform.runLater(() -> {
                         showMainScreen(userName);
                     });
@@ -140,7 +141,7 @@ public class LoginController {
             mainStage.setTitle("Stepper");
             mainStage.setScene(scene);
             controller.setUserName(userName);
-            controller.setFlowRefreshActive();
+            controller.startUpdatesRefresher();
             mainStage.show();
 
             primaryStage.close();

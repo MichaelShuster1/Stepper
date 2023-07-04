@@ -1,8 +1,10 @@
 package servlets;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import dto.AvailableFlowDTO;
 import dto.ResultDTO;
+import dto.UserInfoDTO;
 import enginemanager.EngineApi;
 import enginemanager.Manager;
 import jakarta.servlet.annotation.WebServlet;
@@ -18,28 +20,25 @@ import utils.SessionUtils;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet("/get-flows")
-public class AvailableFlowsServlet extends HttpServlet {
+@WebServlet("/user-updates")
+public class UserUpdatesServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String usernameFromSession = SessionUtils.getUsername(request);
         if(ServletUtils.checkAuthorization(usernameFromSession,response)) {
-            Gson gson = new Gson();
+            Gson gson = Constants.GSON_INSTANCE;
             response.setContentType(Constants.JSON_FORMAT);
             UserManager userManager = ServletUtils.getUserManager(getServletContext());
 
             synchronized (this) {
                 EngineApi engine = (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
                 User user=userManager.getUser(usernameFromSession);
+                JsonArray jsonArray=new JsonArray();
                 List<AvailableFlowDTO> flows = engine.getAvailableFlows(user);
-                if (flows != null) {
-                    response.getWriter().println(gson.toJson(flows));
-                    response.setStatus(HttpServletResponse.SC_OK);
-                } else {
-                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    response.setContentType(Constants.JSON_FORMAT);
-                    ResultDTO resultDTO=new ResultDTO("There are no available flows");
-                    response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
-                }
+                UserInfoDTO userInfoDTO=user.getUserInformation();
+                jsonArray.add(gson.toJson(flows));
+                jsonArray.add(gson.toJson(userInfoDTO));
+                response.getWriter().print(jsonArray.toString());
+                response.setStatus(HttpServletResponse.SC_OK);
             }
         }
 
