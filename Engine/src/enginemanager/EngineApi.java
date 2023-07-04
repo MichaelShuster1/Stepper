@@ -12,7 +12,8 @@ import java.util.Map;
 import java.util.Set;
 
 public interface EngineApi {
-    void loadXmlFile(InputStream inputStream, Map<String, User> users) throws Exception;
+
+    Set<String> loadXmlFile(InputStream inputStream, Map<String, User> users) throws Exception;
 
     List<String> getFlowsNames();
 
@@ -60,10 +61,11 @@ public interface EngineApi {
 
     void endProcess();
 
-
     List<FlowExecutionDTO> getFlowsHistoryDelta(int historyVersion);
 
     boolean addRole(RoleInfoDTO roleInfoDTO);
 
     void updateRole(String roleName, Set<String> flowNames, Map<String, User> users);
+
+    RoleInfoDTO getRoleInfo(String roleName);
 }

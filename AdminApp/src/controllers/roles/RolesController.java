@@ -2,7 +2,7 @@ package controllers.roles;
 
 import controllers.AppController;
 import dto.RoleInfoDTO;
-import dto.UserInfoDTO;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -18,11 +18,13 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.stage.Popup;
-import okhttp3.HttpUrl;
+import okhttp3.*;
 import utils.Constants;
+import utils.HttpClientUtil;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -30,7 +32,7 @@ import java.util.stream.Collectors;
 
 public class RolesController {
     @FXML
-    private ListView<RoleInfoDTO> rolesListView;
+    private ListView<String> rolesListView;
     @FXML
     private VBox roleSelectedView;
     private AppController appController;
@@ -39,21 +41,12 @@ public class RolesController {
 
     private Consumer<String> rolesOption;
 
+    private String roleName;
+
 
     @FXML
     public void initialize() {
         rolesListView.setOrientation(Orientation.VERTICAL);
-        rolesListView.setCellFactory(listView -> new TextFieldListCell<RoleInfoDTO>() {
-            @Override
-            public void updateItem(RoleInfoDTO roleInfoDTO, boolean empty) {
-                super.updateItem(roleInfoDTO, empty);
-                if (empty || roleInfoDTO == null) {
-                    setText(null);
-                } else {
-                    setText(roleInfoDTO.getName());
-                }
-            }
-        });
         rolesListView.setOnMouseClicked(event -> rowClick(new ActionEvent()));
         initRoles();
         checkBoxes=new ArrayList<>();
@@ -62,20 +55,45 @@ public class RolesController {
 
     private void initRoles()
     {
-        RoleInfoDTO roleInfoDTO =new RoleInfoDTO("Read Only Flows", "Permission to use " +
-                "all the available read-only flows in the system",null,null);
-        rolesListView.getItems().add(roleInfoDTO);
-
-        roleInfoDTO=new RoleInfoDTO("All Flows", "Permission to use " +
-                "all the available flows in the system",null,null);
-        rolesListView.getItems().add(roleInfoDTO);
+        rolesListView.getItems().add("All Flows");
+        rolesListView.getItems().add("Read Only Flows");
     }
 
     private void rowClick(ActionEvent event) {
         if(!rolesListView.getSelectionModel().isEmpty()) {
             roleSelectedView.getChildren().clear();
-            RoleInfoDTO roleInfo=rolesListView.getSelectionModel().getSelectedItem();
-            showRoleDetails(roleInfo);
+
+            roleName=rolesListView.getSelectionModel().getSelectedItem();
+
+            String finalUrl = HttpUrl
+                    .parse(Constants.FULL_SERVER_PATH + "/role")
+                    .newBuilder()
+                    .addQueryParameter("roleName", roleName)
+                    .build()
+                    .toString();
+
+            HttpClientUtil.runAsync(finalUrl, new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    HttpClientUtil.showErrorAlert(Constants.CONNECTION_ERROR,appController);
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    if(response.code()==200){
+                        RoleInfoDTO roleInfo = Constants.GSON_INSTANCE
+                                .fromJson(response.body().string(), RoleInfoDTO.class);
+                        Platform.runLater(()->showRoleDetails(roleInfo));
+                    }
+                    else
+                        HttpClientUtil.errorMessage(response.body(),appController);
+
+                    if(response.body()!=null)
+                        response.body().close();
+                }
+            });
+
+
         }
     }
 
@@ -119,6 +137,10 @@ public class RolesController {
         }
     }
 
+    public void updateFlows(Set<String> newFlows){
+        if(newFlows!=null)
+            newFlows.forEach(flowName->checkBoxes.add(new CheckBox(flowName)));
+    }
 
 
     private void addCheckBox(CheckBox checkBox,VBox vbox)
@@ -163,26 +185,57 @@ public class RolesController {
     }
 
 
-    private HBox createLabelTextFieldHBox(String labelName)
-    {
-        HBox hBox=getNewHbox();
-        Label nameLabel = new Label(labelName);
-        TextField nameTextField = new TextField();
-        hBox.getChildren().add(nameLabel);
-        hBox.getChildren().add(nameTextField);
-        return hBox;
-    }
-
     @FXML
     void SaveButtonClicked(ActionEvent event) {
-        System.out.println("save click");
+        Set<String> flowsChoice=checkBoxes.stream()
+                .filter(CheckBox::isSelected)
+                .map(Labeled::getText)
+                .collect(Collectors.toSet());
+
+        String RESOURCE="/role";
+
+        String finalUrl = HttpUrl
+                .parse(Constants.FULL_SERVER_PATH + RESOURCE)
+                .newBuilder()
+                .addQueryParameter("roleName", roleName)
+                .build()
+                .toString();
+
+
+        RequestBody requestBody =new FormBody.Builder()
+                .add("flows",Constants.GSON_INSTANCE.toJson(flowsChoice))
+                .build();
+
+        HttpClientUtil.runAsyncPost(finalUrl,requestBody,new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                HttpClientUtil.showErrorAlert(Constants.CONNECTION_ERROR,appController);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(response.code()==200){
+                    Platform.runLater(()->{
+                        showInfoAlert("the changes were updated successfully");
+                    });
+                }
+                else
+                    HttpClientUtil.errorMessage(response.body(),appController);
+
+            }
+        });
+
+
+
     }
 
     @FXML
     void newButtonClicked(ActionEvent event) {
+
+
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Add Role");
-        dialog.setHeaderText("Enter your information");
+        dialog.setHeaderText("Enter Role information");
 
         // Create form fields
         TextField nameTextField = new TextField();
@@ -221,18 +274,68 @@ public class RolesController {
         dialog.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
                 // Process form data here
+
                 String name = nameTextField.getText();
                 String description = descriptionTextField.getText();
-                ObservableList<String> selectedOptions = listView.getSelectionModel().getSelectedItems();
-                System.out.println("Name: " + name);
-                System.out.println("Email: " + description);
-                System.out.println("Selected Options: " + selectedOptions);
-                rolesOption.accept(name);
-                RoleInfoDTO roleInfo=new RoleInfoDTO(name,description,null,null);
-                rolesListView.getItems().add(roleInfo);
+                Set<String> selectedFlows = new HashSet<>(listView.getSelectionModel().getSelectedItems());
+
+                RoleInfoDTO roleInfo=new RoleInfoDTO(name,description,selectedFlows,null);
+                processNewRoleInput(roleInfo);
             }
         });
     }
+
+    private void processNewRoleInput(RoleInfoDTO roleInfo){
+        String RESOURCE="/role";
+
+        String finalUrl = HttpUrl
+                .parse(Constants.FULL_SERVER_PATH + RESOURCE)
+                .newBuilder()
+                .build()
+                .toString();
+
+        RequestBody requestBody =new FormBody.Builder()
+                .add("newRole",Constants.GSON_INSTANCE.toJson(roleInfo))
+                .build();
+
+
+        HttpClientUtil.runAsyncPut(finalUrl,requestBody,new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                HttpClientUtil.showErrorAlert(Constants.CONNECTION_ERROR,appController);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(response.code()==200){
+                    Platform.runLater(()->{
+                        showInfoAlert("the new role was added to the system successfully");
+                        rolesOption.accept(roleInfo.getName());
+                        rolesListView.getItems().add(roleInfo.getName());
+                    });
+                }
+                else
+                    HttpClientUtil.errorMessage(response.body(),appController);
+
+            }
+        });
+
+
+    }
+
+    private void showInfoAlert(String message){
+
+        Alert alert =new Alert(Alert.AlertType.INFORMATION);
+        ObservableList<String> stylesheets = appController.getPrimaryStage()
+                .getScene().getStylesheets();
+        if(stylesheets.size()!=0)
+            alert.getDialogPane().getStylesheets().add(stylesheets.get(0));
+        alert.setTitle("Message");
+        alert.setContentText(message);
+        alert.showAndWait();
+
+    }
+
     public void setAppController(AppController appController) {
         this.appController = appController;
     }

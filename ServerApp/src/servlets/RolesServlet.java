@@ -8,6 +8,7 @@ import dto.ResultDTO;
 import dto.RoleInfoDTO;
 import enginemanager.EngineApi;
 import enginemanager.Manager;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,6 +26,24 @@ import java.util.Set;
 
 @WebServlet("/role")
 public class RolesServlet extends HttpServlet {
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType(Constants.JSON_FORMAT);
+        String roleName =request.getParameter("roleName");
+        Gson gson=Constants.GSON_INSTANCE;
+        if(roleName==null){
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            ResultDTO resultDTO=new ResultDTO(Constants.INVALID_PARAMETER);
+            response.getWriter().print(gson.toJson(resultDTO));
+        }
+        else {
+            EngineApi engine = (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
+            RoleInfoDTO roleInfo = engine.getRoleInfo(roleName);
+            response.getWriter().print(gson.toJson(roleInfo));
+            response.setStatus(HttpServletResponse.SC_OK);
+        }
+    }
 
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
 

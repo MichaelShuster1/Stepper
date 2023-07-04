@@ -72,7 +72,6 @@ public class UsersController {
             rolesChoice.add("Manager");
         }
 
-        System.out.println(rolesChoice);
 
 
         String RESOURCE="/user-roles";

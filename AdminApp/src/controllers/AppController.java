@@ -1,11 +1,13 @@
 package controllers;
 
 
+import com.google.gson.reflect.TypeToken;
 import controllers.history.HistoryController;
 import controllers.roles.RolesController;
 import controllers.statistics.StatisticsController;
 import controllers.users.UsersController;
 import controllers.users.UsersRefresher;
+import dto.AvailableFlowDTO;
 import dto.FlowExecutionDTO;
 import dto.InputsDTO;
 import enginemanager.EngineApi;
@@ -28,11 +30,10 @@ import utils.HttpClientUtil;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Timer;
+import java.lang.reflect.Type;
+import java.util.*;
 import java.sql.Time;
-import java.util.List;
 import java.util.Timer;
-import java.util.TimerTask;
 
 public class AppController {
 
@@ -223,17 +224,13 @@ public class AppController {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if(response.code()==200) {
+                    String json=response.body().string();
                     Platform.runLater(()->{
                         loadedXML.setText("Currently loaded file: " + selectedFile.getAbsolutePath());
-                        Alert alert =new Alert(Alert.AlertType.INFORMATION);
-                        ObservableList<String> stylesheets = primaryStage.getScene().getStylesheets();
-                        if(stylesheets.size()!=0)
-                            alert.getDialogPane().getStylesheets().add(stylesheets.get(0));
-
-                        alert.setTitle("Message");
-                        alert.setContentText("the xml file was loaded successfully");
-                        alert.showAndWait();
-
+                        showInfoAlert();
+                        Type setType = new TypeToken<Set<String>>() {}.getType();
+                        Set<String> newFlows=Constants.GSON_INSTANCE.fromJson(json,setType);
+                        rolesComponentController.updateFlows(newFlows);
                     });
                 }
                 else
@@ -253,6 +250,18 @@ public class AppController {
         File selectedFile = fileChooser.showOpenDialog(primaryStage);
         return  selectedFile;
     }
+
+    private void showInfoAlert(){
+        Alert alert =new Alert(Alert.AlertType.INFORMATION);
+        ObservableList<String> stylesheets = primaryStage.getScene().getStylesheets();
+        if(stylesheets.size()!=0)
+            alert.getDialogPane().getStylesheets().add(stylesheets.get(0));
+        alert.setTitle("Message");
+        alert.setContentText("the xml file was loaded successfully");
+        alert.showAndWait();
+    }
+
+
 
 
 

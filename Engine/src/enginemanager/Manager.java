@@ -36,6 +36,7 @@ public class Manager implements EngineApi, Serializable {
     private int historyVersion;
     private RoleManager roleManager;
 
+
     public Manager() {
         flows = new ArrayList<>();
         flowsHistory = new ArrayList<>();
@@ -72,7 +73,7 @@ public class Manager implements EngineApi, Serializable {
     }
 
     @Override
-    public void loadXmlFile(InputStream inputStream, Map<String, User> users) throws Exception {
+    public Set<String> loadXmlFile(InputStream inputStream, Map<String, User> users) throws Exception {
         STStepper stepper;
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(STStepper.class);
@@ -80,7 +81,7 @@ public class Manager implements EngineApi, Serializable {
             stepper = (STStepper) jaxbUnmarshaller.unmarshal(inputStream);
             if(flowNames2Index==null)
                 createThreadPool(stepper);
-            createFlows(stepper, users);
+            return createFlows(stepper, users);
         } catch (Exception e) {
             throw e;
         }
@@ -94,7 +95,7 @@ public class Manager implements EngineApi, Serializable {
         threadPool= Executors.newFixedThreadPool(stepper.getSTThreadPool());
     }
 
-    private void createFlows(STStepper stepper, Map<String , User> users) {
+    private Set<String> createFlows(STStepper stepper, Map<String , User> users) {
         Map<String,Integer> flowNames = new HashMap<>();
         List<STFlow> stFlows = stepper.getSTFlows().getSTFlow();
         List<Flow> flowList = new ArrayList<>();
@@ -151,14 +152,15 @@ public class Manager implements EngineApi, Serializable {
             flowsStatistics.putAll(statisticsMap);
         }
 
-        usersFlowsXMLUpdate(users, flowList);
+        return usersFlowsXMLUpdate(users, flowList);
     }
 
-    private void usersFlowsXMLUpdate(Map<String, User> users, List<Flow> flowList) {
+    private Set<String> usersFlowsXMLUpdate(Map<String, User> users, List<Flow> flowList) {
         Set<String> namesSetAll = createFlowsNamesSet(flowList, true);
         Set<String> namesSetReadOnly = createFlowsNamesSet(flowList, false);
         updateXMLRoles(namesSetAll,namesSetReadOnly);
         updateUserFlowsFromXML(namesSetAll, namesSetReadOnly, users);
+        return namesSetAll;
     }
 
     private Set<String> createFlowsNamesSet(List<Flow> flowList, boolean roleTypeFlag) {
@@ -400,18 +402,6 @@ public class Manager implements EngineApi, Serializable {
                 .map(flow -> new AvailableFlowDTO(flow.getName(),flow.getDescription(),
                         flow.getNumberOfInputs(),flow.getNumberOfSteps(),flow.getNumberOfContinuations()))
                 .collect(Collectors.toList());
-
-        /*
-        List<Flow> flowsList=new ArrayList<>(user.getFlows().values());
-        List<AvailableFlowDTO> availableFlows = new ArrayList<>();
-        for(Flow flow : flowsList) {
-            AvailableFlowDTO currFlow = new AvailableFlowDTO(flow.getName(),flow.getDescription(),
-                    flow.getNumberOfInputs(),flow.getNumberOfSteps(),flow.getNumberOfContinuations());
-            availableFlows.add(currFlow);
-        }
-
-        return availableFlows;
-        */
     }
 
     @Override
@@ -701,6 +691,12 @@ public class Manager implements EngineApi, Serializable {
         }
 
         updateChangedRoleInUsers(roleName, toAdd, toRemove, users);
+    }
+
+
+    @Override
+    public RoleInfoDTO getRoleInfo(String roleName) {
+        return roleManager.getRole(roleName).getRoleInformation();
     }
 
     private void updateChangedRoleInUsers(String roleName, Set<String> toAdd, Set<String> toRemove, Map<String, User> users) {

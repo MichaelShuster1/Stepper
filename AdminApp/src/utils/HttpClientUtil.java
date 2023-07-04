@@ -47,6 +47,19 @@ public class HttpClientUtil {
         call.enqueue(callback);
     }
 
+    public static void runAsyncPut(String finalUrl, RequestBody requestBody,Callback callback) {
+        Request request = new Request.Builder()
+                .url(finalUrl)
+                .put(requestBody)
+                .build();
+
+        Call call = HttpClientUtil.HTTP_CLIENT.newCall(request);
+
+        call.enqueue(callback);
+    }
+
+
+
     public static void errorMessage(ResponseBody responseBody, AppController appController) {
         try {
             ResultDTO resultDTO = Constants.GSON_INSTANCE.fromJson(responseBody.string(), ResultDTO.class);
