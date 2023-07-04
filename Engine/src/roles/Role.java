@@ -1,5 +1,7 @@
 package roles;
 
+import dto.RoleInfoDTO;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -41,9 +43,15 @@ public class Role {
         return description;
     }
 
-    public void addFlows(Set<String> flows) {flowsAssigned.addAll(flows);}
+    public void addFlows(Set<String> flows) {
+        flowsAssigned.addAll(flows);
+    }
 
     public Set<String> getFlowsAssigned() {
         return flowsAssigned;
+    }
+
+    public RoleInfoDTO getRoleInformation(){
+        return  new RoleInfoDTO(name,description,flowsAssigned,usersAssigned);
     }
 }
