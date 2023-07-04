@@ -30,4 +30,6 @@ public class RoleInfoDTO {
     public Set<String> getUsersAssigned() {
         return usersAssigned;
     }
+
+
 }

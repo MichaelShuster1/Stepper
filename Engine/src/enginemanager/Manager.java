@@ -415,17 +415,33 @@ public class Manager implements EngineApi, Serializable {
         }
 
         for(String roleName : toRemove) {
-            user.removeRole(roleName);
+            if(roleName.equals("All Flows")) {
+                user.setAllFlows(false);
+                if(!user.isManager())
+                    user.removeRole(roleManager.getRole(roleName));
+            }
+            else
+               user.removeRole(roleManager.getRole(roleName));
         }
 
-        if(!roleNames.contains("Manager") && user.isManager())
+        if(!roleNames.contains("Manager") && user.isManager()) {
+            if(!user.isAllFlows())
+                user.removeRole(roleManager.getRole("All Flows"));
             user.setManager(false);
+        }
 
         for(String roleName: roleNames) {
-            if (!roleName.equals("Manager"))
+            if (!roleName.equals("Manager")) {
                 user.addRole(roleManager.getRole(roleName));
-            else
-                user.setManager(true);
+                if(roleName.equals("All Flows"))
+                    user.setAllFlows(true);
+            }
+            else {
+                if(!user.isManager()) {
+                    user.addRole(roleManager.getRole("All Flows"));
+                    user.setManager(true);
+                }
+            }
         }
 
         updateUserFlows(user);

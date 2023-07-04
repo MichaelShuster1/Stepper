@@ -287,7 +287,7 @@ public class RolesController {
     }
 
     private void processNewRoleInput(RoleInfoDTO roleInfo){
-        String RESOURCE="/role";
+        String RESOURCE="/new-role";
 
         String finalUrl = HttpUrl
                 .parse(Constants.FULL_SERVER_PATH + RESOURCE)

@@ -19,9 +19,7 @@ import utils.Constants;
 import utils.ServletUtils;
 import utils.SessionUtils;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Set;
@@ -47,7 +45,9 @@ public class RolesServlet extends HttpServlet {
         }
     }
 
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
         response.setContentType(Constants.JSON_FORMAT);
         String jsonFlows = request.getParameter("flows");
         String roleName = request.getParameter("roleName");
