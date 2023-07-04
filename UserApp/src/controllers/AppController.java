@@ -2,23 +2,20 @@ package controllers;
 
 import controllers.flowdefinition.DefinitionController;
 import controllers.history.HistoryController;
-import dto.FlowDefinitionDTO;
 import dto.FlowExecutionDTO;
 import dto.InputsDTO;
+import dto.UserInfoDTO;
 import enginemanager.EngineApi;
 import enginemanager.Manager;
 import controllers.flowexecution.ExecutionController;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
@@ -27,8 +24,9 @@ import styles.Styles;
 import utils.Constants;
 import utils.HttpClientUtil;
 
-import java.io.File;
 import java.io.IOException;
+import java.util.Set;
+import java.util.Timer;
 
 public class AppController {
 
@@ -83,7 +81,7 @@ public class AppController {
 
     private boolean tabClicked;
 
-
+    private Timer timer;
 
 
 
@@ -178,7 +176,8 @@ public class AppController {
             // Handle the user's choice
             alert.showAndWait().ifPresent(result -> {
                 if (result == ButtonType.OK) {
-                    definitionComponentController.StopFlowRefresher();
+                    //definitionComponentController.StopFlowRefresher();
+                    stopUpdatesRefresher();
                     primaryStage.close();
                     HttpClientUtil.shutdown();
                     engine.endProcess();
@@ -260,10 +259,40 @@ public class AppController {
         userName.setText(userName.getText() + " " + name);
     }
 
+    public void updateUserInfo(UserInfoDTO userInfoDTO){
+        Platform.runLater(()->{
+
+            if(userInfoDTO.getManager()!=null){
+
+                if (userInfoDTO.getManager()) {
+                    isManager.setText("Is Manager: Yes");
+                }
+                else {
+                    isManager.setText("Is Manager: No");
+                }
+            }
+
+            if(userInfoDTO.getRoles()!=null){
+
+                Set<String> roles=userInfoDTO.getRoles();
+                String text=roles.toString()
+                        .replace("["," ")
+                        .replace("]"," ");
+                userRoles.setText("Assigned Roles: "+text);
+            }
+        });
+    }
 
 
-    public void setFlowRefreshActive() {
-        definitionComponentController.startFlowRefresher();
+    public void startUpdatesRefresher(){
+        UpdatesRefresher updatesRefresher = new UpdatesRefresher(definitionComponentController::fillTableData,
+                this::updateUserInfo);
+        timer = new Timer();
+        timer.schedule(updatesRefresher, 500, 2000);
+    }
+
+    public void stopUpdatesRefresher(){
+        timer.cancel();
     }
 
 }

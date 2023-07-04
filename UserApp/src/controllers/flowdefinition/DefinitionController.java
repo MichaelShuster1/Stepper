@@ -41,13 +41,7 @@ public class DefinitionController {
     private StackPane tableStack;
     private TableView<AvailableFlowDTO> flowTable;
     private final ObservableList<AvailableFlowDTO> tvObservableList = FXCollections.observableArrayList();
-
     private Popup popup;
-
-    private TimerTask flowRefresher;
-
-    Timer timer;
-
     private String selectedName;
 
 
@@ -60,36 +54,27 @@ public class DefinitionController {
         addTable();
         selectedFlowDetails.getChildren().add(new Label("No data"));
     }
-
-    public void startFlowRefresher() {
-        flowRefresher = new flowDefinitionRefresher(this::fillTableData, appController);
-        timer = new Timer();
-        timer.schedule(flowRefresher, 500, 2000);
-    }
-
-    public void StopFlowRefresher(){
-        timer.cancel();
-    }
-
     public void fillTableData(List<AvailableFlowDTO> flowsList)
     {
-        if(flowTable.getSelectionModel().getSelectedItem() != null)
-          selectedName = flowTable.getSelectionModel().getSelectedItem().getName();
-        else
-            selectedName = null;
         Platform.runLater(() -> {
-        fillTableObservableListWithData(flowsList);
-        flowTable.setItems(tvObservableList);
-        if(selectedName != null) {
-            ObservableList<AvailableFlowDTO> list = flowTable.getItems();
-            int i = 0;
-            for (AvailableFlowDTO flow : list) {
-                if (flow.getName().equals(selectedName))
-                    flowTable.getSelectionModel().select(i);
-                i++;
-            }
-        }
 
+            if(flowTable.getSelectionModel().getSelectedItem() != null)
+                selectedName = flowTable.getSelectionModel().getSelectedItem().getName();
+            else
+                selectedName = null;
+
+            fillTableObservableListWithData(flowsList);
+            flowTable.setItems(tvObservableList);
+
+            if(selectedName != null) {
+                ObservableList<AvailableFlowDTO> list = flowTable.getItems();
+                int i = 0;
+                for (AvailableFlowDTO flow : list) {
+                    if (flow.getName().equals(selectedName))
+                        flowTable.getSelectionModel().select(i);
+                    i++;
+                }
+            }
      });
     }
 
@@ -141,8 +126,6 @@ public class DefinitionController {
     }
 
     private void fillTableObservableListWithData(List<AvailableFlowDTO> availableFlows) {
-
-        //List<AvailableFlowDTO> availableFlows = engine.getAvailableFlows();
         if (availableFlows != null) {
             tvObservableList.clear();
             tvObservableList.addAll(availableFlows);

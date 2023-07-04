@@ -4,6 +4,7 @@ package servlets;
 import dto.ResultDTO;
 import enginemanager.EngineApi;
 import enginemanager.Manager;
+import jakarta.servlet.Servlet;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;

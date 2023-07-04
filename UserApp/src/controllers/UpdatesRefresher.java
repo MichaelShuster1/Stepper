@@ -3,14 +3,13 @@ package controllers;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
-import com.sun.istack.internal.NotNull;
 import dto.AvailableFlowDTO;
-import dto.FlowExecutionDTO;
-import dto.StatisticsDTO;
+import dto.UserInfoDTO;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.HttpUrl;
 import okhttp3.Response;
+import org.jetbrains.annotations.NotNull;
 import utils.Constants;
 import utils.HttpClientUtil;
 
@@ -22,29 +21,23 @@ import java.util.TimerTask;
 import java.util.function.Consumer;
 
 public class UpdatesRefresher extends TimerTask {
-    private final Consumer<List<FlowExecutionDTO>> flowsListConsumer;
-    private final Consumer<StatisticsDTO> statisticsConsumer;
+    private final Consumer<List<AvailableFlowDTO>> flowsListConsumer;
 
-    private final Integer historyVersionConsumer;
-    AppController appController;
+    private final Consumer<UserInfoDTO> userInfoConsumer;
 
 
-
-    public UpdatesRefresher(Consumer<List<FlowExecutionDTO>> flowsListConsumer, Consumer<StatisticsDTO> statistics,
-                            AppController appController, Integer historyVersionConsumer) {
+    public UpdatesRefresher(Consumer<List<AvailableFlowDTO>> flowsListConsumer,Consumer<UserInfoDTO> userInfoConsumer) {
         this.flowsListConsumer = flowsListConsumer;
-        this.statisticsConsumer = statistics;
-        this.appController = appController;
-        this.historyVersionConsumer = historyVersionConsumer;
+        this.userInfoConsumer=userInfoConsumer;
     }
 
     @Override
     public void run() {
 
 
-        HttpUrl.Builder urlBuilder = HttpUrl.parse(Constants.FULL_SERVER_PATH + "/get-updates")
-                .newBuilder()
-                .addQueryParameter("historyVersion", appController.getHistoryVersion().toString());
+        HttpUrl.Builder urlBuilder = HttpUrl
+                .parse(Constants.FULL_SERVER_PATH + "/user-updates")
+                .newBuilder();
         HttpClientUtil.runAsync(urlBuilder.build().toString(), new Callback() {
 
             @Override
@@ -57,27 +50,30 @@ public class UpdatesRefresher extends TimerTask {
                     if(response.body() != null) {
                         JsonArray jsonArray = JsonParser.parseString(response.body().string()).getAsJsonArray();
                         try {
-                            Type listType = new TypeToken<List<FlowExecutionDTO>>() {}.getType();
                             if(!jsonArray.get(0).isJsonNull()) {
-                                List<FlowExecutionDTO> historyFlows = Constants.GSON_INSTANCE
+                                Type listType = new TypeToken<List<AvailableFlowDTO>>() {
+                                }.getType();
+                                List<AvailableFlowDTO> availableFlows = Constants.GSON_INSTANCE
                                         .fromJson(jsonArray.get(0).getAsString(), listType);
-                                flowsListConsumer.accept(historyFlows);
+                                flowsListConsumer.accept(availableFlows);
                             }
+                            else
+                                flowsListConsumer.accept(new ArrayList<>());
                         }
-                        catch (Exception e) {
+                        catch (Exception e){
                             System.out.println("Error:" + e.getMessage() );
                         }
+
                         try {
-                            if(!jsonArray.get(1).isJsonNull()) {
-                                StatisticsDTO statisticsDTO = Constants.GSON_INSTANCE
-                                        .fromJson(jsonArray.get(1).getAsString(), StatisticsDTO.class);
-                                statisticsConsumer.accept(statisticsDTO);
+                            if(!jsonArray.get(1).isJsonNull()){
+                               UserInfoDTO userInfo =Constants.GSON_INSTANCE
+                                       .fromJson(jsonArray.get(1).getAsString(),UserInfoDTO.class);
+                               userInfoConsumer.accept(userInfo);
                             }
                         }
-                        catch (Exception e) {
-                            System.out.println("Error:" + e.getMessage());
+                        catch (Exception e){
+                            System.out.println("Error:" + e.getMessage() );
                         }
-
                     }
                 }
                 if(response.body() != null)
@@ -86,3 +82,4 @@ public class UpdatesRefresher extends TimerTask {
         });
     }
 }
+
