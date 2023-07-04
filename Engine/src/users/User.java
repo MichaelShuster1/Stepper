@@ -26,7 +26,7 @@ public class User {
     public User(String name) {
         this.name = name;
         this.flows = new HashMap<>();
-        currentFlow =null;
+        currentFlow = null;
         isManager = false;
         numOfFlowsPerformed = 0;
         flowsAppearance = new HashMap<>();
@@ -40,8 +40,11 @@ public class User {
     }
 
     public void removeFlow(String flowName) {
-        if(flows.containsKey(flowName))
+        if(flows.containsKey(flowName)) {
             flows.remove(flowName);
+            if(currentFlow.getName().equals(flowName))
+                currentFlow = null;
+        }
     }
 
     public void setName(String name) {
