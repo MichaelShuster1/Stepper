@@ -286,7 +286,7 @@ public class RolesController {
     }
 
     private void processNewRoleInput(RoleInfoDTO roleInfo){
-        String RESOURCE="/role";
+        String RESOURCE="/new-role";
 
         String finalUrl = HttpUrl
                 .parse(Constants.FULL_SERVER_PATH + RESOURCE)
@@ -299,7 +299,7 @@ public class RolesController {
                 .build();
 
 
-        HttpClientUtil.runAsyncPut(finalUrl,requestBody,new Callback() {
+        HttpClientUtil.runAsyncPost(finalUrl,requestBody,new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 HttpClientUtil.showErrorAlert(Constants.CONNECTION_ERROR,appController);
