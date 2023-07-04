@@ -677,7 +677,11 @@ public class Manager implements EngineApi, Serializable {
         if(roleManager.isRoleExist(roleInfoDTO.getName()))
             return false;
         else {
-            Role role = new Role(roleInfoDTO.getName(), roleInfoDTO.getDescription(), roleInfoDTO.getFlowsAssigned());
+            Role role;
+            if( roleInfoDTO.getFlowsAssigned() == null)
+                role = new Role(roleInfoDTO.getName(), roleInfoDTO.getDescription());
+            else
+                role = new Role(roleInfoDTO.getName(), roleInfoDTO.getDescription(), roleInfoDTO.getFlowsAssigned());
             roleManager.addRole(role);
             return true;
         }
