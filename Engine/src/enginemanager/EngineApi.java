@@ -63,4 +63,7 @@ public interface EngineApi {
 
     List<FlowExecutionDTO> getFlowsHistoryDelta(int historyVersion);
 
+    boolean addRole(RoleInfoDTO roleInfoDTO);
+
+    void updateRole(String roleName, Set<String> flowNames, Map<String, User> users);
 }
