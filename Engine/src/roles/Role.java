@@ -19,6 +19,13 @@ public class Role {
         this.usersAssigned=new HashSet<>();
     }
 
+    public Role(String name, String description, Set<String> flowsAssigned) {
+        this.name = name;
+        this.description = description;
+        this.flowsAssigned = flowsAssigned;
+        this.usersAssigned=new HashSet<>();
+    }
+
     public void addFlow(String flowName){
         flowsAssigned.add(flowName);
     }
@@ -53,5 +60,9 @@ public class Role {
 
     public RoleInfoDTO getRoleInformation(){
         return  new RoleInfoDTO(name,description,flowsAssigned,usersAssigned);
+    }
+
+    public boolean containsFlow(String flowName) {
+        return flowsAssigned.contains(flowName);
     }
 }

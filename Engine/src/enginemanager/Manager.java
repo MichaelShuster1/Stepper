@@ -157,7 +157,7 @@ public class Manager implements EngineApi, Serializable {
     private void usersFlowsXMLUpdate(Map<String, User> users, List<Flow> flowList) {
         Set<String> namesSetAll = createFlowsNamesSet(flowList, true);
         Set<String> namesSetReadOnly = createFlowsNamesSet(flowList, false);
-        updateRoles(namesSetAll,namesSetReadOnly);
+        updateXMLRoles(namesSetAll,namesSetReadOnly);
         updateUserFlowsFromXML(namesSetAll, namesSetReadOnly, users);
     }
 
@@ -185,7 +185,7 @@ public class Manager implements EngineApi, Serializable {
         }
     }
 
-    private void updateRoles(Set<String> nameSetAll, Set<String> nameSetReadOnly) {
+    private void updateXMLRoles(Set<String> nameSetAll, Set<String> nameSetReadOnly) {
         roleManager.getRole("All Flows").addFlows(nameSetAll);
         roleManager.getRole("Read Only Flows").addFlows(nameSetReadOnly);
     }
@@ -666,4 +666,57 @@ public class Manager implements EngineApi, Serializable {
         this.historyVersion = historyVersion;
     }
 
+    @Override
+    public boolean addRole(RoleInfoDTO roleInfoDTO) {
+        if(roleManager.isRoleExist(roleInfoDTO.getName()))
+            return false;
+        else {
+            Role role = new Role(roleInfoDTO.getName(), roleInfoDTO.getDescription(), roleInfoDTO.getUsersAssigned());
+            roleManager.addRole(role);
+            return true;
+        }
+    }
+
+    @Override
+    public void updateRole(String roleName, Set<String> flowNames, Map<String, User> users) {
+        Set<String> toRemove = new HashSet<>();
+        Role role = roleManager.getRole(roleName);
+        Set<String> roleFlows = role.getFlowsAssigned();
+        for(String roleFlow : roleFlows) {
+            if(!flowNames.contains(roleFlow))
+                toRemove.add(roleFlow);
+        }
+
+        for(String flowName : toRemove) {
+            role.removeFlow(flowName);
+        }
+
+        Set<String> toAdd = new HashSet<>();
+
+        for(String flowName: flowNames) {
+            if(!role.containsFlow(flowName)) {
+                role.addFlow(flowName);
+                toAdd.add(flowName);
+            }
+        }
+
+        updateChangedRoleInUsers(roleName, toAdd, toRemove, users);
+    }
+
+    private void updateChangedRoleInUsers(String roleName, Set<String> toAdd, Set<String> toRemove, Map<String, User> users) {
+        for(String userName: users.keySet()) {
+            User user = users.get(userName);
+            if (user.haveRole(roleName)) {
+                for (String flowName : toAdd) {
+                    if (!user.getFlows().containsKey(flowName))
+                        user.addFlow(flows.get(getFlowIndexByName(flowName)));
+                    user.addFlowAppearance(flowName);
+                }
+
+                for (String flowName : toRemove) {
+                    user.removeFlowAppearance(flowName);
+                }
+            }
+        }
+    }
 }

@@ -141,5 +141,13 @@ public class User {
     }
 
 
+    public boolean haveRole(String roleName) {
+        return roles.containsKey(roleName);
+    }
 
+    public void removeFlowAppearance(String flowName) {
+        flowsAppearance.compute(flowName, (k, v) -> v == null ? 0 : v - 1);
+        if(flowsAppearance.get(flowName) == 0)
+            removeFlow(flowName);
+    }
 }
