@@ -108,6 +108,7 @@ public class User {
             for (String flowName : flows)
                 addFlowAppearance(flowName);
             roles.put(role.getName(), role);
+            role.addUser(name);
         }
     }
 
@@ -120,6 +121,7 @@ public class User {
                 flowsAppearance.remove(flowName);
         }
         roles.remove(name);
+        role.removeUser(name);
     }
 
 
