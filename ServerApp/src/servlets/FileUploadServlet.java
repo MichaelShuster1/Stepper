@@ -1,10 +1,10 @@
 package servlets;
 
 
+import com.google.gson.Gson;
 import dto.ResultDTO;
 import enginemanager.EngineApi;
 import enginemanager.Manager;
-import jakarta.servlet.Servlet;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,12 +16,10 @@ import users.UserManager;
 import utils.Constants;
 import utils.ServletUtils;
 
-import javax.xml.bind.JAXBException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.List;
-import java.util.Scanner;
+import java.util.Set;
 
 
 @WebServlet("/upload-file")
@@ -34,14 +32,17 @@ public class FileUploadServlet extends HttpServlet {
         EngineApi engine= (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
 
+        Gson gson=Constants.GSON_INSTANCE;
+
         for (Part part : parts) {
             try {
-                engine.loadXmlFile(part.getInputStream(), userManager.getUsersMap());
+                Set<String> newFlows =engine.loadXmlFile(part.getInputStream(), userManager.getUsersMap());
+                response.getWriter().print(gson.toJson(newFlows));
                 response.setStatus(HttpServletResponse.SC_OK);
             } catch (Exception e) {
                 response.setContentType(Constants.JSON_FORMAT);
                 ResultDTO resultDTO=new ResultDTO(e.getMessage());
-                response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
+                response.getWriter().print(gson.toJson(resultDTO));
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             }
         }
