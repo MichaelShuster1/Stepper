@@ -70,7 +70,7 @@ public class RolesServlet extends HttpServlet {
             catch (Exception e) {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 response.setContentType(Constants.JSON_FORMAT);
-                ResultDTO resultDTO=new ResultDTO("Server failed to update user roles");
+                ResultDTO resultDTO=new ResultDTO("Server failed to update role");
                 response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
             }
         }
