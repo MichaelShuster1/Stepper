@@ -35,7 +35,6 @@ public class UsersController {
     private List<CheckBox> checkBoxes;
     private CheckBox checkBoxManager;
     private String userName;
-
     private Stage primaryStage;
 
     @FXML
@@ -76,7 +75,7 @@ public class UsersController {
         System.out.println(rolesChoice);
 
 
-        String RESOURCE="/roles";
+        String RESOURCE="/user-roles";
 
         String finalUrl = HttpUrl
                 .parse(Constants.FULL_SERVER_PATH + RESOURCE)
