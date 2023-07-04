@@ -12,16 +12,16 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import okhttp3.HttpUrl;
+import utils.Constants;
 
 public class RolesController {
-
-
     @FXML
     private ListView<String> rolesListView;
-
     @FXML
     private VBox roleSelectedView;
     private AppController appController;
+
 
 
 
@@ -29,17 +29,30 @@ public class RolesController {
     public void initialize() {
         rolesListView.setOrientation(Orientation.VERTICAL);
         rolesListView.setOnMouseClicked(e->rowClick(new ActionEvent()));
-        rolesListView.getItems().add("role1");
-        rolesListView.getItems().add("role2");
+        rolesListView.getItems().add("Read Only Flows");
+        rolesListView.getItems().add("All Flows");
     }
 
     private void rowClick(ActionEvent event) {
         System.out.println("row click");
-        if(!rolesListView.getSelectionModel().isEmpty()) {
-            roleSelectedView.getChildren().clear();
-            addTitleLine(rolesListView.getSelectionModel().getSelectedItem());
-        }
+        if(rolesListView.getSelectionModel()!=null){
+            if(!rolesListView.getSelectionModel().isEmpty()) {
+                roleSelectedView.getChildren().clear();
+            }
 
+            String selectedRoleName=rolesListView.getSelectionModel().getSelectedItem();
+            String finalUrl = HttpUrl
+                    .parse(Constants.FULL_SERVER_PATH + "/get-role")
+                    .newBuilder()
+                    .addQueryParameter("roleName", selectedRoleName)
+                    .build()
+                    .toString();
+
+            addTitleLine("ROLE DETAILS:");
+            addTitleLine(selectedRoleName);
+
+
+        }
     }
 
     private HBox getNewHbox()
