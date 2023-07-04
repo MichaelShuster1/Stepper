@@ -11,7 +11,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
+import users.UserManager;
 import utils.Constants;
+import utils.ServletUtils;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
@@ -29,10 +31,11 @@ public class FileUploadServlet extends HttpServlet {
 
         Collection<Part> parts = request.getParts();
         EngineApi engine= (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
+        UserManager userManager = ServletUtils.getUserManager(getServletContext());
 
         for (Part part : parts) {
             try {
-                engine.loadXmlFile(part.getInputStream());
+                engine.loadXmlFile(part.getInputStream(), userManager.getUsersMap());
                 response.setStatus(HttpServletResponse.SC_OK);
             } catch (Exception e) {
                 response.setContentType(Constants.JSON_FORMAT);

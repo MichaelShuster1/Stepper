@@ -119,6 +119,7 @@ public class User {
         roles.remove(name);
     }
 
+
     public Map<String, Role> getRoles() {
         return roles;
     }
@@ -126,4 +127,14 @@ public class User {
     public Map<String, Integer> getFlowsAppearance() {
         return flowsAppearance;
     }
+
+    public synchronized void updateUserFlow(Flow flow, String roleName) {
+        if(roles.containsKey(roleName)) {
+            addFlow(flow);
+            addFlowAppearance(flow.getName());
+        }
+    }
+
+
+
 }

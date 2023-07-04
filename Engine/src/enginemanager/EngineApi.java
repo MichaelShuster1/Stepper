@@ -8,10 +8,11 @@ import users.User;
 import javax.xml.bind.JAXBException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface EngineApi {
-    void loadXmlFile(InputStream inputStream) throws Exception;
+    void loadXmlFile(InputStream inputStream, Map<String, User> users) throws Exception;
 
     List<String> getFlowsNames();
 

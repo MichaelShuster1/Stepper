@@ -72,7 +72,7 @@ public class Manager implements EngineApi, Serializable {
     }
 
     @Override
-    public void loadXmlFile(InputStream inputStream) throws Exception {
+    public void loadXmlFile(InputStream inputStream, Map<String, User> users) throws Exception {
         STStepper stepper;
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(STStepper.class);
@@ -80,7 +80,7 @@ public class Manager implements EngineApi, Serializable {
             stepper = (STStepper) jaxbUnmarshaller.unmarshal(inputStream);
             if(flowNames2Index==null)
                 createThreadPool(stepper);
-            createFlows(stepper);
+            createFlows(stepper, users);
         } catch (Exception e) {
             throw e;
         }
@@ -94,7 +94,7 @@ public class Manager implements EngineApi, Serializable {
         threadPool= Executors.newFixedThreadPool(stepper.getSTThreadPool());
     }
 
-    private void createFlows(STStepper stepper) {
+    private void createFlows(STStepper stepper, Map<String , User> users) {
         Map<String,Integer> flowNames = new HashMap<>();
         List<STFlow> stFlows = stepper.getSTFlows().getSTFlow();
         List<Flow> flowList = new ArrayList<>();
@@ -128,8 +128,6 @@ public class Manager implements EngineApi, Serializable {
             }
         }
         createContinuations(continuationMap,flowList, flowNames);
-        updateRoles(flowList);
-
 
         currentFlow=null;
 
@@ -152,22 +150,44 @@ public class Manager implements EngineApi, Serializable {
             setFlowsContinuations(continuationMap);
             flowsStatistics.putAll(statisticsMap);
         }
+
+        usersFlowsXMLUpdate(users, flowList);
     }
 
-    private void updateRoles(List<Flow> flowList) {
-        Set<String> nameSet = flowList.stream()
-                .map(Flow::getName)
-                .collect(Collectors.toSet());
+    private void usersFlowsXMLUpdate(Map<String, User> users, List<Flow> flowList) {
+        Set<String> namesSetAll = createFlowsNamesSet(flowList, true);
+        Set<String> namesSetReadOnly = createFlowsNamesSet(flowList, false);
+        updateRoles(namesSetAll,namesSetReadOnly);
+        updateUserFlowsFromXML(namesSetAll, namesSetReadOnly, users);
+    }
 
-        roleManager.getRole("All Flows").addFlows(nameSet);
+    private Set<String> createFlowsNamesSet(List<Flow> flowList, boolean roleTypeFlag) {
+        if(roleTypeFlag) {
+            return flowList.stream()
+                    .map(Flow::getName)
+                    .collect(Collectors.toSet());
+        }
+        else {
+            return flowList.stream()
+                    .filter(Flow::isReadOnly)
+                    .map(Flow::getName)
+                    .collect(Collectors.toSet());
+        }
 
-        nameSet.clear();
-        nameSet = flowList.stream()
-                .filter(Flow::isReadOnly)
-                .map(Flow::getName)
-                .collect(Collectors.toSet());
+    }
 
-        roleManager.getRole("Read Only Flows").addFlows(nameSet);
+    private void updateUserFlowsFromXML(Set<String> nameSetALL, Set<String> nameSetReadOnly , Map<String, User> users) {
+        for(String userName: users.keySet()) {
+            for(String flowName : nameSetALL)
+                users.get(userName).updateUserFlow(flows.get(getFlowIndexByName(flowName)),"All Flows");
+            for(String flowName : nameSetReadOnly)
+                users.get(userName).updateUserFlow(flows.get(getFlowIndexByName(flowName)),"Read Only Flows");
+        }
+    }
+
+    private void updateRoles(Set<String> nameSetAll, Set<String> nameSetReadOnly) {
+        roleManager.getRole("All Flows").addFlows(nameSetAll);
+        roleManager.getRole("Read Only Flows").addFlows(nameSetReadOnly);
     }
 
     private void setFlowsContinuations(Map<String, List<Continuation>> continuationMap) {
