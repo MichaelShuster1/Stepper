@@ -46,11 +46,5 @@ public class FileUploadServlet extends HttpServlet {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             }
         }
-
-        List<String> flowsNames=engine.getFlowsNames();
-
-        for(String flowName:flowsNames)
-            System.out.println(flowName);
-
     }
 }

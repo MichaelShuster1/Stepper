@@ -13,9 +13,11 @@ import java.util.Set;
 
 public interface EngineApi {
 
+    Set<String> getRolesNames();
+
     Set<String> loadXmlFile(InputStream inputStream, Map<String, User> users) throws Exception;
 
-    List<String> getFlowsNames();
+    Set<String> getFlowsNames();
 
     List<AvailableFlowDTO> getAvailableFlows(User user);
 

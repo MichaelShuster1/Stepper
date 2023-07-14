@@ -56,8 +56,6 @@ public class UsersController {
 
         usersListView.setOnMouseClicked(e->rowClick(new ActionEvent()));
         checkBoxes=new ArrayList<>();
-        checkBoxes.add(new CheckBox("Read Only Flows"));
-        checkBoxes.add(new CheckBox("All Flows"));
         checkBoxManager=new CheckBox("Manager");
     }
 
@@ -165,6 +163,12 @@ public class UsersController {
     public void addRole(String roleName){
         checkBoxes.add(new CheckBox(roleName));
     }
+
+    public void setRolesOptions(Set<String> roles){
+        if(roles!=null)
+            roles.forEach(role->checkBoxes.add(new CheckBox(role)));
+    }
+
 
     public void setStage(Stage primaryStage) {
         this.primaryStage = primaryStage;

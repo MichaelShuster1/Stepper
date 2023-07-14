@@ -48,16 +48,9 @@ public class RolesController {
     public void initialize() {
         rolesListView.setOrientation(Orientation.VERTICAL);
         rolesListView.setOnMouseClicked(event -> rowClick(new ActionEvent()));
-        initRoles();
         checkBoxes=new ArrayList<>();
     }
 
-
-    private void initRoles()
-    {
-        rolesListView.getItems().add("All Flows");
-        rolesListView.getItems().add("Read Only Flows");
-    }
 
     private void rowClick(ActionEvent event) {
         if(!rolesListView.getSelectionModel().isEmpty()) {
@@ -140,6 +133,10 @@ public class RolesController {
     public void updateFlows(Set<String> newFlows){
         if(newFlows!=null)
             newFlows.forEach(flowName->checkBoxes.add(new CheckBox(flowName)));
+    }
+
+    public void setRolesListView(Set<String> rolesName){
+        rolesName.forEach(roleName->rolesListView.getItems().add(roleName));
     }
 
 

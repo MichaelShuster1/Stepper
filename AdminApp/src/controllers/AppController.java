@@ -1,6 +1,8 @@
 package controllers;
 
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import controllers.history.HistoryController;
 import controllers.roles.RolesController;
@@ -137,7 +139,23 @@ public class AppController {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if(response.code()!=200) {
+                if(response.code()==200){
+                    JsonArray jsonArray = JsonParser.parseString(response.body().string()).getAsJsonArray();
+                    Type setType = new TypeToken<Set<String>>() {}.getType();
+                    Set<String> flowsNames,rolesNames;
+                    if(!jsonArray.get(0).isJsonNull()) {
+                       flowsNames = Constants.GSON_INSTANCE
+                                .fromJson(jsonArray.get(0).getAsString(), setType);
+                       rolesComponentController.updateFlows(flowsNames);
+                    }
+                    if(!jsonArray.get(1).isJsonNull()){
+                        rolesNames=Constants.GSON_INSTANCE
+                                .fromJson(jsonArray.get(1).getAsString(),setType);
+                        usersComponentController.setRolesOptions(rolesNames);
+                        rolesComponentController.setRolesListView(rolesNames);
+                    }
+                }
+                else {
                         Platform.runLater(primaryStage::close);
                         HttpClientUtil.errorMessage(response.body(), AppController.this);
                         HttpClientUtil.shutdown();

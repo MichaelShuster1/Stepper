@@ -15,7 +15,6 @@ import javafx.util.Pair;
 import users.User;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.*;
 import java.util.*;
@@ -64,13 +63,19 @@ public class Manager implements EngineApi, Serializable {
 
 
     @Override
-    public List<String> getFlowsNames() {
-        List<String> namesList = new ArrayList<>();
+    public Set<String> getFlowsNames() {
+        Set<String> namesList = new LinkedHashSet<>();
         for (Flow flow : flows) {
             namesList.add(flow.getName());
         }
         return namesList;
     }
+
+    @Override
+    public Set<String> getRolesNames() {
+        return roleManager.getRoles().keySet();
+    }
+
 
     @Override
     public Set<String> loadXmlFile(InputStream inputStream, Map<String, User> users) throws Exception {
