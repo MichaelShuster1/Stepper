@@ -25,10 +25,16 @@ public class UpdatesRefresher extends TimerTask {
 
     private final Consumer<UserInfoDTO> userInfoConsumer;
 
+    private int  historyVersion;
+
+    private boolean isManager;
+
 
     public UpdatesRefresher(Consumer<List<AvailableFlowDTO>> flowsListConsumer,Consumer<UserInfoDTO> userInfoConsumer) {
         this.flowsListConsumer = flowsListConsumer;
         this.userInfoConsumer=userInfoConsumer;
+        historyVersion=0;
+        isManager=false;
     }
 
     @Override
@@ -69,6 +75,7 @@ public class UpdatesRefresher extends TimerTask {
                                UserInfoDTO userInfo =Constants.GSON_INSTANCE
                                        .fromJson(jsonArray.get(1).getAsString(),UserInfoDTO.class);
                                userInfoConsumer.accept(userInfo);
+                               updateHistory(userInfo);
                             }
                         }
                         catch (Exception e){
@@ -81,5 +88,32 @@ public class UpdatesRefresher extends TimerTask {
             }
         });
     }
+
+
+
+    private void updateHistory(UserInfoDTO userInfo){
+
+        boolean change=false;
+        String RESOURCE ="/get-history";
+
+
+        if(userInfo.getManager()!=isManager){
+            historyVersion=0;
+            isManager= userInfo.getManager();
+            change=true;
+        }
+
+
+        if(userInfo.getVersion()<historyVersion||change){
+            HttpUrl.Builder urlBuilder = HttpUrl.parse(Constants.FULL_SERVER_PATH + RESOURCE)
+                    .newBuilder()
+                    .addQueryParameter("historyVersion", Integer.toString(historyVersion));
+            //send async request and code for response (lidros if change =true)
+        }
+
+    }
+
+
+
 }
 

@@ -9,15 +9,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import users.User;
 import utils.Constants;
 import utils.ServletUtils;
 import utils.SessionUtils;
 
 import java.io.IOException;
 
-@WebServlet("/get-history")
-public class GetHistoryFlowServlet extends HttpServlet {
+@WebServlet("/get-progress")
+public class GetProgressFlowServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String usernameFromSession = SessionUtils.getUsername(request);

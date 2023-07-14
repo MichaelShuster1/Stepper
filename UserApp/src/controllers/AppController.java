@@ -150,7 +150,7 @@ public class AppController {
 
     public void addFlowId(String id)
     {
-        progressTracker.addFlowId(id);
+        progressTracker.setFlowId(id);
     }
 
     public void setPrimaryStage(Stage primaryStage) {
@@ -167,10 +167,9 @@ public class AppController {
             if(primaryStage.getScene().getStylesheets().size()!=0)
                 alert.getDialogPane().getStylesheets().add(primaryStage.getScene().getStylesheets().get(0));
 
-            if(progressTracker.areFlowsRunning())
-                alert.setHeaderText("The are still flows running in the background!\nAre you sure you want to exit?");
-            else
-                alert.setHeaderText("Are you sure you want to exit?");
+
+
+            alert.setHeaderText("Are you sure you want to exit?");
             alert.setContentText("Press OK to exit the application.\n");
 
             // Handle the user's choice

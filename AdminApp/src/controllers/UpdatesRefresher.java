@@ -41,7 +41,6 @@ public class UpdatesRefresher extends TimerTask {
     @Override
     public void run() {
 
-
         HttpUrl.Builder urlBuilder = HttpUrl.parse(Constants.FULL_SERVER_PATH + "/get-updates")
                 .newBuilder()
                 .addQueryParameter("historyVersion", appController.getHistoryVersion().toString());
