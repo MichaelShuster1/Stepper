@@ -42,7 +42,7 @@ public class ProgressTracker extends Task<Boolean> {
     public boolean finishedFollowingLastActivatedFlow()
     {
         synchronized (progressTrackerLock){
-            return (currentFlowId!=null);
+            return (currentFlowId==null);
         }
     }
 

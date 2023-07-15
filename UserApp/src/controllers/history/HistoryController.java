@@ -228,13 +228,13 @@ public class HistoryController {
 
     public void addRows(List<FlowExecutionDTO> flowExecutions){
         Platform.runLater(()->{
-            flowExecutions.forEach(this::addRow);
+            tableData.addAll(0,flowExecutions);
         });
     }
 
     public void addRow(FlowExecutionDTO flowExecutionDTO)
     {
-        tableData.add(0,flowExecutionDTO);
+        tableData.add(flowExecutionDTO);
     }
 
     public void filterTable()
