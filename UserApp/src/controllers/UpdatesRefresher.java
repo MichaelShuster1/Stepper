@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import dto.AvailableFlowDTO;
+import dto.FlowExecutionDTO;
 import dto.UserDetailsDTO;
 import dto.UserInfoDTO;
 import okhttp3.Call;
@@ -22,18 +23,26 @@ import java.util.TimerTask;
 import java.util.function.Consumer;
 
 public class UpdatesRefresher extends TimerTask {
-    private final Consumer<List<AvailableFlowDTO>> flowsListConsumer;
+    private final Consumer<List<AvailableFlowDTO>> definitionSetterConsumer;
 
     private final Consumer<UserInfoDTO> userInfoConsumer;
+
+    private final Consumer<List<FlowExecutionDTO>>  historySetterConsumer;
+
+    private final Consumer<List<FlowExecutionDTO>>  historyUpdaterConsumer;
 
     private int  historyVersion;
 
     private boolean isManager;
 
 
-    public UpdatesRefresher(Consumer<List<AvailableFlowDTO>> flowsListConsumer,Consumer<UserInfoDTO> userInfoConsumer) {
-        this.flowsListConsumer = flowsListConsumer;
+    public UpdatesRefresher(Consumer<List<AvailableFlowDTO>> definitionSetterConsumer,
+                            Consumer<UserInfoDTO> userInfoConsumer, Consumer<List<FlowExecutionDTO>> historySetterConsumer,
+                            Consumer<List<FlowExecutionDTO>> historyUpdaterConsumer) {
+        this.definitionSetterConsumer = definitionSetterConsumer;
         this.userInfoConsumer=userInfoConsumer;
+        this.historySetterConsumer = historySetterConsumer;
+        this.historyUpdaterConsumer = historyUpdaterConsumer;
         historyVersion=0;
         isManager=false;
     }
@@ -62,10 +71,10 @@ public class UpdatesRefresher extends TimerTask {
                                 }.getType();
                                 List<AvailableFlowDTO> availableFlows = Constants.GSON_INSTANCE
                                         .fromJson(jsonArray.get(0).getAsString(), listType);
-                                flowsListConsumer.accept(availableFlows);
+                                definitionSetterConsumer.accept(availableFlows);
                             }
                             else
-                                flowsListConsumer.accept(new ArrayList<>());
+                                definitionSetterConsumer.accept(new ArrayList<>());
                         }
                         catch (Exception e){
                             System.out.println("Error:" + e.getMessage() );
@@ -107,11 +116,38 @@ public class UpdatesRefresher extends TimerTask {
         }
 
 
-        if(userInfo.getHistoryVersion()<historyVersion||change){
+        if(historyVersion<userInfo.getHistoryVersion()||change){
             HttpUrl.Builder urlBuilder = HttpUrl.parse(Constants.FULL_SERVER_PATH + RESOURCE)
                     .newBuilder()
                     .addQueryParameter("historyVersion", Integer.toString(historyVersion));
-            //send async request and code for response (lidros if change =true)
+            boolean finalChange = change;
+            historyVersion=userInfo.getHistoryVersion();
+            HttpClientUtil.runAsync(urlBuilder.build().toString(), new Callback() {
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    System.out.println("error trying fetching history of user");
+                }
+
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    if(response.code()==200){
+                        Type listType = new TypeToken<List<FlowExecutionDTO>>() {}.getType();
+                        List<FlowExecutionDTO> historyFlows = Constants.GSON_INSTANCE
+                                .fromJson(response.body().string(), listType);
+                        if(finalChange)
+                            historySetterConsumer.accept(historyFlows);
+                        else
+                            historyUpdaterConsumer.accept(historyFlows);
+                    }
+                    else{
+                        System.out.println("error trying fetching history of user");
+                    }
+
+                    if(response.body()!=null)
+                        response.body().close();
+
+                }
+            });
         }
 
     }

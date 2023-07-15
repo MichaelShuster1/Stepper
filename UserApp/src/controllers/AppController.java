@@ -149,7 +149,7 @@ public class AppController {
         thread.start();
     }
 
-    public void addFlowId(String id)
+    public void setFlowId(String id)
     {
         progressTracker.setFlowId(id);
     }
@@ -287,7 +287,7 @@ public class AppController {
 
     public void startUpdatesRefresher(){
         UpdatesRefresher updatesRefresher = new UpdatesRefresher(definitionComponentController::fillTableData,
-                this::updateUserInfo);
+                this::updateUserInfo, historyComponentController::setHistoryTable, historyComponentController::addRows);
         timer = new Timer();
         timer.schedule(updatesRefresher, 500, 2000);
     }

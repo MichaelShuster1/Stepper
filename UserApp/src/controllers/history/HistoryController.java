@@ -219,6 +219,19 @@ public class HistoryController {
     }
 
 
+    public void setHistoryTable(List<FlowExecutionDTO> flowExecutions){
+        Platform.runLater(()->{
+            tableData.clear();
+            flowExecutions.forEach(this::addRow);
+        });
+    }
+
+    public void addRows(List<FlowExecutionDTO> flowExecutions){
+        Platform.runLater(()->{
+            flowExecutions.forEach(this::addRow);
+        });
+    }
+
     public void addRow(FlowExecutionDTO flowExecutionDTO)
     {
         tableData.add(0,flowExecutionDTO);
