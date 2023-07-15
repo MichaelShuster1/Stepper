@@ -49,11 +49,9 @@ public class getUserHistoryServlet extends HttpServlet {
                         else
                             flowHistoryList = engine.getFlowsHistoryDeltaFromUser(historyVersion, user);
 
-                        jsonArray.add(Constants.GSON_INSTANCE.toJson(flowHistoryList));
-                        StatisticsDTO statisticsDTO = engine.getStatistics();
-                        jsonArray.add(Constants.GSON_INSTANCE.toJson(statisticsDTO));
+                        //jsonArray.add(Constants.GSON_INSTANCE.toJson(flowHistoryList));
                         response.setStatus(HttpServletResponse.SC_OK);
-                        response.getWriter().print(jsonArray);
+                        response.getWriter().print(Constants.GSON_INSTANCE.toJson(flowHistoryList));
                     }
                 } catch (Exception e) {
                     ResultDTO resultDTO = new ResultDTO(Constants.INVALID_PARAMETER);

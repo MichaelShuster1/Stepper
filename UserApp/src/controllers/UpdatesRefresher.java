@@ -131,6 +131,7 @@ public class UpdatesRefresher extends TimerTask {
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                     if(response.code()==200){
+
                         Type listType = new TypeToken<List<FlowExecutionDTO>>() {}.getType();
                         List<FlowExecutionDTO> historyFlows = Constants.GSON_INSTANCE
                                 .fromJson(response.body().string(), listType);
