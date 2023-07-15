@@ -78,6 +78,12 @@ public class DefinitionController {
      });
     }
 
+    public boolean canRunFlow(String name){
+        return flowTable.getItems()
+                .stream()
+                .anyMatch(availableFlowDTO -> availableFlowDTO.getName().equals(name));
+    }
+
 
     public void addTable() {
         flowTable = new TableView<>();

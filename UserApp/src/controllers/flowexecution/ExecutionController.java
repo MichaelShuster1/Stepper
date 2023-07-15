@@ -85,6 +85,8 @@ public class ExecutionController {
 
     private boolean isClicked;
 
+    private boolean afterRun;
+
 
 
     @FXML
@@ -93,11 +95,14 @@ public class ExecutionController {
         continuationButton.disableProperty().bind(choiceBoxView.valueProperty().isNull());
         choiceBoxView.setDisable(true);
         isClicked = false;
+        afterRun=false;
         rerunButton=new Button("Rerun flow");
         HBox.setMargin(rerunButton,new Insets(0,10,0,0));
     }
 
-
+    public boolean isAfterRun() {
+        return afterRun;
+    }
 
     public void setAppController(AppController appController)
     {
@@ -182,6 +187,7 @@ public class ExecutionController {
         choiceBoxView.setOpacity(0.0);
         elementLogic.setTableOpacity(0.0);
         isClicked = false;
+        afterRun=false;
         flowInfoView.setText("Flow info");
         if(hBoxView.getChildren().contains(rerunButton)){
             hBoxView.getChildren().remove(rerunButton);
@@ -662,6 +668,8 @@ public class ExecutionController {
         progressBarView.setProgress(flowExecutionDTO.getProgress());
         if(flowExecutionDTO.getStateAfterRun()!=null)
         {
+            afterRun=true;
+
             if(isAnimationsOn.get() && !elementLogic.isTableClicked() && !isClicked) {
                 createFadeAnimation(elementDetailsView);
             }
