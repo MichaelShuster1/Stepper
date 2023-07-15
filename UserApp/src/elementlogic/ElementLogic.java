@@ -287,7 +287,7 @@ public class ElementLogic {
     }
 
 
-    private ListView<String> createListView(List<Object> list)
+    public static ListView<String> createListView(List<Object> list)
     {
         ListView<String> listView=new ListView<>();
         listView.setOrientation(Orientation.VERTICAL);

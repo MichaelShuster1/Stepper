@@ -3,6 +3,7 @@ package controllers;
 import controllers.flowdefinition.DefinitionController;
 import controllers.history.HistoryController;
 import dto.*;
+import elementlogic.ElementLogic;
 import enginemanager.EngineApi;
 import enginemanager.Manager;
 import controllers.flowexecution.ExecutionController;
@@ -12,10 +13,14 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
@@ -25,6 +30,8 @@ import utils.Constants;
 import utils.HttpClientUtil;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.Timer;
 import java.util.function.Predicate;
@@ -74,11 +81,16 @@ public class AppController {
     @FXML
     private Label userRoles;
 
+    @FXML
+    private HBox userDetailsView;
+
     private ProgressTracker progressTracker;
 
     private Stage primaryStage;
 
     private Timer timer;
+
+    private Hyperlink hyperlink;
 
 
     @FXML
@@ -268,13 +280,42 @@ public class AppController {
             if(userInfoDTO.getRoles()!=null){
 
                 Set<String> roles=userInfoDTO.getRoles();
-                String text=roles.toString()
-                        .replace("["," ")
-                        .replace("]"," ");
-                userRoles.setText("Assigned Roles: "+text);
+
+                if(roles.size()>5){
+                    userRoles.setText("Assigned Roles: ");
+                    userDetailsView.getChildren().remove(hyperlink);
+                    hyperlink=new Hyperlink("Roles");
+                    ListView<String> listView=ElementLogic.createListView(Arrays.asList(roles.toArray()));
+                    hyperlink.setOnMouseClicked(e->showListPopUp(listView));
+                    HBox.setMargin(hyperlink,new Insets(0,0,0,-10));
+                    userDetailsView.getChildren().add(3,hyperlink);
+                }
+                else {
+                    userDetailsView.getChildren().remove(hyperlink);
+                    String text = roles.toString()
+                            .replace("[", " ")
+                            .replace("]", " ");
+
+                    userRoles.setText("Assigned Roles: " + text);
+                }
             }
         });
     }
+
+
+    private void showListPopUp(Parent root){
+        final Stage stage = new Stage();
+        stage.initOwner(primaryStage);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        Scene scene = new Scene(root, 400, 300);
+        if(primaryStage.getScene().getStylesheets().size()!=0)
+            scene.getStylesheets().add(primaryStage.getScene().getStylesheets().get(0));
+        stage.setScene(scene);
+        stage.show();
+    }
+
+
+
 
 
     public void startUpdatesRefresher(){

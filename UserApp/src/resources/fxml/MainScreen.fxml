@@ -32,7 +32,7 @@
                               </ImageView>
                            </children>
                         </HBox>
-                        <HBox alignment="BASELINE_LEFT" spacing="15.0" VBox.vgrow="NEVER">
+                        <HBox fx:id="userDetailsView" alignment="BASELINE_LEFT" spacing="15.0" VBox.vgrow="NEVER">
                            <children>
                               <Label fx:id="userName" alignment="BASELINE_LEFT" maxHeight="1.7976931348623157E308" text="Name:" HBox.hgrow="ALWAYS">
                                  <font>
@@ -50,7 +50,7 @@
                                     <Insets left="10.0" />
                                  </HBox.margin>
                               </Label>
-                              <Label fx:id="userRoles" maxWidth="1.7976931348623157E308" text="Assigned Roles:" HBox.hgrow="ALWAYS">
+                              <Label fx:id="userRoles" maxWidth="1.7976931348623157E308" text="Assigned Roles:">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
@@ -58,6 +58,7 @@
                                     <Insets left="10.0" />
                                  </HBox.margin>
                               </Label>
+                              <Label maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
                               <RadioButton fx:id="animationsRadioButtonVIew" mnemonicParsing="false" text="Animations" />
                               <Label text="Style:" />
                               <ChoiceBox fx:id="styleChoiceView" prefWidth="150.0">
