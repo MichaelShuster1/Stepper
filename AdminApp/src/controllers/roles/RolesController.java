@@ -47,12 +47,18 @@ public class RolesController {
     @FXML
     public void initialize() {
         rolesListView.setOrientation(Orientation.VERTICAL);
-        rolesListView.setOnMouseClicked(event -> rowClick(new ActionEvent()));
+        //rolesListView.setOnMouseClicked(event -> rowClick(new ActionEvent()));
         checkBoxes=new ArrayList<>();
+        rolesListView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null)
+                rowSelect();
+            else
+                roleSelectedView.getChildren().clear();
+        });
     }
 
 
-    private void rowClick(ActionEvent event) {
+    private void rowSelect() {
         if(!rolesListView.getSelectionModel().isEmpty()) {
             roleSelectedView.getChildren().clear();
 
@@ -133,6 +139,11 @@ public class RolesController {
     public void updateFlows(Set<String> newFlows){
         if(newFlows!=null)
             newFlows.forEach(flowName->checkBoxes.add(new CheckBox(flowName)));
+        if(rolesListView.getSelectionModel().getSelectedItem() != null) {
+            String selectedRole = rolesListView.getSelectionModel().getSelectedItem();
+            rolesListView.getSelectionModel().clearSelection();
+            rolesListView.getSelectionModel().select(rolesListView.getItems().indexOf(selectedRole));
+        }
     }
 
     public void setRolesListView(Set<String> rolesName){

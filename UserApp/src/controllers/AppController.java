@@ -74,8 +74,6 @@ public class AppController {
     @FXML
     private Label userRoles;
 
-    private EngineApi engine;
-
     private ProgressTracker progressTracker;
 
     private Stage primaryStage;
@@ -139,11 +137,8 @@ public class AppController {
     }
 
 
-    public void setModel(Manager engine) {
-        this.engine = engine;
-        executionComponentController.setEngine(engine);
-        historyComponentController.setEngine(engine);
-        progressTracker=new ProgressTracker(this,engine);
+    public void setModel() {
+        progressTracker=new ProgressTracker(this);
         Thread thread=new Thread(progressTracker);
         thread.setDaemon(true);
         thread.start();
@@ -180,7 +175,6 @@ public class AppController {
                     stopUpdatesRefresher();
                     primaryStage.close();
                     HttpClientUtil.shutdown();
-                    engine.endProcess();
                 }
             });
         });
