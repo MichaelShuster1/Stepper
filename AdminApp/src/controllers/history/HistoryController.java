@@ -72,7 +72,7 @@ public class HistoryController {
 
         historyTableView.getColumns().addAll(flowNameColumnView,activationTimeColumnView, flowStateColumnView);
         historyTableView.getColumns().forEach(column -> column.setMinWidth(200));
-        historyTableView.setOnMouseClicked(e-> HistoryTableRowClick(new ActionEvent()));
+        //historyTableView.setOnMouseClicked(e-> HistoryTableRowClick(new ActionEvent()));
         historyTableView.setEditable(false);
         stackTableView.getChildren().add(historyTableView);
 
@@ -83,6 +83,13 @@ public class HistoryController {
         tableData = FXCollections.observableArrayList();
         historyTableView.setItems(tableData);
         historyVersion = 0;
+
+        historyTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null)
+                HistoryTableRowClick();
+            else
+                elementLogic.clear();
+        });
     }
 
 
@@ -101,7 +108,7 @@ public class HistoryController {
 
 
     @FXML
-    private void HistoryTableRowClick(ActionEvent event) {
+    private void HistoryTableRowClick() {
 
         if(!historyTableView.getSelectionModel().isEmpty()) {
             FlowExecutionDTO flowExecutionDTO = historyTableView.getSelectionModel().getSelectedItem();

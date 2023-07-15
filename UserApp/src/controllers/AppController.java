@@ -56,6 +56,8 @@ public class AppController {
     @FXML
     private HistoryController historyComponentController;
 
+
+
     @FXML
     private TabPane tabPaneView;
 
@@ -81,8 +83,6 @@ public class AppController {
 
     @FXML
     private Hyperlink hyperlink;
-
-    private EngineApi engine;
 
     private ProgressTracker progressTracker;
 
@@ -148,11 +148,8 @@ public class AppController {
     }
 
 
-    public void setModel(Manager engine) {
-        this.engine = engine;
-        executionComponentController.setEngine(engine);
-        historyComponentController.setEngine(engine);
-        progressTracker=new ProgressTracker(this,engine);
+    public void setModel() {
+        progressTracker=new ProgressTracker(this);
         Thread thread=new Thread(progressTracker);
         thread.setDaemon(true);
         thread.start();
@@ -189,7 +186,6 @@ public class AppController {
                     stopUpdatesRefresher();
                     primaryStage.close();
                     HttpClientUtil.shutdown();
-                    engine.endProcess();
                 }
             });
         });

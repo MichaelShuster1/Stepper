@@ -15,14 +15,12 @@ public class ProgressTracker extends Task<Boolean> {
 
     AppController appController;
 
-    EngineApi engine;
 
     private final Object progressTrackerLock = new Object();
 
-    public ProgressTracker(AppController appController,EngineApi engine)
+    public ProgressTracker(AppController appController)
     {
         this.appController=appController;
-        this.engine=engine;
     }
 
     public void setFlowId(String id)

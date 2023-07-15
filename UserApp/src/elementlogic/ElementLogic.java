@@ -56,10 +56,15 @@ public class ElementLogic {
         stateColumnView.setCellValueFactory(new PropertyValueFactory<>("stateAfterRun"));
 
         stepsTableView.getColumns().addAll(stepColumnView,stateColumnView);
-        stepsTableView.setOnMouseClicked(e->rowClick(new ActionEvent()));
+        //stepsTableView.setOnMouseClicked(e->rowClick(new ActionEvent()));
         stepsTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         elementChoiceView.getChildren().add(stepsTableView);
         VBox.setVgrow(stepsTableView, Priority.ALWAYS);
+        stepsTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                rowSelect();
+            }
+        });
     }
 
     public void setTableOpacity(Double opacity) {
@@ -103,7 +108,7 @@ public class ElementLogic {
     }
 
     @FXML
-    private void rowClick(ActionEvent event)
+    private void rowSelect()
     {
         if(!stepsTableView.getSelectionModel().isEmpty()) {
             elementDetailsView.getChildren().clear();

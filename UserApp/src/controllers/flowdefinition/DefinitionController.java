@@ -53,6 +53,13 @@ public class DefinitionController {
     public void initialize() {
         addTable();
         selectedFlowDetails.getChildren().add(new Label("No data"));
+        flowTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null)
+                showFlowData(newSelection);
+            else
+                selectedFlowDetails.getChildren().clear();
+
+        });
     }
     public void fillTableData(List<AvailableFlowDTO> flowsList)
     {
@@ -120,7 +127,7 @@ public class DefinitionController {
 
         //addButtonToTable();
         flowTable.getColumns().forEach(column -> column.setMinWidth(100));
-        setTableClickFunction();
+        //setTableClickFunction();
         tableStack.getChildren().add(flowTable);
     }
 
@@ -176,14 +183,14 @@ public class DefinitionController {
 
     }
 
-    public void setTableClickFunction() {
-        flowTable.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 1 && !flowTable.getSelectionModel().isEmpty()) {
-                AvailableFlowDTO selectedRow = flowTable.getSelectionModel().getSelectedItem();
-                showFlowData(selectedRow);
-            }
-        });
-    }
+//    public void setTableClickFunction() {
+//        flowTable.setOnMouseClicked(event -> {
+//            if (event.getClickCount() == 1 && !flowTable.getSelectionModel().isEmpty()) {
+//                AvailableFlowDTO selectedRow = flowTable.getSelectionModel().getSelectedItem();
+//                showFlowData(selectedRow);
+//            }
+//        });
+//    }
 
     private void showFlowData(AvailableFlowDTO selectedRow) {
         String flowName = selectedRow.getName();

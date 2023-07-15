@@ -71,8 +71,6 @@ public class ExecutionController {
 
     private AppController appController;
 
-    private EngineApi engine;
-
     private List<Button> mandatoryInputButtons;
 
     private List<Button> optionalInputButtons;
@@ -121,11 +119,6 @@ public class ExecutionController {
         isAnimationsOn=new SimpleBooleanProperty();
         isAnimationsOn.bind(booleanProperty);
     }
-
-    public void setEngine(EngineApi engine) {
-        this.engine = engine;
-    }
-
 
 
     public void setTabView(InputsDTO inputsDTO,String flowName)

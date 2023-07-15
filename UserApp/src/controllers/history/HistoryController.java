@@ -53,7 +53,6 @@ public class HistoryController {
 
     private AppController appController;
 
-    private EngineApi engine;
 
 
     private TableView<FlowExecutionDTO> historyTableView;
@@ -109,6 +108,7 @@ public class HistoryController {
             } else {
                 reRunButton.setDisable(true);
                 continuationButton.setDisable(true);
+                elementLogic.clear();
             }
         });
 
@@ -173,9 +173,6 @@ public class HistoryController {
         elementLogic=new ElementLogic(elementChoiceView,elementDetailsView,stage);
     }
 
-    public void setEngine(EngineApi engine) {
-        this.engine = engine;
-    }
 
     @FXML
     void reRunFlow(ActionEvent event) {
