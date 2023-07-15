@@ -1,8 +1,10 @@
 package users;
 
 import dto.AvailableFlowDTO;
+import dto.FlowExecutionDTO;
 import dto.UserInfoDTO;
 import flow.Flow;
+import flow.FlowHistory;
 import roles.Role;
 
 import java.util.*;
@@ -17,7 +19,12 @@ public class User {
     private Map<String, Role> roles;
     private Map<String, Integer> flowsAppearance;
 
-    boolean isAllFlows;
+    private boolean isAllFlows;
+
+    private List<FlowHistory> flowsHistory;
+    private int historyVersion;
+
+
 
 
 
@@ -28,8 +35,10 @@ public class User {
         isManager = false;
         numOfFlowsPerformed = 0;
         flowsAppearance = new HashMap<>();
-        roles=new HashMap<>();
+        roles = new HashMap<>();
         isAllFlows = false;
+        flowsHistory = new ArrayList<>();
+        historyVersion = 0;
     }
 
     public void addFlow(Flow flow)
@@ -163,5 +172,15 @@ public class User {
         flowsAppearance.compute(flowName, (k, v) -> v == null ? 0 : v - 1);
         if(flowsAppearance.get(flowName) == 0)
             removeFlow(flowName);
+    }
+
+    public List<FlowExecutionDTO> getFlowsHistoryDelta(int historyVersion)
+    {
+        List<FlowExecutionDTO> flowsList = new ArrayList<>();
+        int delta = flowsHistory.size() - historyVersion;
+        for(int i = 0 ; i < delta ; i++) {
+            flowsList.add(flowsHistory.get(i).getFullData());
+        }
+        return flowsList;
     }
 }

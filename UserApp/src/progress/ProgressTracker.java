@@ -17,6 +17,8 @@ public class ProgressTracker extends Task<Boolean> {
 
     EngineApi engine;
 
+    private final Object progressTrackerLock = new Object();
+
     public ProgressTracker(AppController appController,EngineApi engine)
     {
         this.appController=appController;
@@ -25,21 +27,21 @@ public class ProgressTracker extends Task<Boolean> {
 
     public void setFlowId(String id)
     {
-        synchronized (currentFlowId) {
+        synchronized (progressTrackerLock) {
             currentFlowId = id;
         }
     }
 
     public void resetCurrentFlowId()
     {
-        synchronized (currentFlowId) {
+        synchronized (progressTrackerLock) {
             currentFlowId = null;
         }
     }
 
     public boolean finishedFollowingLastActivatedFlow()
     {
-        synchronized (currentFlowId){
+        synchronized (progressTrackerLock){
             return (currentFlowId!=null);
         }
     }
@@ -48,7 +50,7 @@ public class ProgressTracker extends Task<Boolean> {
     protected Boolean call() {
         while (appController != null) {
 
-            synchronized (currentFlowId) {
+            synchronized (progressTrackerLock) {
 
                 String finalUrl = HttpUrl
                         .parse(Constants.FULL_SERVER_PATH + "/get-progress")
