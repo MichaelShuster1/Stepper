@@ -619,7 +619,8 @@ public class Manager implements EngineApi, Serializable {
 
     @Override
     public ContinutionMenuDTO getContinuationMenuDTOByName(User user, String flowName) {
-        return user.getFlows().get(flowName).getContinutionMenuDTO();
+        int flowIndex=flowNames2Index.get(flowName);
+        return flows.get(flowIndex).getContinutionMenuDTO();
     }
 
     @Override
