@@ -80,7 +80,7 @@ public class AppController {
     private Label userRoles;
 
     @FXML
-    private HBox userDetailsView;
+    private Hyperlink hyperlink;
 
     private EngineApi engine;
 
@@ -90,7 +90,6 @@ public class AppController {
 
     private Timer timer;
 
-    private Hyperlink hyperlink;
 
 
     @FXML
@@ -282,44 +281,31 @@ public class AppController {
             }
 
             if(userInfoDTO.getRoles()!=null){
-
                 Set<String> roles=userInfoDTO.getRoles();
-
-                if(roles.size()>5){
-                    userRoles.setText("Assigned Roles: ");
-                    userDetailsView.getChildren().remove(hyperlink);
-                    hyperlink=new Hyperlink("Roles");
-                    ListView<String> listView=ElementLogic.createListView(Arrays.asList(roles.toArray()));
-                    hyperlink.setOnMouseClicked(e->showListPopUp(listView));
-                    HBox.setMargin(hyperlink,new Insets(0,0,0,-10));
-                    userDetailsView.getChildren().add(3,hyperlink);
+                if(roles.size()!=0)
+                {
+                    hyperlink.setDisable(false);
+                    hyperlink.setVisible(true);
+                    ListView<String> listView = ElementLogic.createListView(Arrays.asList(roles.toArray()));
+                    hyperlink.setOnMouseClicked(e -> ElementLogic.showNewPopUp(listView, primaryStage));
+                    HBox.setMargin(hyperlink, new Insets(0, 0, 0, -10));
                 }
                 else {
-                    userDetailsView.getChildren().remove(hyperlink);
-                    String text = roles.toString()
-                            .replace("[", " ")
-                            .replace("]", " ");
-
-                    userRoles.setText("Assigned Roles: " + text);
+                    hyperlink.setDisable(true);
+                    hyperlink.setVisible(false);
                 }
+
+
+                /*
+                userDetailsView.getChildren().remove(hyperlink);
+                String text = roles.toString()
+                        .replace("[", " ")
+                        .replace("]", " ");
+                userRoles.setText("Assigned Roles: " + text);
+                */
             }
         });
     }
-
-
-    private void showListPopUp(Parent root){
-        final Stage stage = new Stage();
-        stage.initOwner(primaryStage);
-        stage.initModality(Modality.APPLICATION_MODAL);
-        Scene scene = new Scene(root, 400, 300);
-        if(primaryStage.getScene().getStylesheets().size()!=0)
-            scene.getStylesheets().add(primaryStage.getScene().getStylesheets().get(0));
-        stage.setScene(scene);
-        stage.show();
-    }
-
-
-
 
 
     public void startUpdatesRefresher(){

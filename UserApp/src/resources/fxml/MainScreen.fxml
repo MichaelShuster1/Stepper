@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ScrollPane?>
@@ -34,7 +35,7 @@
                         </HBox>
                         <HBox fx:id="userDetailsView" alignment="BASELINE_LEFT" spacing="15.0" VBox.vgrow="NEVER">
                            <children>
-                              <Label fx:id="userName" alignment="BASELINE_LEFT" maxHeight="1.7976931348623157E308" text="Name:" HBox.hgrow="ALWAYS">
+                              <Label fx:id="userName" alignment="BASELINE_LEFT" text="Name:" HBox.hgrow="ALWAYS">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
@@ -50,7 +51,7 @@
                                     <Insets left="10.0" />
                                  </HBox.margin>
                               </Label>
-                              <Label fx:id="userRoles" maxWidth="1.7976931348623157E308" text="Assigned Roles:">
+                              <Label fx:id="userRoles" text="Assigned Roles:">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
@@ -58,6 +59,11 @@
                                     <Insets left="10.0" />
                                  </HBox.margin>
                               </Label>
+                              <Hyperlink fx:id="hyperlink" text="Roles">
+                                 <HBox.margin>
+                                    <Insets left="-10.0" />
+                                 </HBox.margin>
+                              </Hyperlink>
                               <Label maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
                               <RadioButton fx:id="animationsRadioButtonVIew" mnemonicParsing="false" text="Animations" />
                               <Label text="Style:" />

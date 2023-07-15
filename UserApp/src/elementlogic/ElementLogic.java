@@ -229,7 +229,7 @@ public class ElementLogic {
     }
 
 
-    private void showNewPopUp(Parent root)
+    public static void showNewPopUp(Parent root,Stage primaryStage)
     {
         final Stage stage = new Stage();
         stage.initOwner(primaryStage);
@@ -264,7 +264,7 @@ public class ElementLogic {
 
     private void relationPopUp(Relation data) {
 
-        showNewPopUp(createTableView(data));
+        showNewPopUp(createTableView(data),primaryStage);
     }
 
     private void listPopUp(List<Object> data)
@@ -275,10 +275,10 @@ public class ElementLogic {
             label.setFont(Font.font("System", FontWeight.BOLD,15));
             BorderPane borderPane =new BorderPane();
             borderPane.setCenter(label);
-            showNewPopUp(borderPane);
+            showNewPopUp(borderPane,primaryStage);
         }
         else
-            showNewPopUp(createListView(data));
+            showNewPopUp(createListView(data),primaryStage);
     }
 
 
@@ -319,7 +319,6 @@ public class ElementLogic {
             addKeyValueLine("Flow total run time: " , flowExecutionDTO.getRunTime() + " ms");
         else
             addKeyProgressIndicator("Flow total run time: ");
-            //addKeyValueLine("Flow total run time: " ,  "flow is still running");
 
 
         addTitleLine("\n\nFREE INPUTS THAT RECEIVED DATA:\n");
