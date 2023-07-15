@@ -70,4 +70,6 @@ public interface EngineApi {
     void updateRole(String roleName, Set<String> flowNames, Map<String, User> users);
 
     RoleInfoDTO getRoleInfo(String roleName);
+
+    List<FlowExecutionDTO> getFlowsHistoryDeltaFromUser(int historyVersion, User user);
 }

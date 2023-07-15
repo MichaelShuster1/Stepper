@@ -2,8 +2,10 @@ package users;
 
 import dto.AvailableFlowDTO;
 import dto.FlowExecutionDTO;
+import dto.UserDetailsDTO;
 import dto.UserInfoDTO;
 import flow.Flow;
+import flow.FlowExecution;
 import flow.FlowHistory;
 import roles.Role;
 
@@ -19,8 +21,6 @@ public class User {
     private Map<String, Integer> flowsAppearance;
     private boolean isAllFlows;
     private List<FlowHistory> flowsHistory;
-    private int historyVersion;
-
 
 
 
@@ -35,7 +35,6 @@ public class User {
         roles = new HashMap<>();
         isAllFlows = false;
         flowsHistory = new ArrayList<>();
-        historyVersion = 0;
     }
 
     public void addFlow(Flow flow)
@@ -107,7 +106,7 @@ public class User {
             rolesSet.remove("All Flows");
         UserDetailsDTO userDetailsDTO=new UserDetailsDTO(name,isManager);
         return new UserInfoDTO(userDetailsDTO,flows.keySet().size(),numOfFlowsPerformed,
-                rolesSet,historyVersion);
+                rolesSet,flowsHistory.size());
     }
 
     public void addFlowAppearance (String flowName) {
@@ -180,5 +179,9 @@ public class User {
             flowsList.add(flowsHistory.get(i).getFullData());
         }
         return flowsList;
+    }
+
+    public void addFlowHistory(FlowHistory flowHistory) {
+        flowsHistory.add(0, flowHistory);
     }
 }

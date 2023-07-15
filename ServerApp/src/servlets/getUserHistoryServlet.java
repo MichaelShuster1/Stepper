@@ -1,17 +1,66 @@
 package servlets;
 
+import com.google.gson.JsonArray;
+import dto.FlowExecutionDTO;
+import dto.ResultDTO;
+import dto.StatisticsDTO;
+import enginemanager.EngineApi;
+import enginemanager.Manager;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import users.User;
+import users.UserManager;
+import utils.Constants;
+import utils.ServletUtils;
+import utils.SessionUtils;
 
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet("/get-history")
 public class getUserHistoryServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //do something
+        String usernameFromSession = SessionUtils.getUsername(request);
+        if(ServletUtils.checkAuthorization(usernameFromSession, response)) {
+            response.setContentType(Constants.JSON_FORMAT);
+            EngineApi engine =(Manager)getServletContext().getAttribute(Constants.FLOW_MANAGER);
+            UserManager userManager = ServletUtils.getUserManager(getServletContext());
+            String rawVersion = request.getParameter("historyVersion");
+
+            if(rawVersion==null){
+                ResultDTO resultDTO=new ResultDTO(Constants.INVALID_PARAMETER);
+                response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            }
+            else {
+                int historyVersion = -1;
+                try {
+                    historyVersion = Integer.parseInt(rawVersion);
+                    JsonArray jsonArray = new JsonArray();
+                    synchronized (this) {
+                        User user = userManager.getUser(usernameFromSession);
+                        List<FlowExecutionDTO> flowHistoryList;
+                        if(user.isManager())
+                            flowHistoryList = engine.getFlowsHistoryDelta(historyVersion);
+                        else
+                            flowHistoryList = engine.getFlowsHistoryDeltaFromUser(historyVersion, user);
+
+                        jsonArray.add(Constants.GSON_INSTANCE.toJson(flowHistoryList));
+                        StatisticsDTO statisticsDTO = engine.getStatistics();
+                        jsonArray.add(Constants.GSON_INSTANCE.toJson(statisticsDTO));
+                        response.setStatus(HttpServletResponse.SC_OK);
+                        response.getWriter().print(jsonArray);
+                    }
+                } catch (Exception e) {
+                    ResultDTO resultDTO = new ResultDTO(Constants.INVALID_PARAMETER);
+                    response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                }
+            }
+        }
     }
 }

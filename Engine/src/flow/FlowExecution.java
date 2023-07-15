@@ -96,7 +96,7 @@ public class FlowExecution implements  Runnable {
         user.incrementNumOfFlowsPerformed();
         synchronized (manager)
         {
-            manager.addFlowHistory(this);
+            user.addFlowHistory(manager.addFlowHistory(this));
             manager.addStatistics(this);
             manager.setHistoryVersion(manager.getHistoryVersion() + 1);
         }

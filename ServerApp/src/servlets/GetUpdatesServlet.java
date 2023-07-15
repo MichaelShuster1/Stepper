@@ -34,26 +34,24 @@ public class GetUpdatesServlet extends HttpServlet {
             response.getWriter().print(gson.toJson(resultDTO));
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
-
-        int historyVersion=-1;
-        try{
-            historyVersion=Integer.parseInt(rawVersion);
-        }
-        catch (Exception e)
-        {
-            ResultDTO resultDTO=new ResultDTO(Constants.INVALID_PARAMETER);
-            response.getWriter().print(gson.toJson(resultDTO));
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        }
-
-        JsonArray jsonArray=new JsonArray();
-        synchronized (this) {
-            List<FlowExecutionDTO> flowHistoryList = engine.getFlowsHistoryDelta(historyVersion);
-            jsonArray.add(gson.toJson(flowHistoryList));
-            StatisticsDTO statisticsDTO = engine.getStatistics();
-            jsonArray.add(gson.toJson(statisticsDTO));
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.getWriter().print(jsonArray.toString());
+        else {
+            int historyVersion = -1;
+            try {
+                historyVersion = Integer.parseInt(rawVersion);
+                JsonArray jsonArray = new JsonArray();
+                synchronized (this) {
+                    List<FlowExecutionDTO> flowHistoryList = engine.getFlowsHistoryDelta(historyVersion);
+                    jsonArray.add(gson.toJson(flowHistoryList));
+                    StatisticsDTO statisticsDTO = engine.getStatistics();
+                    jsonArray.add(gson.toJson(statisticsDTO));
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    response.getWriter().print(jsonArray);
+                }
+            } catch (Exception e) {
+                ResultDTO resultDTO = new ResultDTO(Constants.INVALID_PARAMETER);
+                response.getWriter().print(gson.toJson(resultDTO));
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            }
         }
     }
 }

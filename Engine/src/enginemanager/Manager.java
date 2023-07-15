@@ -553,10 +553,11 @@ public class Manager implements EngineApi, Serializable {
 
 
 
-    public void addFlowHistory(FlowExecution currentFlow) {
+    public FlowHistory addFlowHistory(FlowExecution currentFlow) {
         FlowHistory flowHistory = new FlowHistory(currentFlow.getName(),
                 currentFlow.getFlowId(), currentFlow.getActivationTime(), currentFlow.getFlowHistoryData());
         flowsHistory.add(0, flowHistory);
+        return flowHistory;
     }
 
     public void addStatistics(FlowExecution currentFlow) {
@@ -740,4 +741,10 @@ public class Manager implements EngineApi, Serializable {
             }
         }
     }
+
+    @Override
+    public List<FlowExecutionDTO> getFlowsHistoryDeltaFromUser(int historyVersion, User user) {
+        return user.getFlowsHistoryDelta(historyVersion);
+    }
+
 }
