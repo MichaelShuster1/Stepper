@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import dto.AvailableFlowDTO;
+import dto.UserDetailsDTO;
 import dto.UserInfoDTO;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -96,15 +97,17 @@ public class UpdatesRefresher extends TimerTask {
         boolean change=false;
         String RESOURCE ="/get-history";
 
+        UserDetailsDTO userDetails=userInfo.getUserDetailsDTO();
 
-        if(userInfo.getManager()!=isManager){
+
+        if(userDetails.getManager()!=isManager){
             historyVersion=0;
-            isManager= userInfo.getManager();
+            isManager= userDetails.getManager();
             change=true;
         }
 
 
-        if(userInfo.getVersion()<historyVersion||change){
+        if(userInfo.getHistoryVersion()<historyVersion||change){
             HttpUrl.Builder urlBuilder = HttpUrl.parse(Constants.FULL_SERVER_PATH + RESOURCE)
                     .newBuilder()
                     .addQueryParameter("historyVersion", Integer.toString(historyVersion));

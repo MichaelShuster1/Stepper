@@ -15,12 +15,9 @@ public class User {
     private int numOfFlowsPerformed;
     private Map<String, Flow> flows;
     private Flow currentFlow;
-
     private Map<String, Role> roles;
     private Map<String, Integer> flowsAppearance;
-
     private boolean isAllFlows;
-
     private List<FlowHistory> flowsHistory;
     private int historyVersion;
 
@@ -108,8 +105,9 @@ public class User {
             rolesSet.add("All Flows");
         else
             rolesSet.remove("All Flows");
-        return new UserInfoDTO(name,flows.keySet().size(),numOfFlowsPerformed,
-                rolesSet,isManager);
+        UserDetailsDTO userDetailsDTO=new UserDetailsDTO(name,isManager);
+        return new UserInfoDTO(userDetailsDTO,flows.keySet().size(),numOfFlowsPerformed,
+                rolesSet,historyVersion);
     }
 
     public void addFlowAppearance (String flowName) {

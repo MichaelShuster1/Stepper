@@ -4,6 +4,7 @@ import controllers.flowdefinition.DefinitionController;
 import controllers.history.HistoryController;
 import dto.FlowExecutionDTO;
 import dto.InputsDTO;
+import dto.UserDetailsDTO;
 import dto.UserInfoDTO;
 import enginemanager.EngineApi;
 import enginemanager.Manager;
@@ -259,11 +260,12 @@ public class AppController {
     }
 
     public void updateUserInfo(UserInfoDTO userInfoDTO){
+        UserDetailsDTO userDetails=userInfoDTO.getUserDetailsDTO();
         Platform.runLater(()->{
 
-            if(userInfoDTO.getManager()!=null){
+            if(userDetails.getManager()!=null){
 
-                if (userInfoDTO.getManager()) {
+                if (userDetails.getManager()) {
                     isManager.setText("Is Manager: Yes");
                 }
                 else {
