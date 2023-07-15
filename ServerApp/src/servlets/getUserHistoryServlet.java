@@ -40,7 +40,6 @@ public class getUserHistoryServlet extends HttpServlet {
                 int historyVersion = -1;
                 try {
                     historyVersion = Integer.parseInt(rawVersion);
-                    JsonArray jsonArray = new JsonArray();
                     synchronized (this) {
                         User user = userManager.getUser(usernameFromSession);
                         List<FlowExecutionDTO> flowHistoryList;
@@ -49,7 +48,6 @@ public class getUserHistoryServlet extends HttpServlet {
                         else
                             flowHistoryList = engine.getFlowsHistoryDeltaFromUser(historyVersion, user);
 
-                        //jsonArray.add(Constants.GSON_INSTANCE.toJson(flowHistoryList));
                         response.setStatus(HttpServletResponse.SC_OK);
                         response.getWriter().print(Constants.GSON_INSTANCE.toJson(flowHistoryList));
                     }

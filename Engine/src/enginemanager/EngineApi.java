@@ -72,4 +72,6 @@ public interface EngineApi {
     RoleInfoDTO getRoleInfo(String roleName);
 
     List<FlowExecutionDTO> getFlowsHistoryDeltaFromUser(int historyVersion, User user);
+
+    int getHistoryVersion();
 }

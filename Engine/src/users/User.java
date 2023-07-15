@@ -109,6 +109,24 @@ public class User {
                 rolesSet,flowsHistory.size());
     }
 
+    public UserInfoDTO getUserInformation(int totalHistory)
+    {
+        Set<String> rolesSet = new HashSet<>();
+        rolesSet.addAll(roles.keySet());
+        int currentVersion;
+        if (isManager)
+            currentVersion = totalHistory;
+        else
+            currentVersion = flowsHistory.size();
+        if(isAllFlows)
+            rolesSet.add("All Flows");
+        else
+            rolesSet.remove("All Flows");
+        UserDetailsDTO userDetailsDTO=new UserDetailsDTO(name,isManager);
+        return new UserInfoDTO(userDetailsDTO,flows.keySet().size(),numOfFlowsPerformed,
+                rolesSet,currentVersion);
+    }
+
     public void addFlowAppearance (String flowName) {
         flowsAppearance.compute(flowName, (k, v) -> v == null ? 1 : v + 1);
     }

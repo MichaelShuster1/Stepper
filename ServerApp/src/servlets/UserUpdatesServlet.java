@@ -34,7 +34,8 @@ public class UserUpdatesServlet extends HttpServlet {
                 User user=userManager.getUser(usernameFromSession);
                 JsonArray jsonArray=new JsonArray();
                 List<AvailableFlowDTO> flows = engine.getAvailableFlows(user);
-                UserInfoDTO userInfoDTO=user.getUserInformation();
+                int currentVersion = engine.getHistoryVersion();
+                UserInfoDTO userInfoDTO=user.getUserInformation(currentVersion);
                 jsonArray.add(gson.toJson(flows));
                 jsonArray.add(gson.toJson(userInfoDTO));
                 response.getWriter().print(jsonArray.toString());
