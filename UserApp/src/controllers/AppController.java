@@ -2,16 +2,15 @@ package controllers;
 
 import controllers.flowdefinition.DefinitionController;
 import controllers.history.HistoryController;
-import dto.FlowExecutionDTO;
-import dto.InputsDTO;
-import dto.UserDetailsDTO;
-import dto.UserInfoDTO;
+import dto.*;
 import enginemanager.EngineApi;
 import enginemanager.Manager;
 import controllers.flowexecution.ExecutionController;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -28,6 +27,7 @@ import utils.HttpClientUtil;
 import java.io.IOException;
 import java.util.Set;
 import java.util.Timer;
+import java.util.function.Predicate;
 
 public class AppController {
 
@@ -80,10 +80,7 @@ public class AppController {
 
     private Stage primaryStage;
 
-    private boolean tabClicked;
-
     private Timer timer;
-
 
 
     @FXML
@@ -96,23 +93,26 @@ public class AppController {
         styleChoiceView.setValue(Styles.DEFAULT.toString());
         styleChoiceView.setOnAction(e->setStyle());
         setTab(2);
-        tabClicked=true;
 
 
         tabPaneView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
             @Override
             public void changed(ObservableValue<? extends Tab> observable, Tab oldTab, Tab newTab) {
-                if (newTab != null) {
-                    String tabTitle = newTab.getText();
-                    if(tabTitle.equals("Flows Execution")&&tabClicked) {
+                if(oldTab!=null){
+                    String tabTitle =oldTab.getText();
+                    if(tabTitle.equals("Flows Execution") && executionComponentController.isAfterRun()){
                         if(progressTracker.finishedFollowingLastActivatedFlow())
                             executionComponentController.clearTab();
                     }
                 }
-                tabClicked =true;
             }
         });
     }
+
+    public boolean canRunFlow(String flowName){
+        return definitionComponentController.canRunFlow(flowName);
+    }
+
 
 
     private void setStyle() {
@@ -190,7 +190,6 @@ public class AppController {
 
     public void streamFlow(String flowName) {
         progressTracker.resetCurrentFlowId();
-        //int index =engine.getFlowIndexByName(flowName);
         String finalUrl = HttpUrl
                 .parse(Constants.FULL_SERVER_PATH + "/get-inputs")
                 .newBuilder()
@@ -214,7 +213,6 @@ public class AppController {
                         InputsDTO inputsDTO = Constants.GSON_INSTANCE.fromJson(jsonInputs, InputsDTO.class);
                         Platform.runLater(() -> {
                             executionComponentController.setTabView(inputsDTO,flowName);
-                            tabClicked=false;
                             setTab(1);
                         });
                     }

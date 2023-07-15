@@ -5,6 +5,8 @@ import dto.*;
 import elementlogic.ElementLogic;
 import enginemanager.EngineApi;
 import javafx.application.Platform;
+import javafx.beans.Observable;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -28,6 +30,7 @@ import utils.HttpClientUtil;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public class HistoryController {
     @FXML
@@ -66,8 +69,6 @@ public class HistoryController {
     private ElementLogic elementLogic;
 
 
-
-
     @FXML
     public void initialize() {
 
@@ -98,10 +99,13 @@ public class HistoryController {
         continuationButton.setDisable(true);
 
 
+
         historyTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
-                reRunButton.setDisable(false);
-                checkIfContinuationsAvailable(historyTableView.getSelectionModel().getSelectedItem());
+                FlowExecutionDTO flowExecutionDTO=historyTableView.getSelectionModel().getSelectedItem();
+                reRunButton.setDisable(!appController.canRunFlow(flowExecutionDTO.getName()));
+                checkIfContinuationsAvailable(flowExecutionDTO);
+                elementLogic.setElementDetailsView(flowExecutionDTO);
             } else {
                 reRunButton.setDisable(true);
                 continuationButton.setDisable(true);
@@ -110,6 +114,7 @@ public class HistoryController {
 
 
     }
+
 
     private void showErrorAlert(String message) {
         Alert alert =new Alert(Alert.AlertType.ERROR);
