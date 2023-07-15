@@ -100,7 +100,9 @@ public class HistoryController {
         historyTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
                 reRunButton.setDisable(false);
-                checkIfContinuationsAvailable(historyTableView.getSelectionModel().getSelectedItem());
+                FlowExecutionDTO flowExecutionDTO=historyTableView.getSelectionModel().getSelectedItem();
+                checkIfContinuationsAvailable(flowExecutionDTO);
+                elementLogic.setElementDetailsView(flowExecutionDTO);
             } else {
                 reRunButton.setDisable(true);
                 continuationButton.setDisable(true);

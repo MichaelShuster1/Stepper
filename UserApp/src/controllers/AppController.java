@@ -190,7 +190,6 @@ public class AppController {
 
     public void streamFlow(String flowName) {
         progressTracker.resetCurrentFlowId();
-        //int index =engine.getFlowIndexByName(flowName);
         String finalUrl = HttpUrl
                 .parse(Constants.FULL_SERVER_PATH + "/get-inputs")
                 .newBuilder()
