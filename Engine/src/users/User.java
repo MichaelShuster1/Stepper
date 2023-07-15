@@ -1,6 +1,7 @@
 package users;
 
 import dto.AvailableFlowDTO;
+import dto.UserDetailsDTO;
 import dto.UserInfoDTO;
 import flow.Flow;
 import roles.Role;
@@ -13,13 +14,10 @@ public class User {
     private int numOfFlowsPerformed;
     private Map<String, Flow> flows;
     private Flow currentFlow;
-
     private Map<String, Role> roles;
     private Map<String, Integer> flowsAppearance;
-
-    boolean isAllFlows;
-
-
+    private boolean isAllFlows;
+    private int historyVersion;
 
     public User(String name) {
         this.name = name;
@@ -30,6 +28,7 @@ public class User {
         flowsAppearance = new HashMap<>();
         roles=new HashMap<>();
         isAllFlows = false;
+        historyVersion=0;
     }
 
     public void addFlow(Flow flow)
@@ -99,8 +98,9 @@ public class User {
             rolesSet.add("All Flows");
         else
             rolesSet.remove("All Flows");
-        return new UserInfoDTO(name,flows.keySet().size(),numOfFlowsPerformed,
-                rolesSet,isManager);
+        UserDetailsDTO userDetailsDTO=new UserDetailsDTO(name,isManager);
+        return new UserInfoDTO(userDetailsDTO,flows.keySet().size(),numOfFlowsPerformed,
+                rolesSet,historyVersion);
     }
 
     public void addFlowAppearance (String flowName) {
@@ -128,7 +128,6 @@ public class User {
         role.removeUser(name);
     }
 
-
     public Map<String, Role> getRoles() {
         return roles;
     }
@@ -151,7 +150,6 @@ public class User {
             addFlowAppearance(flow.getName());
         }
     }
-
 
     public boolean haveRole(String roleName) {
         if(roleName.equals("All Flows"))

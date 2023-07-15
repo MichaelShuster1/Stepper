@@ -3,24 +3,22 @@ package dto;
 import java.util.Set;
 
 public class UserInfoDTO {
-    private final String name;
+
+    private final  UserDetailsDTO userDetailsDTO;
     private final Integer numOfDefinedFlows;
     private final Integer numOfFlowsPerformed;
     private final Set<String> roles;
-    private final Boolean isManager;
+    private final int historyVersion;
 
-    public UserInfoDTO(String name, Integer numOfDefinedFlows, Integer numOfFlowsPerformed,
-                       Set<String> roles,Boolean isManager) {
-        this.name = name;
+    public UserInfoDTO(UserDetailsDTO userDetailsDTO, Integer numOfDefinedFlows, Integer numOfFlowsPerformed,
+                       Set<String> roles,int historyVersion) {
         this.numOfDefinedFlows = numOfDefinedFlows;
         this.numOfFlowsPerformed = numOfFlowsPerformed;
         this.roles = roles;
-        this.isManager=isManager;
+        this.userDetailsDTO=userDetailsDTO;
+        this.historyVersion=historyVersion;
     }
 
-    public String getName() {
-        return name;
-    }
 
     public Integer getNumOfDefinedFlows() {
         return numOfDefinedFlows;
@@ -34,7 +32,11 @@ public class UserInfoDTO {
         return roles;
     }
 
-    public Boolean getManager() {
-        return isManager;
+    public UserDetailsDTO getUserDetailsDTO() {
+        return userDetailsDTO;
+    }
+
+    public int getHistoryVersion() {
+        return historyVersion;
     }
 }
