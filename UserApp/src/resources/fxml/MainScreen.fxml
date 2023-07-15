@@ -59,7 +59,7 @@
                                     <Insets left="10.0" />
                                  </HBox.margin>
                               </Label>
-                              <Hyperlink fx:id="hyperlink" text="Roles">
+                              <Hyperlink fx:id="hyperlink" disable="true" text="Roles" visible="false">
                                  <HBox.margin>
                                     <Insets left="-10.0" />
                                  </HBox.margin>
