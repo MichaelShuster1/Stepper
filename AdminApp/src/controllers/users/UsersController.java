@@ -49,7 +49,7 @@ public class UsersController {
                 if (empty || userInfoDTO == null) {
                     setText(null);
                 } else {
-                    setText(userInfoDTO.getName());
+                    setText(userInfoDTO.getUserDetailsDTO().getUserName());
                 }
             }
         });
@@ -123,7 +123,7 @@ public class UsersController {
                 UserInfoDTO selectedUser=usersListView.getSelectionModel().getSelectedItem();
                 String selectedUserName=null;
                 if(selectedUser!=null)
-                    selectedUserName=selectedUser.getName();
+                    selectedUserName=selectedUser.getUserDetailsDTO().getUserName();
 
                 Collection<UserInfoDTO> usersFromList=usersListView.getItems();
 
@@ -134,7 +134,7 @@ public class UsersController {
                 if(selectedUserName!=null){
                     int index=0,size=usersFromList.size();
                     for(UserInfoDTO user:usersFromList) {
-                        if(user.getName().equals(selectedUserName)) {
+                        if(user.getUserDetailsDTO().getUserName().equals(selectedUserName)) {
                             usersListView.getSelectionModel().select(index);
                             //rowClick(new ActionEvent());
                         }
@@ -178,7 +178,7 @@ public class UsersController {
         if(!usersListView.getSelectionModel().isEmpty()) {
             userSelectedView.getChildren().clear();
             UserInfoDTO userInfoDTO=usersListView.getSelectionModel().getSelectedItem();
-            userName=userInfoDTO.getName();
+            userName=userInfoDTO.getUserDetailsDTO().getUserName();
             addTitleLine(userName);
             addKeyValueLine("Number of flows that the user can run: "
                     , userInfoDTO.getNumOfDefinedFlows().toString());
@@ -186,7 +186,7 @@ public class UsersController {
                     ,userInfoDTO.getNumOfFlowsPerformed().toString());
 
             addTitleLine("MANAGER:");
-            checkBoxManager.setSelected(userInfoDTO.getManager());
+            checkBoxManager.setSelected(userInfoDTO.getUserDetailsDTO().getManager());
             addCheckBox(checkBoxManager);
 
             addTitleLine("ROLES:");
