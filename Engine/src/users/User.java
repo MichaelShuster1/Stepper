@@ -202,4 +202,9 @@ public class User {
     public void addFlowHistory(FlowHistory flowHistory) {
         flowsHistory.add(0, flowHistory);
     }
+
+    public synchronized boolean havePermissionForFlow(String flowName) {
+        return flows.containsKey(flowName);
+    }
+
 }

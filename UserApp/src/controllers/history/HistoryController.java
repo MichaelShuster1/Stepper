@@ -8,6 +8,7 @@ import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
@@ -312,7 +313,8 @@ public class HistoryController {
                     Platform.runLater(() -> {
                         Optional<String> result = Optional.empty();
                         ChoiceBox<String> continuationChoice = new ChoiceBox<>();
-                        continuationChoice.getItems().addAll(continutionMenuDTO.getTargetFlows());
+                        if(continutionMenuDTO != null)
+                              continuationChoice.getItems().addAll(continutionMenuDTO.getTargetFlows());
                         continuationChoice.setStyle("-fx-pref-width: 200px;");
 
                         HBox hbox = new HBox(10, new Label("Available Continuations:"), continuationChoice);
