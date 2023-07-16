@@ -615,8 +615,12 @@ public class Manager implements EngineApi, Serializable {
     @Override
     public ContinutionMenuDTO getContinutionMenuDTO(User user) {
         ContinutionMenuDTO continutionMenuDTO = user.getCurrentFlow().getContinutionMenuDTO();
-        List<String> flowsList = filterAllowedUserFlows(continutionMenuDTO.getTargetFlows(), user);
-        return checkContinuationsAfterFilter(flowsList);
+        if(continutionMenuDTO != null) {
+            List<String> flowsList = filterAllowedUserFlows(continutionMenuDTO.getTargetFlows(), user);
+            return checkContinuationsAfterFilter(flowsList);
+        }
+        else
+            return null;
     }
 
 
@@ -641,8 +645,12 @@ public class Manager implements EngineApi, Serializable {
     public ContinutionMenuDTO getContinuationMenuDTOByName(User user, String flowName) {
         int flowIndex = flowNames2Index.get(flowName);
         ContinutionMenuDTO continutionMenuDTO =  flows.get(flowIndex).getContinutionMenuDTO();
-        List<String> flowsList = filterAllowedUserFlows(continutionMenuDTO.getTargetFlows(), user);
-        return checkContinuationsAfterFilter(flowsList);
+        if(continutionMenuDTO != null) {
+            List<String> flowsList = filterAllowedUserFlows(continutionMenuDTO.getTargetFlows(), user);
+            return checkContinuationsAfterFilter(flowsList);
+        }
+        else
+            return null;
     }
 
     @Override
