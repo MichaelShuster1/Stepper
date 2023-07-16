@@ -85,6 +85,8 @@ public class ExecutionController {
 
     private boolean afterRun;
 
+    private String flowName;
+
 
 
     @FXML
@@ -95,11 +97,16 @@ public class ExecutionController {
         isClicked = false;
         afterRun=false;
         rerunButton=new Button("Rerun flow");
+        flowName=null;
         HBox.setMargin(rerunButton,new Insets(0,10,0,0));
     }
 
     public boolean isAfterRun() {
         return afterRun;
+    }
+
+    public String getFlowName() {
+        return flowName;
     }
 
     public void setAppController(AppController appController)
@@ -172,6 +179,7 @@ public class ExecutionController {
         }
         executeButton.setDisable(numberOfInsertedMandatoryInputs != numberOfMandatoryInputs);
         flowInfoView.setText(flowName+" Flow info");
+        this.flowName=flowName;
     }
 
     public void clearTab() {
@@ -186,7 +194,8 @@ public class ExecutionController {
             hBoxView.getChildren().remove(rerunButton);
             hBoxView.getChildren().add(executeButton);
         }
-
+        flowName=null;
+        executeButton.setDisable(true);
     }
 
     public void clearInputButtons(){
