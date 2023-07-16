@@ -36,10 +36,10 @@ public class RerunServlet extends HttpServlet {
                     Type listType = new TypeToken<List<FreeInputExecutionDTO>>() {
                     }.getType();
                     List<FreeInputExecutionDTO> inputs = Constants.GSON_INSTANCE.fromJson(jsonInputs, listType);
-                    synchronized (this) {
+                    //synchronized (this) {
                         engine.reUseInputsData(userManager.getUser(usernameFromSession), inputs, flowName);
                         response.setStatus(HttpServletResponse.SC_OK);
-                    }
+                   // }
                 }
                 catch (Exception e) {
                     response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

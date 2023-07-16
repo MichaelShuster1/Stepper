@@ -20,7 +20,7 @@ public class RunFlowServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String usernameFromSession = SessionUtils.getUsername(request);
         if(ServletUtils.checkAuthorization(usernameFromSession, response)) {
-            synchronized (this){
+           // synchronized (this){
                 EngineApi engine = (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
                 User user = ServletUtils.getUserManager(getServletContext()).getUser(usernameFromSession);
                 try {
@@ -32,7 +32,7 @@ public class RunFlowServlet extends HttpServlet {
                 catch (Exception e) {
                     ServletUtils.returnBadRequest(response);
                 }
-            }
+           // }
         }
     }
 }

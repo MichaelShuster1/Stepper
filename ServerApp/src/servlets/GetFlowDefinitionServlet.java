@@ -29,7 +29,7 @@ public class GetFlowDefinitionServlet extends HttpServlet {
                 ServletUtils.returnBadRequest(response);
             } else {
                 EngineApi engine = (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
-                synchronized (this) {
+                //synchronized (this) {
                     try {
                         FlowDefinitionDTO res = engine.getFlowDefinition(flowName);
                         response.setStatus(HttpServletResponse.SC_OK);
@@ -39,7 +39,7 @@ public class GetFlowDefinitionServlet extends HttpServlet {
                     catch (Exception e) {
                         ServletUtils.returnBadRequest(response);
                     }
-                }
+               // }
             }
         }
 

@@ -32,7 +32,7 @@ public class InputParametersServlet extends HttpServlet {
                 ServletUtils.returnBadRequest(response);
             }
             else {
-                synchronized (this){ //maybe synchronized is not necessary here (need to verify that later)
+               // synchronized (this){ //maybe synchronized is not necessary here (need to verify that later)
                     EngineApi engine = (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
                     User user = ServletUtils.getUserManager(getServletContext()).getUser(usernameFromSession);
                     try {
@@ -43,7 +43,7 @@ public class InputParametersServlet extends HttpServlet {
                     catch (Exception e) {
                         ServletUtils.returnBadRequest(response);
                     }
-                }
+              //  }
             }
         }
     }

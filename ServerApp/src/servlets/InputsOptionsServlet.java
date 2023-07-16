@@ -28,7 +28,7 @@ public class InputsOptionsServlet extends HttpServlet {
             } else {
                 EngineApi engine = (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
                 UserManager userManager = ServletUtils.getUserManager(getServletContext());
-                synchronized (this) {
+               // synchronized (this) {
                     try {
                         String data = engine.getInputData(userManager.getUser(usernameFromSession), buttonId).getData();
                         response.setStatus(HttpServletResponse.SC_OK);
@@ -37,7 +37,7 @@ public class InputsOptionsServlet extends HttpServlet {
                     catch (Exception e) {
                         ServletUtils.returnBadRequest(response);
                     }
-                }
+              //  }
             }
         }
     }
@@ -53,11 +53,11 @@ public class InputsOptionsServlet extends HttpServlet {
             } else {
                 EngineApi engine = (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
                 UserManager userManager = ServletUtils.getUserManager(getServletContext());
-                synchronized (this) {
+                //synchronized (this) {
                     Boolean necessity =engine.clearInputData(userManager.getUser(usernameFromSession) , buttonId).getNecessity();
                     response.setStatus(HttpServletResponse.SC_OK);
                     response.getWriter().println(Constants.GSON_INSTANCE.toJson(necessity));
-                }
+               // }
             }
         }
     }
