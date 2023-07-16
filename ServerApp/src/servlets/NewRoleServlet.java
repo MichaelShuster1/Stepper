@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import utils.Constants;
+import utils.ServletUtils;
 
 import java.io.IOException;
 
@@ -19,9 +20,7 @@ public class NewRoleServlet extends HttpServlet {
         response.setContentType(Constants.JSON_FORMAT);
         String jsonRole = request.getParameter("newRole");
         if(jsonRole == null) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            ResultDTO resultDTO=new ResultDTO(Constants.INVALID_PARAMETER);
-            response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
+            ServletUtils.returnBadRequest(response);
         }
         else {
             EngineApi engine = (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);

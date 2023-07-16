@@ -5,7 +5,10 @@ import dto.ResultDTO;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import okhttp3.Response;
 import users.UserManager;
+
+import java.io.IOException;
 
 
 public class ServletUtils {
@@ -39,5 +42,13 @@ public class ServletUtils {
 		}
 		return true;
 	}
+
+	public static void returnBadRequest(HttpServletResponse response) throws IOException {
+		response.setContentType(Constants.JSON_FORMAT);
+		ResultDTO resultDTO=new ResultDTO(Constants.INVALID_PARAMETER);
+		response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
+		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+	}
+
 
 }

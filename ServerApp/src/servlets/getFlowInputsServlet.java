@@ -25,18 +25,20 @@ public class getFlowInputsServlet extends HttpServlet {
             response.setContentType(Constants.JSON_FORMAT);
             String flowName = request.getParameter(Constants.FLOW_NAME);
             if (flowName == null) {
-                response.setContentType(Constants.JSON_FORMAT);
-                ResultDTO resultDTO=new ResultDTO(Constants.INVALID_PARAMETER);
-                response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                ServletUtils.returnBadRequest(response);
             } else {
                 EngineApi engine = (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
                 UserManager userManager = ServletUtils.getUserManager(getServletContext());
                 synchronized (this) {
-                    InputsDTO inputsDTO = engine.getFlowInputs(userManager.getUser(usernameFromSession), flowName);
-                    response.setStatus(HttpServletResponse.SC_OK);
-                    Gson gson = new Gson();
-                    response.getWriter().println(gson.toJson(inputsDTO));
+                    try {
+                        InputsDTO inputsDTO = engine.getFlowInputs(userManager.getUser(usernameFromSession), flowName);
+                        response.setStatus(HttpServletResponse.SC_OK);
+                        Gson gson = new Gson();
+                        response.getWriter().println(gson.toJson(inputsDTO));
+                    }
+                    catch (Exception e) {
+                        ServletUtils.returnBadRequest(response);
+                    }
                 }
             }
         }

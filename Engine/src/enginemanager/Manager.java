@@ -771,4 +771,33 @@ public class Manager implements EngineApi, Serializable {
         return user.getFlowsHistoryDelta(historyVersion);
     }
 
+
+    @Override
+    public boolean checkParameterValidity(String parameter, String type ,User user) {
+        boolean res = false;
+        switch (type) {
+            case "flowName":
+                res = flowNames2Index.containsKey(parameter);
+                break;
+            case "flowID":
+                res = flowExecutions.containsKey(parameter);
+                break;
+            case "version":
+                try {
+                    int version = Integer.parseInt(parameter);
+                    res = version >= 0;
+                }
+                catch (Exception e) {
+                    res = false;
+                }
+                break;
+            case "inputName":
+                res = user.getCurrentFlow().checkIfFlowContainsFreeInput(parameter);
+                break;
+            case "roleName":
+                res = roleManager.isRoleExist(parameter);
+                break;
+        }
+        return res;
+    }
 }

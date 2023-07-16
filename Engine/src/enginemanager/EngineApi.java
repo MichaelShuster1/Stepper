@@ -74,4 +74,6 @@ public interface EngineApi {
     List<FlowExecutionDTO> getFlowsHistoryDeltaFromUser(int historyVersion, User user);
 
     int getHistoryVersion();
+
+    boolean checkParameterValidity(String parameter, String type, User user);
 }

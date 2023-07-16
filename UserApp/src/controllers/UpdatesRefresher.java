@@ -36,6 +36,7 @@ public class UpdatesRefresher extends TimerTask {
     private boolean isManager;
 
 
+
     public UpdatesRefresher(Consumer<List<AvailableFlowDTO>> definitionSetterConsumer,
                             Consumer<UserInfoDTO> userInfoConsumer, Consumer<List<FlowExecutionDTO>> historySetterConsumer,
                             Consumer<List<FlowExecutionDTO>> historyUpdaterConsumer) {

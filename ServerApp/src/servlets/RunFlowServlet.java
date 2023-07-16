@@ -23,10 +23,15 @@ public class RunFlowServlet extends HttpServlet {
             synchronized (this){
                 EngineApi engine = (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
                 User user = ServletUtils.getUserManager(getServletContext()).getUser(usernameFromSession);
-                String flowId=engine.runFlow(user);
-                response.setContentType(Constants.TEXT_FORMAT);
-                response.getWriter().println(flowId);
-                response.setStatus(HttpServletResponse.SC_OK);
+                try {
+                    String flowId = engine.runFlow(user);
+                    response.setContentType(Constants.TEXT_FORMAT);
+                    response.getWriter().println(flowId);
+                    response.setStatus(HttpServletResponse.SC_OK);
+                }
+                catch (Exception e) {
+                    ServletUtils.returnBadRequest(response);
+                }
             }
         }
     }

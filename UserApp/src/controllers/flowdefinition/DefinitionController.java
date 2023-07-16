@@ -44,6 +44,8 @@ public class DefinitionController {
     private Popup popup;
     private String selectedName;
 
+    private boolean selectionListenerEnabled = true;
+
 
     public void setAppController(AppController appController) {
         this.appController = appController;
@@ -54,16 +56,19 @@ public class DefinitionController {
         addTable();
         selectedFlowDetails.getChildren().add(new Label("No data"));
         flowTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            if (newSelection != null)
-                showFlowData(newSelection);
-            else
-                selectedFlowDetails.getChildren().clear();
+            if (selectionListenerEnabled) {
+                if (newSelection != null)
+                    showFlowData(newSelection);
+                else
+                    selectedFlowDetails.getChildren().clear();
+            }
 
         });
     }
     public void fillTableData(List<AvailableFlowDTO> flowsList)
     {
         Platform.runLater(() -> {
+            selectionListenerEnabled = false;
 
             if(flowTable.getSelectionModel().getSelectedItem() != null)
                 selectedName = flowTable.getSelectionModel().getSelectedItem().getName();
@@ -72,16 +77,24 @@ public class DefinitionController {
 
             fillTableObservableListWithData(flowsList);
             flowTable.setItems(tvObservableList);
+            if(tvObservableList.size() == 0)
+                selectedFlowDetails.getChildren().clear();
 
             if(selectedName != null) {
                 ObservableList<AvailableFlowDTO> list = flowTable.getItems();
+                boolean found = false;
                 int i = 0;
                 for (AvailableFlowDTO flow : list) {
-                    if (flow.getName().equals(selectedName))
+                    if (flow.getName().equals(selectedName)) {
                         flowTable.getSelectionModel().select(i);
+                        found = true;
+                    }
                     i++;
                 }
+                if(!found)
+                    selectedFlowDetails.getChildren().clear();
             }
+            selectionListenerEnabled = true;
      });
     }
 
@@ -514,7 +527,6 @@ public class DefinitionController {
         flowTable.getItems().clear();
         tvObservableList.clear();
     }
-
 
 
 }

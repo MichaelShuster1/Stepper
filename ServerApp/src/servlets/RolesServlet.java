@@ -33,15 +33,18 @@ public class RolesServlet extends HttpServlet {
         String roleName =request.getParameter("roleName");
         Gson gson=Constants.GSON_INSTANCE;
         if(roleName==null){
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            ResultDTO resultDTO=new ResultDTO(Constants.INVALID_PARAMETER);
-            response.getWriter().print(gson.toJson(resultDTO));
+            ServletUtils.returnBadRequest(response);
         }
         else {
             EngineApi engine = (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
-            RoleInfoDTO roleInfo = engine.getRoleInfo(roleName);
-            response.getWriter().print(gson.toJson(roleInfo));
-            response.setStatus(HttpServletResponse.SC_OK);
+            try {
+                RoleInfoDTO roleInfo = engine.getRoleInfo(roleName);
+                response.getWriter().print(gson.toJson(roleInfo));
+                response.setStatus(HttpServletResponse.SC_OK);
+            }
+            catch (Exception e) {
+                ServletUtils.returnBadRequest(response);
+            }
         }
     }
 

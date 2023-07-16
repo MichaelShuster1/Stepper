@@ -24,9 +24,7 @@ public class UserRolesServlet extends HttpServlet {
         String jsonRoles = request.getParameter("roles");
         String username = request.getParameter("userName");
         if(jsonRoles == null || username == null) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            ResultDTO resultDTO=new ResultDTO(Constants.INVALID_PARAMETER);
-            response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
+            ServletUtils.returnBadRequest(response);
         }
         else {
             EngineApi engine = (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);

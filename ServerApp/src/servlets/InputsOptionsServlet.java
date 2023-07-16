@@ -24,16 +24,19 @@ public class InputsOptionsServlet extends HttpServlet {
             response.setContentType(Constants.JSON_FORMAT);
             String buttonId = request.getParameter("Id");
             if (buttonId == null) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                ResultDTO resultDTO=new ResultDTO(Constants.INVALID_PARAMETER);
-                response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
+                ServletUtils.returnBadRequest(response);
             } else {
                 EngineApi engine = (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
                 UserManager userManager = ServletUtils.getUserManager(getServletContext());
                 synchronized (this) {
-                    String data =engine.getInputData(userManager.getUser(usernameFromSession), buttonId).getData();
-                    response.setStatus(HttpServletResponse.SC_OK);
-                    response.getWriter().println(Constants.GSON_INSTANCE.toJson(data));
+                    try {
+                        String data = engine.getInputData(userManager.getUser(usernameFromSession), buttonId).getData();
+                        response.setStatus(HttpServletResponse.SC_OK);
+                        response.getWriter().println(Constants.GSON_INSTANCE.toJson(data));
+                    }
+                    catch (Exception e) {
+                        ServletUtils.returnBadRequest(response);
+                    }
                 }
             }
         }

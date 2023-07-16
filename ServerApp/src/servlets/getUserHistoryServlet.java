@@ -32,9 +32,7 @@ public class getUserHistoryServlet extends HttpServlet {
             String rawVersion = request.getParameter("historyVersion");
 
             if(rawVersion==null){
-                ResultDTO resultDTO=new ResultDTO(Constants.INVALID_PARAMETER);
-                response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                ServletUtils.returnBadRequest(response);
             }
             else {
                 int historyVersion = -1;
@@ -52,9 +50,7 @@ public class getUserHistoryServlet extends HttpServlet {
                         response.getWriter().print(Constants.GSON_INSTANCE.toJson(flowHistoryList));
                     }
                 } catch (Exception e) {
-                    ResultDTO resultDTO = new ResultDTO(Constants.INVALID_PARAMETER);
-                    response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
-                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    ServletUtils.returnBadRequest(response);
                 }
             }
         }

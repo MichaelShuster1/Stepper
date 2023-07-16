@@ -664,6 +664,8 @@ public class Flow implements Serializable {
         return flowInputs.containsKey(inputName);
     }
 
+    public boolean checkIfFlowContainsFreeInput(String inputName) {return flowFreeInputs.containsKey(inputName);}
+
 
 
     public String getName() {

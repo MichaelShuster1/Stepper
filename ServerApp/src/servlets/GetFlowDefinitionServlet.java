@@ -26,16 +26,19 @@ public class GetFlowDefinitionServlet extends HttpServlet {
             response.setContentType(Constants.JSON_FORMAT);
             String flowName = request.getParameter(Constants.FLOW_NAME);
             if (flowName == null) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                ResultDTO resultDTO=new ResultDTO(Constants.INVALID_PARAMETER);
-                response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
+                ServletUtils.returnBadRequest(response);
             } else {
                 EngineApi engine = (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
                 synchronized (this) {
-                    FlowDefinitionDTO res = engine.getFlowDefinition(flowName);
-                    response.setStatus(HttpServletResponse.SC_OK);
-                    Gson gson = new Gson();
-                    response.getWriter().println(gson.toJson(res));
+                    try {
+                        FlowDefinitionDTO res = engine.getFlowDefinition(flowName);
+                        response.setStatus(HttpServletResponse.SC_OK);
+                        Gson gson = new Gson();
+                        response.getWriter().println(gson.toJson(res));
+                    }
+                    catch (Exception e) {
+                        ServletUtils.returnBadRequest(response);
+                    }
                 }
             }
         }

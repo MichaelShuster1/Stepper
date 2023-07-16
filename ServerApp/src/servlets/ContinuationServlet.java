@@ -31,26 +31,28 @@ public class ContinuationServlet extends HttpServlet {
             }
             else {
                 synchronized (this) {
-                    ContinutionMenuDTO continutionMenuDTO;
-                    if(getBy.equals("current")) {
-                        continutionMenuDTO = engine.getContinutionMenuDTO(userManager.getUser(usernameFromSession));
-                        response.setStatus(HttpServletResponse.SC_OK);
-                        response.getWriter().println(Constants.GSON_INSTANCE.toJson(continutionMenuDTO));
-                    }
-                    else if (getBy.equals("name")){
-                        if(flowName == null) {
-                            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                            response.getWriter().println("Invalid query parameter");
-                        }
-                        else {
-                            continutionMenuDTO = engine.getContinuationMenuDTOByName(userManager.getUser(usernameFromSession), flowName);
+                    try {
+                        ContinutionMenuDTO continutionMenuDTO;
+                        if (getBy.equals("current")) {
+                            continutionMenuDTO = engine.getContinutionMenuDTO(userManager.getUser(usernameFromSession));
                             response.setStatus(HttpServletResponse.SC_OK);
                             response.getWriter().println(Constants.GSON_INSTANCE.toJson(continutionMenuDTO));
+                        } else if (getBy.equals("name")) {
+                            if (flowName == null) {
+                                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                                response.getWriter().println(Constants.INVALID_PARAMETER);
+                            } else {
+                                continutionMenuDTO = engine.getContinuationMenuDTOByName(userManager.getUser(usernameFromSession), flowName);
+                                response.setStatus(HttpServletResponse.SC_OK);
+                                response.getWriter().println(Constants.GSON_INSTANCE.toJson(continutionMenuDTO));
+                            }
+                        } else {
+                            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                            response.getWriter().println(Constants.INVALID_PARAMETER);
                         }
-                    }
-                    else {
+                    }catch (Exception e) {
                         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                        response.getWriter().println("Invalid query parameter");
+                        response.getWriter().println(Constants.INVALID_PARAMETER);
                     }
                 }
             }

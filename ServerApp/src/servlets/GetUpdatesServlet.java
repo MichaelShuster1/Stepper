@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import utils.Constants;
+import utils.ServletUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -30,9 +31,7 @@ public class GetUpdatesServlet extends HttpServlet {
         String rawVersion = request.getParameter("historyVersion");
 
         if(rawVersion==null){
-            ResultDTO resultDTO=new ResultDTO(Constants.INVALID_PARAMETER);
-            response.getWriter().print(gson.toJson(resultDTO));
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            ServletUtils.returnBadRequest(response);
         }
         else {
             int historyVersion = -1;
@@ -48,9 +47,7 @@ public class GetUpdatesServlet extends HttpServlet {
                     response.getWriter().print(jsonArray);
                 }
             } catch (Exception e) {
-                ResultDTO resultDTO = new ResultDTO(Constants.INVALID_PARAMETER);
-                response.getWriter().print(gson.toJson(resultDTO));
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                ServletUtils.returnBadRequest(response);
             }
         }
     }

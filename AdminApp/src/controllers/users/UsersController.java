@@ -36,6 +36,7 @@ public class UsersController {
     private CheckBox checkBoxManager;
     private String userName;
     private Stage primaryStage;
+    private boolean selectionListenerEnabled = true;
 
     @FXML
     public void initialize() {
@@ -54,9 +55,16 @@ public class UsersController {
             }
         });
 
-        usersListView.setOnMouseClicked(e->rowClick(new ActionEvent()));
+        //usersListView.setOnMouseClicked(e->rowClick(new ActionEvent()));
         checkBoxes=new ArrayList<>();
         checkBoxManager=new CheckBox("Manager");
+
+        usersListView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (selectionListenerEnabled) {
+                if (newSelection != null)
+                    rowClick();
+            }
+        });
     }
 
     @FXML
@@ -101,6 +109,7 @@ public class UsersController {
                         if(stylesheets.size()!=0)
                             alert.getDialogPane().getStylesheets().add(stylesheets.get(0));
 
+
                         alert.setTitle("Message");
                         alert.setContentText("the changes were updated successfully");
                         alert.showAndWait();
@@ -120,6 +129,7 @@ public class UsersController {
     {
         if(usersFromRequest!=null) {
             Platform.runLater(() -> {
+                selectionListenerEnabled = false;
                 UserInfoDTO selectedUser=usersListView.getSelectionModel().getSelectedItem();
                 String selectedUserName=null;
                 if(selectedUser!=null)
@@ -141,6 +151,7 @@ public class UsersController {
                         index++;
                     }
                 }
+                selectionListenerEnabled = true;
 
             });
         }
@@ -174,7 +185,7 @@ public class UsersController {
         this.primaryStage = primaryStage;
     }
 
-    private void rowClick(ActionEvent event) {
+    private void rowClick() {
         if(!usersListView.getSelectionModel().isEmpty()) {
             userSelectedView.getChildren().clear();
             UserInfoDTO userInfoDTO=usersListView.getSelectionModel().getSelectedItem();

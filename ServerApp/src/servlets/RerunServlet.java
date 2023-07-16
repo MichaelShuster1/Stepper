@@ -29,9 +29,7 @@ public class RerunServlet extends HttpServlet {
             EngineApi engine = (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
             UserManager userManager = ServletUtils.getUserManager(getServletContext());
             if (jsonInputs == null || flowName == null) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                ResultDTO resultDTO=new ResultDTO(Constants.INVALID_PARAMETER);
-                response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
+                ServletUtils.returnBadRequest(response);
             }
             else {
                 try {

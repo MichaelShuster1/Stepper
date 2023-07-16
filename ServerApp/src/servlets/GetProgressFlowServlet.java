@@ -24,18 +24,20 @@ public class GetProgressFlowServlet extends HttpServlet {
             response.setContentType(Constants.JSON_FORMAT);
             String flowId = request.getParameter("flowId");
             if(flowId==null){
-                response.setContentType(Constants.JSON_FORMAT);
-                ResultDTO resultDTO=new ResultDTO(Constants.INVALID_PARAMETER);
-                response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                ServletUtils.returnBadRequest(response);
             }
             else{
                 synchronized (this) {
                     flowId=flowId.trim();
-                    EngineApi engine = (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
-                    FlowExecutionDTO flowExecutionDTO = engine.getHistoryDataOfFlow(flowId);
-                    response.getWriter().println(Constants.GSON_INSTANCE.toJson(flowExecutionDTO));
-                    response.setStatus(HttpServletResponse.SC_OK);
+                    try {
+                        EngineApi engine = (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
+                        FlowExecutionDTO flowExecutionDTO = engine.getHistoryDataOfFlow(flowId);
+                        response.getWriter().println(Constants.GSON_INSTANCE.toJson(flowExecutionDTO));
+                        response.setStatus(HttpServletResponse.SC_OK);
+                    }
+                    catch (Exception e) {
+                        ServletUtils.returnBadRequest(response);
+                    }
                 }
             }
         }
