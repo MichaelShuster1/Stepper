@@ -29,7 +29,7 @@ public class UserUpdatesServlet extends HttpServlet {
             response.setContentType(Constants.JSON_FORMAT);
             UserManager userManager = ServletUtils.getUserManager(getServletContext());
 
-            synchronized (this) {
+            //synchronized (this) {
                 EngineApi engine = (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
                 User user=userManager.getUser(usernameFromSession);
                 JsonArray jsonArray=new JsonArray();
@@ -47,7 +47,7 @@ public class UserUpdatesServlet extends HttpServlet {
                 }
                 response.getWriter().print(jsonArray.toString());
                 response.setStatus(HttpServletResponse.SC_OK);
-            }
+           // }
         }
 
     }

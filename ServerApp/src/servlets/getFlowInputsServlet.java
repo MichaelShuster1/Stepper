@@ -29,7 +29,7 @@ public class getFlowInputsServlet extends HttpServlet {
             } else {
                 EngineApi engine = (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
                 UserManager userManager = ServletUtils.getUserManager(getServletContext());
-                synchronized (this) {
+               // synchronized (this) {
                     try {
                         InputsDTO inputsDTO = engine.getFlowInputs(userManager.getUser(usernameFromSession), flowName);
                         response.setStatus(HttpServletResponse.SC_OK);
@@ -39,7 +39,7 @@ public class getFlowInputsServlet extends HttpServlet {
                     catch (Exception e) {
                         ServletUtils.returnBadRequest(response);
                     }
-                }
+               // }
             }
         }
 
