@@ -38,8 +38,8 @@ public class getUserHistoryServlet extends HttpServlet {
                 int historyVersion = -1;
                 try {
                     historyVersion = Integer.parseInt(rawVersion);
-                    synchronized (this) {
-                        User user = userManager.getUser(usernameFromSession);
+                    User user = userManager.getUser(usernameFromSession);
+                    synchronized (user) {
                         List<FlowExecutionDTO> flowHistoryList;
                         if(user.isManager())
                             flowHistoryList = engine.getFlowsHistoryDelta(historyVersion);

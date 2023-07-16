@@ -33,11 +33,18 @@ public class UserUpdatesServlet extends HttpServlet {
                 EngineApi engine = (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
                 User user=userManager.getUser(usernameFromSession);
                 JsonArray jsonArray=new JsonArray();
-                List<AvailableFlowDTO> flows = engine.getAvailableFlows(user);
+
+                Object roleUpdateLock=getServletContext().getAttribute(Constants.ROLE_UPDATE_LOCK);
+                synchronized (roleUpdateLock) {
+                    List<AvailableFlowDTO> flows = engine.getAvailableFlows(user);
+                    jsonArray.add(gson.toJson(flows));
+                }
                 int currentVersion = engine.getHistoryVersion();
-                UserInfoDTO userInfoDTO=user.getUserInformation(currentVersion);
-                jsonArray.add(gson.toJson(flows));
-                jsonArray.add(gson.toJson(userInfoDTO));
+                Object userRolesLock=getServletContext().getAttribute(Constants.USER_ROLES_LOCK);
+                synchronized (userRolesLock) {
+                    UserInfoDTO userInfoDTO = user.getUserInformation(currentVersion);
+                    jsonArray.add(gson.toJson(userInfoDTO));
+                }
                 response.getWriter().print(jsonArray.toString());
                 response.setStatus(HttpServletResponse.SC_OK);
             }

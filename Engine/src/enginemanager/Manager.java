@@ -25,15 +25,15 @@ import java.util.stream.Collectors;
 
 public class Manager implements EngineApi, Serializable {
     private List<Flow> flows;
-    private Map<String,FlowExecution> flowExecutions;
-    private List<FlowHistory> flowsHistory;
+    private final Map<String,FlowExecution> flowExecutions;
+    private final List<FlowHistory> flowsHistory;
     private Map<String, Statistics> flowsStatistics;
     private Map<String, Statistics> stepsStatistics;
     private Flow currentFlow;
     private ExecutorService threadPool;
     private Map<String,Integer> flowNames2Index;
     private int historyVersion;
-    private RoleManager roleManager;
+    private final RoleManager roleManager;
 
 
     public Manager() {
@@ -496,7 +496,9 @@ public class Manager implements EngineApi, Serializable {
 
         FlowExecution flowExecution = new FlowExecution(this, user);
         String flowID=flowExecution.getFlowId();
-        flowExecutions.put(flowID,flowExecution);
+        synchronized (flowExecutions) {
+            flowExecutions.put(flowID, flowExecution);
+        }
         threadPool.execute(flowExecution);
 
 
@@ -523,7 +525,9 @@ public class Manager implements EngineApi, Serializable {
 
     public FlowExecutionDTO getHistoryDataOfFlow(String id)
     {
-        return flowExecutions.get(id).getFlowHistoryData();
+        synchronized (flowExecutions) {
+            return flowExecutions.get(id).getFlowHistoryData();
+        }
     }
 
     @Override
@@ -543,9 +547,11 @@ public class Manager implements EngineApi, Serializable {
     public List<FlowExecutionDTO> getFlowsHistoryDelta(int historyVersion)
     {
         List<FlowExecutionDTO> flowsList = new ArrayList<>();
-        int delta = flowsHistory.size() - historyVersion;
-        for(int i = 0 ; i < delta ; i++) {
-            flowsList.add(getHistoryDataOfFlow(flowsHistory.get(i).getID()));
+        synchronized (flowsHistory) {
+            int delta = flowsHistory.size() - historyVersion;
+            for (int i = 0; i < delta; i++) {
+                flowsList.add(getHistoryDataOfFlow(flowsHistory.get(i).getID()));
+            }
         }
         return flowsList;
     }
@@ -556,7 +562,9 @@ public class Manager implements EngineApi, Serializable {
     public FlowHistory addFlowHistory(FlowExecution currentFlow) {
         FlowHistory flowHistory = new FlowHistory(currentFlow.getName(),
                 currentFlow.getFlowId(), currentFlow.getActivationTime(), currentFlow.getFlowHistoryData());
-        flowsHistory.add(0, flowHistory);
+        synchronized (flowsHistory) {
+            flowsHistory.add(0, flowHistory);
+        }
         return flowHistory;
     }
 
@@ -676,7 +684,9 @@ public class Manager implements EngineApi, Serializable {
 
     @Override
     public FlowExecution getFlowExecution(String ID) {
-        return flowExecutions.get(ID);
+        synchronized (flowExecutions) {
+            return flowExecutions.get(ID);
+        }
     }
 
 
@@ -779,33 +789,4 @@ public class Manager implements EngineApi, Serializable {
         return user.getFlowsHistoryDelta(historyVersion);
     }
 
-
-    @Override
-    public boolean checkParameterValidity(String parameter, String type ,User user) {
-        boolean res = false;
-        switch (type) {
-            case "flowName":
-                res = flowNames2Index.containsKey(parameter);
-                break;
-            case "flowID":
-                res = flowExecutions.containsKey(parameter);
-                break;
-            case "version":
-                try {
-                    int version = Integer.parseInt(parameter);
-                    res = version >= 0;
-                }
-                catch (Exception e) {
-                    res = false;
-                }
-                break;
-            case "inputName":
-                res = user.getCurrentFlow().checkIfFlowContainsFreeInput(parameter);
-                break;
-            case "roleName":
-                res = roleManager.isRoleExist(parameter);
-                break;
-        }
-        return res;
-    }
 }

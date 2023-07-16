@@ -29,7 +29,8 @@ public class GetFlowDefinitionServlet extends HttpServlet {
                 ServletUtils.returnBadRequest(response);
             } else {
                 EngineApi engine = (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
-                synchronized (this) {
+                Object flowLock=getServletContext().getAttribute(Constants.FLOWS_LOCK);
+                synchronized (flowLock) {
                     try {
                         FlowDefinitionDTO res = engine.getFlowDefinition(flowName);
                         response.setStatus(HttpServletResponse.SC_OK);

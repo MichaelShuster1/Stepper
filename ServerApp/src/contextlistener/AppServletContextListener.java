@@ -8,12 +8,18 @@ import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 import utils.Constants;
 
+import javax.crypto.Cipher;
+
 @WebListener
 public class AppServletContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent event) {
         ServletContext servletContext = event.getServletContext();
         servletContext.setAttribute(Constants.FLOW_MANAGER,new Manager());
+        servletContext.setAttribute(Constants.FLOWS_LOCK,new Object());
+        servletContext.setAttribute(Constants.USERS_LOCK,new Object());
+        servletContext.setAttribute(Constants.ROLE_UPDATE_LOCK,new Object());
+        servletContext.setAttribute(Constants.USER_ROLES_LOCK,new Object());
     }
 
     @Override

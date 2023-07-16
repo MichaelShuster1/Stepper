@@ -35,15 +35,18 @@ public class FileUploadServlet extends HttpServlet {
         Gson gson=Constants.GSON_INSTANCE;
 
         for (Part part : parts) {
-            try {
-                Set<String> newFlows =engine.loadXmlFile(part.getInputStream(), userManager.getUsersMap());
-                response.getWriter().print(gson.toJson(newFlows));
-                response.setStatus(HttpServletResponse.SC_OK);
-            } catch (Exception e) {
-                response.setContentType(Constants.JSON_FORMAT);
-                ResultDTO resultDTO=new ResultDTO(e.getMessage());
-                response.getWriter().print(gson.toJson(resultDTO));
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            Object flowsLock=getServletContext().getAttribute(Constants.FLOWS_LOCK);
+            synchronized (flowsLock){
+                try {
+                    Set<String> newFlows = engine.loadXmlFile(part.getInputStream(), userManager.getUsersMap());
+                    response.getWriter().print(gson.toJson(newFlows));
+                    response.setStatus(HttpServletResponse.SC_OK);
+                } catch (Exception e) {
+                    response.setContentType(Constants.JSON_FORMAT);
+                    ResultDTO resultDTO = new ResultDTO(e.getMessage());
+                    response.getWriter().print(gson.toJson(resultDTO));
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                }
             }
         }
     }

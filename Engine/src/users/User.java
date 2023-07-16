@@ -20,7 +20,7 @@ public class User {
     private Map<String, Role> roles;
     private Map<String, Integer> flowsAppearance;
     private boolean isAllFlows;
-    private List<FlowHistory> flowsHistory;
+    private final List<FlowHistory> flowsHistory;
 
 
 
@@ -192,15 +192,19 @@ public class User {
     public List<FlowExecutionDTO> getFlowsHistoryDelta(int historyVersion)
     {
         List<FlowExecutionDTO> flowsList = new ArrayList<>();
-        int delta = flowsHistory.size() - historyVersion;
-        for(int i = 0 ; i < delta ; i++) {
-            flowsList.add(flowsHistory.get(i).getFullData());
+        synchronized (flowsHistory) {
+            int delta = flowsHistory.size() - historyVersion;
+            for (int i = 0; i < delta; i++) {
+                flowsList.add(flowsHistory.get(i).getFullData());
+            }
         }
         return flowsList;
     }
 
     public void addFlowHistory(FlowHistory flowHistory) {
-        flowsHistory.add(0, flowHistory);
+        synchronized (flowsHistory) {
+            flowsHistory.add(0, flowHistory);
+        }
     }
 
     public synchronized boolean havePermissionForFlow(String flowName) {

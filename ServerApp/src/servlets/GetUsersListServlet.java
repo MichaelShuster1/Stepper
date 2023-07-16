@@ -27,14 +27,18 @@ public class GetUsersListServlet extends HttpServlet {
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
         Map<String,User> users= userManager.getUsersMap();
 
+        Object usersLock=getServletContext().getAttribute(Constants.USERS_LOCK);
+        synchronized (usersLock) {
+            if (users.size() != 0) {
+                List<UserInfoDTO> userInfoDTOList = new ArrayList<>();
 
-        if(users.size()!=0)
-        {
-            List<UserInfoDTO> userInfoDTOList = new ArrayList<>();
-            for(String userName : users.keySet())
-                userInfoDTOList.add(users.get(userName).getUserInformation());
-            response.getWriter().println(gson.toJson(userInfoDTOList));
-            response.setStatus(HttpServletResponse.SC_OK);
+                Set<String> usersNames = users.keySet();
+                for (String userName : users.keySet())
+                    userInfoDTOList.add(users.get(userName).getUserInformation());
+
+                response.getWriter().println(gson.toJson(userInfoDTOList));
+                response.setStatus(HttpServletResponse.SC_OK);
+            }
         }
 
 

@@ -25,11 +25,11 @@ public class Input implements Serializable {
         this.defaultName = dataDefinition.getName();
     }
 
-    public Object getData() {
+    public synchronized Object getData() {
         return dataDefinition.getData();
     }
 
-    public void setData(Object data) {
+    public synchronized void setData(Object data) {
         dataDefinition.setData(data);
     }
 

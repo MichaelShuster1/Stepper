@@ -32,7 +32,8 @@ public class UserRolesServlet extends HttpServlet {
             Type setType = new TypeToken<Set<String>>() {}.getType();
             try {
                 Set<String> roleNames = Constants.GSON_INSTANCE.fromJson(jsonRoles, setType);
-                synchronized (this) {
+                Object userRolesLock=getServletContext().getAttribute(Constants.ROLE_UPDATE_LOCK);
+                synchronized (userRolesLock) {
                     engine.updateUserRoles(user, roleNames);
                 }
                 response.setStatus(HttpServletResponse.SC_OK);
