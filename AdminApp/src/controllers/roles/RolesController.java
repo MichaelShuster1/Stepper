@@ -133,18 +133,21 @@ public class RolesController {
             public void onResponse(Call call, Response response) throws IOException {
                 if(response.code()==200){
                     Platform.runLater(()->{
-                        rolesListView.getItems().remove(roleToDelete);
-                        roleSelectedView.getChildren().clear();
-                        roleDeleter.accept(roleToDelete);
-                        showInfoAlert("the role was deleted successfully");
-                        saveButton.setDisable(true);
-                        deleteButton.setDisable(true);
                         if(roleToDelete.equals(roleName)) {
-                            if (rolesListView.getSelectionModel() != null)
-                                roleName = rolesListView.getSelectionModel().getSelectedItem();
+                            if (rolesListView.getSelectionModel() != null) {
+                                //roleName = rolesListView.getSelectionModel().getSelectedItem();
+                                roleName = null;
+                                rolesListView.getSelectionModel().clearSelection();
+                            }
                             else
                                 roleName = null;
                         }
+                        rolesListView.getItems().remove(roleToDelete);
+                        roleSelectedView.getChildren().clear();
+                        roleDeleter.accept(roleToDelete);
+                        saveButton.setDisable(true);
+                        deleteButton.setDisable(true);
+                        showInfoAlert("the role was deleted successfully");
                     });
                 }
                 else{
