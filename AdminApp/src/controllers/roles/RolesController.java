@@ -127,11 +127,12 @@ public class RolesController {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if(response.code()==200){
-                    showInfoAlert("the role was deleted successfully");
-                    rolesListView.getItems().remove(roleToDelete);
-                    if(rolesListView.getSelectionModel().getSelectedItem().equals(roleToDelete))
+                    Platform.runLater(()->{
+                        rolesListView.getItems().remove(roleToDelete);
                         roleSelectedView.getChildren().clear();
-                    roleDeleter.accept(roleToDelete);
+                        roleDeleter.accept(roleToDelete);
+                        showInfoAlert("the role was deleted successfully");
+                    });
                 }
                 else{
                     HttpClientUtil.errorMessage(response.body(),appController);

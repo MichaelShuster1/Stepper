@@ -188,7 +188,7 @@ public class UsersController {
         checkBox.setSelected(false);
         checkBoxes.add(checkBox);
         if(userSelectedView.getChildren()!=null){
-            userSelectedView.getChildren().add(checkBox);
+            addCheckBox(checkBox);
         }
     }
 
