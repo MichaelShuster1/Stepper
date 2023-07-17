@@ -17,7 +17,7 @@ public class RoleManager {
 
     public synchronized boolean removeRole(String name) {
         boolean res=false;
-        if(roles.get(name).isUsersAssigned()) {
+        if(!roles.get(name).isUsersAssigned()) {
             roles.remove(name);
             res=true;
         }

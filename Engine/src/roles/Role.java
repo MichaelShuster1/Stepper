@@ -67,6 +67,6 @@ public class Role {
     }
 
     public boolean isUsersAssigned(){
-        return usersAssigned.size()==0;
+        return !(usersAssigned.size()==0);
     }
 }

@@ -132,6 +132,12 @@ public class RolesController {
                         roleSelectedView.getChildren().clear();
                         roleDeleter.accept(roleToDelete);
                         showInfoAlert("the role was deleted successfully");
+                        if(roleToDelete.equals(roleName)) {
+                            if (rolesListView.getSelectionModel() != null)
+                                roleName = rolesListView.getSelectionModel().getSelectedItem();
+                            else
+                                roleName = null;
+                        }
                     });
                 }
                 else{
