@@ -149,6 +149,7 @@ public class AppController {
             });
 
             // Show the pop-up window
+
             popupStage.showAndWait();
         } catch (Exception e) {
             e.printStackTrace();

@@ -12,6 +12,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.HttpUrl;
@@ -53,6 +55,15 @@ public class ChatAreaController implements Closeable {
         autoScroll.bind(autoScrollButton.selectedProperty());
         chatVersionLabel.textProperty().bind(Bindings.concat("Chat Version: ", chatVersion.asString()));
         startListRefresher();
+        mainChatLinesTextArea.setWrapText(true);
+
+        chatLineTextArea.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                event.consume(); // Prevent the default behavior of adding a new line
+                // Custom action to perform when Enter key is pressed
+                sendButtonClicked(new ActionEvent());
+            }
+        });
     }
 
     public BooleanProperty autoUpdatesProperty() {
@@ -125,7 +136,7 @@ public class ChatAreaController implements Closeable {
                 autoUpdate,
                 this::updateChatLines);
         timer = new Timer();
-        timer.schedule(chatAreaRefresher, REFRESH_RATE, REFRESH_RATE);
+        timer.schedule(chatAreaRefresher, 0, REFRESH_RATE);
     }
 
     public void stopListRefresher(){
@@ -141,4 +152,5 @@ public class ChatAreaController implements Closeable {
             timer.cancel();
         }
     }
+
 }
