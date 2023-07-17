@@ -1,6 +1,5 @@
 package controllers.chat.client.component.chatarea;
 
-import controllers.chat.client.component.api.HttpStatusUpdate;
 import controllers.chat.client.component.chatarea.model.ChatLinesWithVersion;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -35,7 +34,6 @@ public class ChatAreaController implements Closeable {
     private final IntegerProperty chatVersion;
     private final BooleanProperty autoScroll;
     private final BooleanProperty autoUpdate;
-    private HttpStatusUpdate httpStatusUpdate;
     private ChatAreaRefresher chatAreaRefresher;
     private Timer timer;
 
@@ -70,17 +68,16 @@ public class ChatAreaController implements Closeable {
                 .build()
                 .toString();
 
-        httpStatusUpdate.updateHttpLine(finalUrl);
+
         HttpClientUtil.runAsync(finalUrl, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                httpStatusUpdate.updateHttpLine("Attempt to send chat line [" + chatLine + "] request ended with failure...:(");
+
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (!response.isSuccessful()) {
-                    httpStatusUpdate.updateHttpLine("Attempt to send chat line [" + chatLine + "] request ended with failure. Error code: " + response.code());
                 }
             }
         });
@@ -88,9 +85,6 @@ public class ChatAreaController implements Closeable {
         chatLineTextArea.clear();
     }
 
-    public void setHttpStatusUpdate(HttpStatusUpdate chatRoomMainController) {
-        this.httpStatusUpdate = chatRoomMainController;
-    }
 
     private void updateChatLines(ChatLinesWithVersion chatLinesWithVersion) {
         if (chatLinesWithVersion.getVersion() != chatVersion.get()) {
@@ -122,7 +116,6 @@ public class ChatAreaController implements Closeable {
         chatAreaRefresher = new ChatAreaRefresher(
                 chatVersion,
                 autoUpdate,
-                httpStatusUpdate::updateHttpLine,
                 this::updateChatLines);
         timer = new Timer();
         timer.schedule(chatAreaRefresher, REFRESH_RATE, REFRESH_RATE);

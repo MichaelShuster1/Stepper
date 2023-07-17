@@ -22,7 +22,7 @@
     <RowConstraints vgrow="NEVER" />
   </rowConstraints>
    <children>
-      <Button id="send-button" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="SEND" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+      <Button id="send-button" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#sendButtonClicked" text="SEND" GridPane.columnIndex="1" GridPane.rowIndex="2" />
       <AnchorPane maxWidth="1.7976931348623157E308" GridPane.columnSpan="2">
          <children>
             <ToggleButton fx:id="autoScrollButton" mnemonicParsing="false" selected="true" styleClass="toggle-action-button" text="Auto Scroll" AnchorPane.leftAnchor="0.0" />
