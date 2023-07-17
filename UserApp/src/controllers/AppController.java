@@ -29,6 +29,7 @@ import styles.Styles;
 import utils.Constants;
 import utils.HttpClientUtil;
 
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.*;
 import java.util.function.Predicate;
@@ -81,6 +82,9 @@ public class AppController {
     @FXML
     private Hyperlink hyperlink;
 
+    @FXML
+    private Button logout;
+
     private ProgressTracker progressTracker;
 
     private Stage primaryStage;
@@ -100,6 +104,7 @@ public class AppController {
         styleChoiceView.setOnAction(e->setStyle());
         setTab(2);
 
+        logout.setOnMouseClicked(e -> logOutClick());
 
         tabPaneView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
             @Override
@@ -114,6 +119,13 @@ public class AppController {
             }
         });
     }
+
+
+
+    private void logOutClick(){
+        System.out.println("log out");
+    }
+
 
     public boolean canRunFlow(String flowName){
         return definitionComponentController.canRunFlow(flowName);
