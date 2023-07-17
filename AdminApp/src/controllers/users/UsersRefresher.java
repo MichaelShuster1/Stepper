@@ -50,7 +50,10 @@ public class UsersRefresher  extends TimerTask {
                         String jsonArrayOfUsers = response.body().string();
                         Type listType = new TypeToken<List<UserInfoDTO>>() {}.getType();
                         List<UserInfoDTO> usersList = Constants.GSON_INSTANCE.fromJson(jsonArrayOfUsers , listType);
-                        usersListConsumer.accept(usersList);
+                        if(usersList!=null)
+                            usersListConsumer.accept(usersList);
+                        else
+                            usersListConsumer.accept(new ArrayList<>());
                         response.body().close();
                     }
                     else

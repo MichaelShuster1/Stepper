@@ -113,6 +113,13 @@ public class AppController {
     }
 
 
+    public Integer CurrentTab(){
+        if(!tabPaneView.getSelectionModel().isEmpty())
+         return tabPaneView.getSelectionModel().getSelectedIndex();
+        return null;
+    }
+
+
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
         historyComponentController.setStage(primaryStage);

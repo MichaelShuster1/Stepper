@@ -42,7 +42,7 @@ public class UserRolesServlet extends HttpServlet {
                     else {
                         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                         response.setContentType(Constants.JSON_FORMAT);
-                        ResultDTO resultDTO = new ResultDTO("the user: +"+ username+" dont exist in the system");
+                        ResultDTO resultDTO = new ResultDTO("the user: "+ username+" dont exist in the system");
                         response.getWriter().print(gson.toJson(resultDTO));
                     }
                 }

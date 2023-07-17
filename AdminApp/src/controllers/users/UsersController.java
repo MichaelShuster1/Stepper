@@ -153,12 +153,14 @@ public class UsersController {
                     }
                     if(!found){
                         userSelectedView.getChildren().clear();
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle("Message");
-                        if(primaryStage.getScene().getStylesheets().size()!=0)
-                            alert.getDialogPane().getStylesheets().add(primaryStage.getScene().getStylesheets().get(0));
-                        alert.setContentText("the user: "+selectedUserName+" has logged out of the system");
-                        alert.showAndWait();
+                        if(appController.CurrentTab()!=null&&appController.CurrentTab()==3) {
+                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                            alert.setTitle("Message");
+                            if (primaryStage.getScene().getStylesheets().size() != 0)
+                                alert.getDialogPane().getStylesheets().add(primaryStage.getScene().getStylesheets().get(0));
+                            alert.setContentText("the user: " + selectedUserName + " has logged out of the system");
+                            alert.showAndWait();
+                        }
                     }
                 }
                 selectionListenerEnabled = true;
