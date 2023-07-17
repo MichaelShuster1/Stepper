@@ -55,7 +55,6 @@ public class UsersController {
             }
         });
 
-        //usersListView.setOnMouseClicked(e->rowClick(new ActionEvent()));
         checkBoxes=new ArrayList<>();
         checkBoxManager=new CheckBox("Manager");
 

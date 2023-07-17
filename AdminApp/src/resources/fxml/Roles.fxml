@@ -49,7 +49,7 @@
                               <VBox fx:id="roleSelectedView" />
                           </content>
                       </ScrollPane>
-                        <Button mnemonicParsing="false" onAction="#SaveButtonClicked" text="Save" StackPane.alignment="BOTTOM_RIGHT">
+                        <Button fx:id="saveButton" disable="true" mnemonicParsing="false" onAction="#SaveButtonClicked" text="Save" StackPane.alignment="BOTTOM_RIGHT">
                      <StackPane.margin>
                         <Insets bottom="5.0" right="5.0" />
                      </StackPane.margin>

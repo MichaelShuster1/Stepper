@@ -3,7 +3,6 @@ package controllers.roles;
 import controllers.AppController;
 import dto.RoleInfoDTO;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -39,6 +38,9 @@ public class RolesController {
     @FXML
     private Button deleteButton;
 
+    @FXML
+    private Button saveButton;
+
     private AppController appController;
 
     private List<CheckBox> checkBoxes;
@@ -61,8 +63,11 @@ public class RolesController {
             else
                 roleSelectedView.getChildren().clear();
         });
+    }
 
-        deleteButton.disableProperty().bind(Bindings.isEmpty(rolesListView.getSelectionModel().getSelectedItems()));
+    private boolean canNotEdit(){
+        String selectedRoleName=rolesListView.getSelectionModel().getSelectedItem();
+        return selectedRoleName.equals("All Flows") || selectedRoleName.equals("Read Only Flows");
     }
 
 
@@ -132,6 +137,8 @@ public class RolesController {
                         roleSelectedView.getChildren().clear();
                         roleDeleter.accept(roleToDelete);
                         showInfoAlert("the role was deleted successfully");
+                        saveButton.setDisable(true);
+                        deleteButton.setDisable(true);
                     });
                 }
                 else{
@@ -148,10 +155,17 @@ public class RolesController {
     }
 
     private void showRoleDetails(RoleInfoDTO roleInfoDTO){
+
+        String roleName=roleInfoDTO.getName();
+
+        saveButton.setDisable(canNotEdit());
+        deleteButton.setDisable(canNotEdit());
+
         addTitleLine("ROLE DETAILS:\n");
-        addKeyValueLine("role name: ",roleInfoDTO.getName());
+        addKeyValueLine("role name: ",roleName);
         addKeyValueLine("role description: ",roleInfoDTO.getDescription());
         addTitleLine("\nASSIGNED USERS:\n");
+
 
         Set<String> users=roleInfoDTO.getUsersAssigned();
 
@@ -183,6 +197,7 @@ public class RolesController {
                 selected=flows.contains(checkBox.getText());
 
             checkBox.setSelected(selected);
+            checkBox.setDisable(canNotEdit());
             addCheckBox(checkBox,roleSelectedView);
         }
     }
