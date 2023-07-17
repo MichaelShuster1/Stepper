@@ -65,4 +65,8 @@ public class Role {
     public boolean containsFlow(String flowName) {
         return flowsAssigned.contains(flowName);
     }
+
+    public boolean isUsersAssigned(){
+        return usersAssigned.size()==0;
+    }
 }

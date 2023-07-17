@@ -15,8 +15,13 @@ public class RoleManager {
     }
 
 
-    public synchronized void removeRole(String name) {
-        roles.remove(name);
+    public synchronized boolean removeRole(String name) {
+        boolean res=false;
+        if(!roles.get(name).isUsersAssigned()) {
+            roles.remove(name);
+            res=true;
+        }
+        return res;
     }
 
     public synchronized Map<String, Role> getRoles() {
