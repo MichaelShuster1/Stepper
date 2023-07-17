@@ -92,9 +92,18 @@ public class RolesServlet extends HttpServlet {
             EngineApi engine = (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
             try {
                 boolean isDeleted = engine.removeRole(roleName);
-                ResultDTO resultDTO = new ResultDTO(isDeleted, "");
-                response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
-                response.setStatus(HttpServletResponse.SC_OK);
+                ResultDTO resultDTO;
+
+                if(isDeleted) {
+                    resultDTO = new ResultDTO(isDeleted, "The role was deleted successfully");
+                    response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
+                    response.setStatus(HttpServletResponse.SC_OK);
+                }
+                else {
+                    resultDTO = new ResultDTO(isDeleted, "The role wasn't deleted, please remove the role assignment from all users first");
+                    response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
+                    response.setStatus(HttpServletResponse.SC_CONFLICT);
+                }
             }
             catch (Exception e) {
                 ServletUtils.returnBadRequest(response);
