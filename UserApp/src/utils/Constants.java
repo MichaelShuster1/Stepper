@@ -16,6 +16,10 @@ public class Constants {
 
     public final static String CONNECTION_ERROR = "There was a problem connecting to the server";
 
+    public final static String LINE_SEPARATOR = System.getProperty("line.separator");
+    public final static int REFRESH_RATE = 2000;
+    public final static String CHAT_LINE_FORMATTING = "%tH:%tM:%tS | %.10s: %s%n";
+
 
 
     // GSON instance
