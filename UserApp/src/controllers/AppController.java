@@ -145,7 +145,7 @@ public class AppController {
             popupStage.setScene(chat);
 
             popupStage.setOnCloseRequest(event -> {
-                chatAreaController.stopListRefresher();
+                chatAreaController.close();
             });
 
             // Show the pop-up window
