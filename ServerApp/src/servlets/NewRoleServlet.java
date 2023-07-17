@@ -33,8 +33,12 @@ public class NewRoleServlet extends HttpServlet {
                 }
                 if(success)
                     response.setStatus(HttpServletResponse.SC_OK);
-                else
+                else {
                     response.setStatus(HttpServletResponse.SC_CONFLICT);
+                    response.setContentType(Constants.JSON_FORMAT);
+                    ResultDTO resultDTO=new ResultDTO("New role not created, a role with this name already exists.");
+                    response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
+                }
             }
             catch (Exception e) {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
