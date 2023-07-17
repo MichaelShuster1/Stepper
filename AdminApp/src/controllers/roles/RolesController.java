@@ -55,7 +55,6 @@ public class RolesController {
     @FXML
     public void initialize() {
         rolesListView.setOrientation(Orientation.VERTICAL);
-        //rolesListView.setOnMouseClicked(event -> rowClick(new ActionEvent()));
         checkBoxes=new ArrayList<>();
         rolesListView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null)

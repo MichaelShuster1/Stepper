@@ -37,6 +37,8 @@ public class UsersController {
     private String userName;
     private Stage primaryStage;
     private boolean selectionListenerEnabled = true;
+    private HBox firstLine;
+    private HBox secondLine;
 
     @FXML
     public void initialize() {
@@ -147,6 +149,7 @@ public class UsersController {
                         if(user.getUserDetailsDTO().getUserName().equals(selectedUserName)) {
                             usersListView.getSelectionModel().select(index);
                             found=true;
+                            updateTwoFirstLines(user);
                         }
                         index++;
                     }
@@ -166,6 +169,13 @@ public class UsersController {
 
             });
         }
+    }
+
+    private void updateTwoFirstLines(UserInfoDTO userInfo){
+        firstLine.getChildren().remove(1);
+        firstLine.getChildren().add(new Label(userInfo.getNumOfDefinedFlows().toString()));
+        secondLine.getChildren().remove(1);
+        secondLine.getChildren().add(new Label(userInfo.getNumOfFlowsPerformed().toString()));
     }
 
     public void StartUsersRefresher()
@@ -222,9 +232,9 @@ public class UsersController {
             UserInfoDTO userInfoDTO=usersListView.getSelectionModel().getSelectedItem();
             userName=userInfoDTO.getUserDetailsDTO().getUserName();
             addTitleLine(userName);
-            addKeyValueLine("Number of flows that the user can run: "
+            firstLine=addKeyValueLine("Number of flows that the user can run: "
                     , userInfoDTO.getNumOfDefinedFlows().toString());
-            addKeyValueLine("Number of flows that had been executed by the user: "
+            secondLine=addKeyValueLine("Number of flows that had been executed by the user: "
                     ,userInfoDTO.getNumOfFlowsPerformed().toString());
 
             addTitleLine("MANAGER:");
@@ -240,7 +250,6 @@ public class UsersController {
 
         }
     }
-
     private HBox getNewHbox()
     {
         HBox hBox =new HBox();
@@ -259,7 +268,7 @@ public class UsersController {
         userSelectedView.getChildren().add(hBox);
     }
 
-    private void addKeyValueLine(String name, String value)
+    private HBox addKeyValueLine(String name, String value)
     {
         HBox hBox = getNewHbox();
 
@@ -273,6 +282,8 @@ public class UsersController {
         hBox.getChildren().add(data);
 
         userSelectedView.getChildren().add(hBox);
+
+        return  hBox;
     }
 
     private void addCheckBox(CheckBox checkBox)
