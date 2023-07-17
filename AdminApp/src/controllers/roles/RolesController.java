@@ -10,6 +10,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -17,15 +18,13 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.util.Pair;
 import okhttp3.*;
 import utils.Constants;
 import utils.HttpClientUtil;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -51,6 +50,8 @@ public class RolesController {
 
     private String roleName;
 
+    private Set<String> users;
+
 
     @FXML
     public void initialize() {
@@ -58,7 +59,7 @@ public class RolesController {
         checkBoxes=new ArrayList<>();
         rolesListView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null)
-                rowSelect();
+                rowSelect(false);
             else
                 roleSelectedView.getChildren().clear();
         });
@@ -70,7 +71,7 @@ public class RolesController {
     }
 
 
-    private void rowSelect() {
+    public void rowSelect(Boolean fromTab) {
         if(!rolesListView.getSelectionModel().isEmpty()) {
             roleSelectedView.getChildren().clear();
 
@@ -94,7 +95,7 @@ public class RolesController {
                     if(response.code()==200){
                         RoleInfoDTO roleInfo = Constants.GSON_INSTANCE
                                 .fromJson(response.body().string(), RoleInfoDTO.class);
-                        Platform.runLater(()->showRoleDetails(roleInfo));
+                        Platform.runLater(()->showRoleDetails(roleInfo,fromTab));
                     }
                     else
                         HttpClientUtil.errorMessage(response.body(),appController);
@@ -162,7 +163,7 @@ public class RolesController {
 
     }
 
-    private void showRoleDetails(RoleInfoDTO roleInfoDTO){
+    private void showRoleDetails(RoleInfoDTO roleInfoDTO,Boolean fromTab){
 
         String roleName=roleInfoDTO.getName();
 
@@ -175,7 +176,7 @@ public class RolesController {
         addTitleLine("\nASSIGNED USERS:\n");
 
 
-        Set<String> users=roleInfoDTO.getUsersAssigned();
+        users=roleInfoDTO.getUsersAssigned();
 
         if(users==null||users.size()==0)
             addKeyValueLine("not assigned users to this role","");
@@ -186,7 +187,7 @@ public class RolesController {
         if(checkBoxes.size()==0)
             addKeyValueLine("no flows had been added to the system","");
         else
-            showFlowsCheckBoxes(roleInfoDTO.getFlowsAssigned());
+            showFlowsCheckBoxes(roleInfoDTO.getFlowsAssigned(),fromTab);
 
     }
 
@@ -196,7 +197,8 @@ public class RolesController {
         }
     }
 
-    private void showFlowsCheckBoxes(Set<String> flows){
+
+    private void showFlowsCheckBoxes(Set<String> flows,Boolean fromTab){
         Boolean selected;
         for(CheckBox checkBox :checkBoxes){
             selected=false;
@@ -204,7 +206,8 @@ public class RolesController {
             if(flows!=null)
                 selected=flows.contains(checkBox.getText());
 
-            checkBox.setSelected(selected);
+            if(!fromTab)
+                checkBox.setSelected(selected);
             checkBox.setDisable(canNotEdit());
             addCheckBox(checkBox,roleSelectedView);
         }

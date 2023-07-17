@@ -10,6 +10,8 @@ import controllers.statistics.StatisticsController;
 import controllers.users.UsersController;
 import dto.FlowExecutionDTO;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -76,6 +78,19 @@ public class AppController {
         statisticsComponentController.setAppController(this);
         setTab(3);
         StartUpdatesRefresher();
+
+
+        tabPaneView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
+            @Override
+            public void changed(ObservableValue<? extends Tab> observable, Tab oldTab, Tab newTab) {
+                if(newTab!=null){
+                    String tabTitle =newTab.getText();
+                    if(tabTitle.equals("Roles Management") ){
+                        rolesComponentController.rowSelect(true);
+                    }
+                }
+            }
+        });
     }
 
     private void initUsersController(){
