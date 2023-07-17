@@ -34,7 +34,7 @@ import styles.Styles;
 import utils.Constants;
 import utils.HttpClientUtil;
 
-import java.awt.event.ActionEvent;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
@@ -129,7 +129,35 @@ public class AppController {
 
 
     private void logOutClick(){
-        System.out.println("log out");
+        String finalUrl = HttpUrl
+                .parse(Constants.FULL_SERVER_PATH + "/logout")
+                .newBuilder()
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                HttpClientUtil.showErrorAlert(Constants.CONNECTION_ERROR, AppController.this);
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if(response.code()==200){
+                    Platform.runLater(() -> {
+                        shutDownMainScreen(false);
+                        HttpClientUtil.removeCookiesOf(Constants.BASE_DOMAIN);
+                        try {switchToLogin();}
+                        catch (Exception e) {}
+                    });
+                }
+                else
+                    HttpClientUtil.errorMessage(response.body(), AppController.this);
+
+                if(response.body()!=null)
+                    response.body().close();
+            }
+        });
     }
 
 
@@ -213,16 +241,17 @@ public class AppController {
             alert.showAndWait().ifPresent(result -> {
                 if (result == ButtonType.OK) {
                     //definitionComponentController.StopFlowRefresher();
-                    shutDownMainScreen();
+                    shutDownMainScreen(true);
                 }
             });
         });
     }
 
-    private void shutDownMainScreen() {
+    private void shutDownMainScreen(boolean shutDownClient) {
         stopUpdatesRefresher();
         primaryStage.close();
-        HttpClientUtil.shutdown();
+        if(shutDownClient)
+            HttpClientUtil.shutdown();
     }
 
 
@@ -349,37 +378,6 @@ public class AppController {
         timer.cancel();
     }
 
-    @FXML
-    public void logOutClick(ActionEvent actionEvent){
-        String finalUrl = HttpUrl
-                .parse(Constants.FULL_SERVER_PATH + "/logout")
-                .newBuilder()
-                .build()
-                .toString();
-
-        HttpClientUtil.runAsync(finalUrl, new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                HttpClientUtil.showErrorAlert(Constants.CONNECTION_ERROR, AppController.this);
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if(response.code()==200){
-                    Platform.runLater(() -> {
-                      shutDownMainScreen();
-                      try {switchToLogin();}
-                      catch (Exception e) {}
-                    });
-                }
-                else
-                    HttpClientUtil.errorMessage(response.body(), AppController.this);
-
-                if(response.body()!=null)
-                    response.body().close();
-            }
-        });
-    }
 
     public void switchToLogin() throws IOException {
 

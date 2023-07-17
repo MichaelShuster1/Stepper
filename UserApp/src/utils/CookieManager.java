@@ -41,4 +41,9 @@ public class CookieManager implements CookieJar {
         }
     }
 
+    public void removeCookiesOf(String domain) {
+        synchronized (this) {
+            cookies.remove(domain);
+        }
+    }
 }

@@ -104,4 +104,8 @@ public class HttpClientUtil {
         alert.showAndWait();
         });
     }
+
+    public static void removeCookiesOf(String domain) {
+        simpleCookieManager.removeCookiesOf(domain);
+    }
 }
