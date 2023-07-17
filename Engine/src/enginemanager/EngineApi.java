@@ -23,6 +23,8 @@ public interface EngineApi {
 
     void updateUserRoles(User user, Set<String> roleNames);
 
+    boolean removeRole(String roleName);
+
     int getFlowIndexByName(String name);
 
     FlowDefinitionDTO getFlowDefinition(int flowIndex);
