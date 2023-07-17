@@ -80,6 +80,7 @@ public class AppController {
         StartUpdatesRefresher();
 
 
+
         tabPaneView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
             @Override
             public void changed(ObservableValue<? extends Tab> observable, Tab oldTab, Tab newTab) {
