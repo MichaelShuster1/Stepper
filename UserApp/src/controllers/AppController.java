@@ -91,6 +91,9 @@ public class AppController {
     @FXML
     private Button logout;
 
+    @FXML
+    private Button chatButton;
+
     private ProgressTracker progressTracker;
 
     private Stage primaryStage;
@@ -111,6 +114,7 @@ public class AppController {
         setTab(2);
 
         logout.setOnMouseClicked(e -> logOutClick());
+        chatButton.setOnMouseClicked(e->openChatRoom());
 
         tabPaneView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
             @Override
@@ -127,6 +131,28 @@ public class AppController {
     }
 
 
+    private void openChatRoom(){
+        try {
+            // Load the pop-up FXML file
+            FXMLLoader popupLoader = new FXMLLoader(getClass().getResource("/resources/fxml/chat-area.fxml"));
+            GridPane popupRoot = popupLoader.load();
+
+            // Create a new stage for the pop-up window
+            Stage popupStage = new Stage();
+            popupStage.setTitle("Chat Room");
+            popupStage.initModality(Modality.APPLICATION_MODAL);
+            popupStage.initOwner(primaryStage);
+
+            // Set the pop-up content
+            Scene popupScene = new Scene(popupRoot);
+            popupStage.setScene(popupScene);
+
+            // Show the pop-up window
+            popupStage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     private void logOutClick(){
         String finalUrl = HttpUrl

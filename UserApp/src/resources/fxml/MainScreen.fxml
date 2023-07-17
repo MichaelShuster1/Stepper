@@ -41,6 +41,11 @@
                                     <Insets right="10.0" top="5.0" />
                                  </StackPane.margin>
                               </Button>
+                              <Button fx:id="chatButton" mnemonicParsing="false" text="chat" StackPane.alignment="TOP_LEFT">
+                                 <StackPane.margin>
+                                    <Insets left="5.0" top="5.0" />
+                                 </StackPane.margin>
+                              </Button>
                            </children>
                         </StackPane>
                         <HBox fx:id="userDetailsView" alignment="BASELINE_LEFT" spacing="15.0" VBox.vgrow="NEVER">
