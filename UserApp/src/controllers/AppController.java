@@ -1,5 +1,6 @@
 package controllers;
 
+import controllers.chat.ChatAreaController;
 import controllers.flowdefinition.DefinitionController;
 import controllers.history.HistoryController;
 import controllers.login.LoginController;
@@ -136,6 +137,8 @@ public class AppController {
             // Load the pop-up FXML file
             FXMLLoader popupLoader = new FXMLLoader(getClass().getResource("/resources/fxml/chat-area.fxml"));
             GridPane popupRoot = popupLoader.load();
+
+            ChatAreaController chatAreaController=popupLoader.getController();
 
             // Create a new stage for the pop-up window
             Stage popupStage = new Stage();

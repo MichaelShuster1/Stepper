@@ -33,14 +33,19 @@ public class ChatAreaController implements Closeable {
     private final IntegerProperty chatVersion;
     private final BooleanProperty autoScroll;
     private final BooleanProperty autoUpdate;
-    private HttpStatusUpdate httpStatusUpdate;
+
+    //private HttpStatusUpdate httpStatusUpdate;
     private ChatAreaRefresher chatAreaRefresher;
     private Timer timer;
 
-    @FXML private ToggleButton autoScrollButton;
-    @FXML private TextArea chatLineTextArea;
-    @FXML private TextArea mainChatLinesTextArea;
-    @FXML private Label chatVersionLabel;
+    @FXML
+    private ToggleButton autoScrollButton;
+    @FXML
+    private TextArea chatLineTextArea;
+    @FXML
+    private TextArea mainChatLinesTextArea;
+    @FXML
+    private Label chatVersionLabel;
 
     public ChatAreaController() {
         chatVersion = new SimpleIntegerProperty();
