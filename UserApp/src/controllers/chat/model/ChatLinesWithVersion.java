@@ -1,4 +1,4 @@
-package controllers.chat.client.component.chatarea.model;
+package controllers.chat.model;
 
 import java.util.List;
 

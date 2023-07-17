@@ -1,6 +1,6 @@
-package controllers.chat.client.component.chatarea;
+package controllers.chat;
 
-import controllers.chat.client.component.chatarea.model.ChatLinesWithVersion;
+import controllers.chat.model.ChatLinesWithVersion;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
@@ -73,13 +73,19 @@ public class ChatAreaController implements Closeable {
         HttpClientUtil.runAsync(finalUrl, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-
+                System.out.println("there was a problem with sending the message");
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (!response.isSuccessful()) {
+                if(response.code()==200){
+
                 }
+                else {
+
+                }
+                if(response.body()!=null)
+                    response.body().close();
             }
         });
 
@@ -120,6 +126,10 @@ public class ChatAreaController implements Closeable {
                 this::updateChatLines);
         timer = new Timer();
         timer.schedule(chatAreaRefresher, REFRESH_RATE, REFRESH_RATE);
+    }
+
+    public void stopListRefresher(){
+        timer.cancel();
     }
 
     @Override
