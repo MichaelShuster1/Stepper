@@ -152,6 +152,11 @@ public class User {
         role.removeUser(name);
     }
 
+    public void removeUserNameInRoles(){
+        if(roles.size()!=0)
+            roles.values().forEach(role -> role.removeUser(name));
+    }
+
 
     public Map<String, Role> getRoles() {
         return roles;

@@ -1,5 +1,6 @@
 package users;
 
+
 import java.util.*;
 
 public class UserManager {
@@ -10,12 +11,12 @@ public class UserManager {
     }
 
 
-
     public synchronized void addUser(String username) {
         users.put(username, new User(username));
     }
 
     public synchronized void removeUser(String username) {
+        users.get(username).removeUserNameInRoles();
         users.remove(username);
     }
 
