@@ -18,6 +18,7 @@ import okhttp3.Callback;
 import okhttp3.HttpUrl;
 import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
+import utils.Constants;
 import utils.HttpClientUtil;
 
 import java.io.Closeable;
@@ -63,7 +64,7 @@ public class ChatAreaController implements Closeable {
     void sendButtonClicked(ActionEvent event) {
         String chatLine = chatLineTextArea.getText();
         String finalUrl = HttpUrl
-                .parse("") //ADD RESOURCE HERE
+                .parse(Constants.FULL_SERVER_PATH + "/sendChat")
                 .newBuilder()
                 .addQueryParameter("userstring", chatLine)
                 .build()

@@ -43,7 +43,7 @@ public class ChatAreaRefresher extends TimerTask {
 
         //noinspection ConstantConditions
         String finalUrl = HttpUrl
-                .parse("") //ADD WEB RESOURCE HERE
+                .parse(Constants.FULL_SERVER_PATH + "/chat")
                 .newBuilder()
                 .addQueryParameter("chatversion", String.valueOf(chatVersion.get()))
                 .build()
