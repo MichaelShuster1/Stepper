@@ -789,4 +789,10 @@ public class Manager implements EngineApi, Serializable {
         return user.getFlowsHistoryDelta(historyVersion);
     }
 
+    @Override
+    public boolean removeRole(String roleName) {
+        return roleManager.removeRole(roleName);
+    }
+
+
 }

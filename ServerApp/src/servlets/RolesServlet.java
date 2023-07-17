@@ -79,4 +79,26 @@ public class RolesServlet extends HttpServlet {
             }
         }
     }
+
+
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setContentType(Constants.JSON_FORMAT);
+        String roleName =request.getParameter("roleName");
+        if(roleName==null){
+            ServletUtils.returnBadRequest(response);
+        }
+        else {
+            EngineApi engine = (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
+            try {
+                boolean isDeleted = engine.removeRole(roleName);
+                ResultDTO resultDTO = new ResultDTO(isDeleted, "");
+                response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
+                response.setStatus(HttpServletResponse.SC_OK);
+            }
+            catch (Exception e) {
+                ServletUtils.returnBadRequest(response);
+            }
+        }
+    }
 }
