@@ -345,14 +345,18 @@ public class ElementLogic {
 
     private void updateFlowNameIDAndState() {
         addTitleLine("FLOW EXECUTION DATA:\n");
-        addKeyValueLine("Flows unique ID: ",flowExecutionDTO.getId());
+
+        UserDetailsDTO userDetails=flowExecutionDTO.getUserDetails();
+        String isManager=userDetails.getManager()? "yes":"no";
+        addKeyValueLine("Executed by: ", userDetails.getUserName());
+        addKeyValueLine("Is Manager: ",isManager);
+
+        addKeyValueLine("Flow unique ID: ",flowExecutionDTO.getId());
         addKeyValueLine("Flow name: ",flowExecutionDTO.getName());
         if(flowExecutionDTO.getStateAfterRun()!=null)
             addKeyValueLine("Flow's final state : " , flowExecutionDTO.getStateAfterRun());
         else
             addKeyProgressIndicator("Flow's final state :   ");
-            //addKeyValueLine("Flow's final state : " , "flow is still running");
-
 
     }
     private void updateFlowFreeInputs(List<FreeInputExecutionDTO> flowFreeInputs, boolean mandatoryOrNot)

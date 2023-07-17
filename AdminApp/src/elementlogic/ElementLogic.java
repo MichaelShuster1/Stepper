@@ -356,8 +356,6 @@ public class ElementLogic {
             addKeyValueLine("Flow's final state : " , flowExecutionDTO.getStateAfterRun());
         else
             addKeyProgressIndicator("Flow's final state :   ");
-            //addKeyValueLine("Flow's final state : " , "flow is still running");
-
 
     }
     private void updateFlowFreeInputs(List<FreeInputExecutionDTO> flowFreeInputs, boolean mandatoryOrNot)

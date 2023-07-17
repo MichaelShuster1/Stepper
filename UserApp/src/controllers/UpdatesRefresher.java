@@ -76,6 +76,7 @@ public class UpdatesRefresher extends TimerTask {
                             }
                             else
                                 definitionSetterConsumer.accept(new ArrayList<>());
+                            
                         }
                         catch (Exception e){
                             System.out.println("Error:" + e.getMessage() );

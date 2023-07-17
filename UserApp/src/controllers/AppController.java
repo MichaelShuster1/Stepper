@@ -30,10 +30,7 @@ import utils.Constants;
 import utils.HttpClientUtil;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-import java.util.Timer;
+import java.util.*;
 import java.util.function.Predicate;
 
 public class AppController {
@@ -122,6 +119,21 @@ public class AppController {
         return definitionComponentController.canRunFlow(flowName);
     }
 
+    public void checkIfCurrentFlowValidInExecution(){
+        String flowName=executionComponentController.getFlowName();
+        if(flowName!=null &&!canRunFlow(flowName))
+        {
+            executionComponentController.clearTab();
+            if(tabPaneView.getSelectionModel().getSelectedIndex()==1) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Message");
+                if(primaryStage.getScene().getStylesheets().size()!=0)
+                    alert.getDialogPane().getStylesheets().add(primaryStage.getScene().getStylesheets().get(0));
+                alert.setContentText("The permission to run the flow: "+flowName+"\n Has been taken away from you by the admin");
+                alert.showAndWait();
+            }
+        }
+    }
 
 
     private void setStyle() {
