@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import users.UserManager;
+import utils.Constants;
 import utils.ServletUtils;
 import utils.SessionUtils;
 
@@ -18,7 +19,10 @@ public class LogoutServlet extends HttpServlet {
         String usernameFromSession = SessionUtils.getUsername(request);
         if (ServletUtils.checkAuthorization(usernameFromSession, response)) {
             UserManager userManager = ServletUtils.getUserManager(getServletContext());
-            userManager.removeUser(usernameFromSession);
+            Object userRolesLock = getServletContext().getAttribute(Constants.ROLE_UPDATE_LOCK);
+            synchronized (userRolesLock) {
+                userManager.removeUser(usernameFromSession);
+            }
             SessionUtils.clearSession(request);
         }
     }

@@ -1,5 +1,6 @@
 package servlets;
 
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import dto.ResultDTO;
 import enginemanager.EngineApi;
@@ -19,7 +20,7 @@ import java.util.Set;
 @WebServlet("/user-roles")
 public class UserRolesServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
+        Gson gson=Constants.GSON_INSTANCE;
         response.setContentType(Constants.JSON_FORMAT);
         String jsonRoles = request.getParameter("roles");
         String username = request.getParameter("userName");
@@ -28,21 +29,30 @@ public class UserRolesServlet extends HttpServlet {
         }
         else {
             EngineApi engine = (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
-            User user = ServletUtils.getUserManager(getServletContext()).getUser(username);
             Type setType = new TypeToken<Set<String>>() {}.getType();
             try {
-                Set<String> roleNames = Constants.GSON_INSTANCE.fromJson(jsonRoles, setType);
-                Object userRolesLock=getServletContext().getAttribute(Constants.ROLE_UPDATE_LOCK);
+                Set<String> roleNames = gson.fromJson(jsonRoles, setType);
+                Object userRolesLock = getServletContext().getAttribute(Constants.ROLE_UPDATE_LOCK);
                 synchronized (userRolesLock) {
-                    engine.updateUserRoles(user, roleNames);
+                    User user = ServletUtils.getUserManager(getServletContext()).getUser(username);
+                    if(user!=null) {
+                        engine.updateUserRoles(user, roleNames);
+                        response.setStatus(HttpServletResponse.SC_OK);
+                    }
+                    else {
+                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                        response.setContentType(Constants.JSON_FORMAT);
+                        ResultDTO resultDTO = new ResultDTO("the user: +"+ username+" dont exist in the system");
+                        response.getWriter().print(gson.toJson(resultDTO));
+                    }
                 }
-                response.setStatus(HttpServletResponse.SC_OK);
+
             }
             catch (Exception e) {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 response.setContentType(Constants.JSON_FORMAT);
-                ResultDTO resultDTO=new ResultDTO("Server failed to update user roles");
-                response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
+                ResultDTO resultDTO = new ResultDTO("Server failed to update user roles");
+                response.getWriter().print(gson.toJson(resultDTO));
             }
         }
     }

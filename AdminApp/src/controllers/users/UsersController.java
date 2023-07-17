@@ -143,12 +143,22 @@ public class UsersController {
 
                 if(selectedUserName!=null){
                     int index=0,size=usersFromList.size();
+                    boolean found=false;
                     for(UserInfoDTO user:usersFromList) {
                         if(user.getUserDetailsDTO().getUserName().equals(selectedUserName)) {
                             usersListView.getSelectionModel().select(index);
-                            //rowClick(new ActionEvent());
+                            found=true;
                         }
                         index++;
+                    }
+                    if(!found){
+                        userSelectedView.getChildren().clear();
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Message");
+                        if(primaryStage.getScene().getStylesheets().size()!=0)
+                            alert.getDialogPane().getStylesheets().add(primaryStage.getScene().getStylesheets().get(0));
+                        alert.setContentText("the user: "+selectedUserName+" has logged out of the system");
+                        alert.showAndWait();
                     }
                 }
                 selectionListenerEnabled = true;
