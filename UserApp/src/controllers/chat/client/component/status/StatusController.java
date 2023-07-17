@@ -7,7 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextArea;
 
-import static chat.client.util.Constants.LINE_SEPARATOR;
+import static utils.Constants.LINE_SEPARATOR;
 
 public class StatusController {
 

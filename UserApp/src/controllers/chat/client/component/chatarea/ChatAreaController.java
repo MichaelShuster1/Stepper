@@ -1,9 +1,7 @@
 package controllers.chat.client.component.chatarea;
 
-import chat.client.component.api.HttpStatusUpdate;
-import chat.client.component.chatarea.model.ChatLinesWithVersion;
-import chat.client.util.Constants;
-import chat.client.util.http.HttpClientUtil;
+import controllers.chat.client.component.api.HttpStatusUpdate;
+import controllers.chat.client.component.chatarea.model.ChatLinesWithVersion;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
@@ -20,13 +18,16 @@ import okhttp3.Callback;
 import okhttp3.HttpUrl;
 import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
+import utils.HttpClientUtil;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.stream.Collectors;
 
-import static chat.client.util.Constants.*;
+import static utils.Constants.CHAT_LINE_FORMATTING;
+import static utils.Constants.REFRESH_RATE;
+
 
 public class ChatAreaController implements Closeable {
 
@@ -62,7 +63,7 @@ public class ChatAreaController implements Closeable {
     void sendButtonClicked(ActionEvent event) {
         String chatLine = chatLineTextArea.getText();
         String finalUrl = HttpUrl
-                .parse(Constants.SEND_CHAT_LINE)
+                .parse("") //ADD RESOURCE HERE
                 .newBuilder()
                 .addQueryParameter("userstring", chatLine)
                 .build()
