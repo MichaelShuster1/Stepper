@@ -184,7 +184,27 @@ public class UsersController {
     }
 
     public void addRole(String roleName){
-        checkBoxes.add(new CheckBox(roleName));
+        CheckBox checkBox=new CheckBox(roleName);
+        checkBox.setSelected(false);
+        checkBoxes.add(checkBox);
+        if(userSelectedView.getChildren()!=null){
+            userSelectedView.getChildren().add(checkBox);
+        }
+    }
+
+    public void removeRole(String roleName){
+        Optional<CheckBox> res=checkBoxes
+                .stream()
+                .filter(checkBox -> checkBox.getText().equals(roleName))
+                .findFirst();
+
+        res.ifPresent(checkBox -> {
+            checkBoxes.remove(checkBox);
+            if(userSelectedView.getChildren()!=null){
+                userSelectedView.getChildren().remove(checkBox);
+            }
+        });
+
     }
 
     public void setRolesOptions(Set<String> roles){

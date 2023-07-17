@@ -8,21 +8,12 @@ import controllers.history.HistoryController;
 import controllers.roles.RolesController;
 import controllers.statistics.StatisticsController;
 import controllers.users.UsersController;
-import controllers.users.UsersRefresher;
-import dto.AvailableFlowDTO;
 import dto.FlowExecutionDTO;
-import dto.InputsDTO;
-import enginemanager.EngineApi;
-import enginemanager.Manager;
-import flow.FlowHistory;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -34,7 +25,6 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.*;
-import java.sql.Time;
 import java.util.Timer;
 
 public class AppController {
@@ -95,7 +85,8 @@ public class AppController {
 
     private void initRolesController(){
         rolesComponentController.setAppController(this);
-        rolesComponentController.setRolesOption(usersComponentController::addRole);
+        rolesComponentController.setRoleAdder(usersComponentController::addRole);
+        rolesComponentController.setRoleDeleter(usersComponentController::removeRole);
     }
 
 

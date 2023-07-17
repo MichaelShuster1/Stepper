@@ -30,7 +30,7 @@ public class RoleManager {
 
     public synchronized Role getRole(String name) {return roles.get(name); }
 
-    public boolean isRoleExist(String name) {
+    public synchronized boolean isRoleExist(String name) {
         return roles.containsKey(name);
     }
 }

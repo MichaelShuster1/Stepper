@@ -35,6 +35,11 @@
                         <Insets bottom="5.0" right="5.0" />
                      </StackPane.margin>
                   </Button>
+                  <Button fx:id="deleteButton" disable="true" mnemonicParsing="false" onAction="#deleteButtonClicked" text="Delete" StackPane.alignment="BOTTOM_LEFT">
+                     <StackPane.margin>
+                        <Insets bottom="5.0" left="5.0" />
+                     </StackPane.margin>
+                  </Button>
                </children>
             </StackPane>
             <StackPane GridPane.columnIndex="1" GridPane.rowSpan="3">

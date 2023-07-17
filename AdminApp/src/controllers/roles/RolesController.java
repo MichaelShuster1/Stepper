@@ -3,6 +3,7 @@ package controllers.roles;
 import controllers.AppController;
 import dto.RoleInfoDTO;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -11,7 +12,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
@@ -35,11 +35,17 @@ public class RolesController {
     private ListView<String> rolesListView;
     @FXML
     private VBox roleSelectedView;
+
+    @FXML
+    private Button deleteButton;
+
     private AppController appController;
 
     private List<CheckBox> checkBoxes;
 
-    private Consumer<String> rolesOption;
+    private Consumer<String> roleAdder;
+
+    private Consumer<String> roleDeleter;
 
     private String roleName;
 
@@ -55,6 +61,8 @@ public class RolesController {
             else
                 roleSelectedView.getChildren().clear();
         });
+
+        deleteButton.disableProperty().bind(Bindings.isEmpty(rolesListView.getSelectionModel().getSelectedItems()));
     }
 
 
@@ -94,6 +102,48 @@ public class RolesController {
 
 
         }
+    }
+
+
+    @FXML
+    void deleteButtonClicked(ActionEvent event) {
+        String RESOURCE="/role";
+
+        String finalUrl = HttpUrl
+                .parse(Constants.FULL_SERVER_PATH + RESOURCE)
+                .newBuilder()
+                .addQueryParameter("roleName", roleName)
+                .build()
+                .toString();
+
+        final String roleToDelete=roleName;
+
+        HttpClientUtil.runAsyncDelete(finalUrl, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                HttpClientUtil.showErrorAlert(Constants.CONNECTION_ERROR,appController);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(response.code()==200){
+                    showInfoAlert("the role was deleted successfully");
+                    rolesListView.getItems().remove(roleToDelete);
+                    if(rolesListView.getSelectionModel().getSelectedItem().equals(roleToDelete))
+                        roleSelectedView.getChildren().clear();
+                    roleDeleter.accept(roleToDelete);
+                }
+                else{
+                    HttpClientUtil.errorMessage(response.body(),appController);
+                }
+
+                if(response.body()!=null)
+                    response.body().close();;
+
+            }
+        });
+
+
     }
 
     private void showRoleDetails(RoleInfoDTO roleInfoDTO){
@@ -230,6 +280,9 @@ public class RolesController {
                 else
                     HttpClientUtil.errorMessage(response.body(),appController);
 
+                if(response.body()!=null)
+                    response.body().close();
+
             }
         });
 
@@ -319,7 +372,7 @@ public class RolesController {
                 if(response.code()==200){
                     Platform.runLater(()->{
                         showInfoAlert("the new role was added to the system successfully");
-                        rolesOption.accept(roleInfo.getName());
+                        roleAdder.accept(roleInfo.getName());
                         rolesListView.getItems().add(roleInfo.getName());
                     });
                 }
@@ -349,7 +402,11 @@ public class RolesController {
         this.appController = appController;
     }
 
-    public void setRolesOption(Consumer<String> rolesOption){
-        this.rolesOption=rolesOption;
+    public void setRoleAdder(Consumer<String> roleAdder){
+        this.roleAdder = roleAdder;
+    }
+
+    public void setRoleDeleter(Consumer<String> roleDeleter) {
+        this.roleDeleter = roleDeleter;
     }
 }
