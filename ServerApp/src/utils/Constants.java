@@ -17,5 +17,10 @@ public class Constants {
     public static final String ROLE_UPDATE_LOCK="roleUpdateLock";
     public static final String USER_ROLES_LOCK="userRolesLock";
 
+    public static final String CHAT_PARAMETER = "userstring";
+    public static final String CHAT_VERSION_PARAMETER = "chatversion";
+
+    public static final int INT_PARAMETER_ERROR = Integer.MIN_VALUE;
+
     public final static Gson GSON_INSTANCE = new Gson();
 }

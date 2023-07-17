@@ -27,16 +27,25 @@ public class NewRoleServlet extends HttpServlet {
 
             try {
                 RoleInfoDTO roleInfoDTO = Constants.GSON_INSTANCE.fromJson(jsonRole, RoleInfoDTO.class);
-                boolean success;
-                synchronized (this) {
-                    success = engine.addRole(roleInfoDTO);
+                boolean success = true;
+                String errorMsg = "";
+                if(roleInfoDTO.getName().equals("")) {
+                    errorMsg = "The name field is empty!";
+                    success = false;
+                }
+                if(success) {
+                    synchronized (this) {
+                        success = engine.addRole(roleInfoDTO);
+                        if(!success)
+                            errorMsg = "New role not created, a role with this name already exists.";
+                    }
                 }
                 if(success)
                     response.setStatus(HttpServletResponse.SC_OK);
                 else {
                     response.setStatus(HttpServletResponse.SC_CONFLICT);
                     response.setContentType(Constants.JSON_FORMAT);
-                    ResultDTO resultDTO=new ResultDTO("New role not created, a role with this name already exists.");
+                    ResultDTO resultDTO=new ResultDTO(errorMsg);
                     response.getWriter().print(Constants.GSON_INSTANCE.toJson(resultDTO));
                 }
             }
