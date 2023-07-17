@@ -196,7 +196,7 @@ public class UsersController {
         CheckBox checkBox=new CheckBox(roleName);
         checkBox.setSelected(false);
         checkBoxes.add(checkBox);
-        if(userSelectedView.getChildren()!=null){
+        if(!usersListView.getSelectionModel().isEmpty()){
             addCheckBox(checkBox);
         }
     }
