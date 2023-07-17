@@ -52,6 +52,7 @@ public class ChatAreaController implements Closeable {
     public void initialize() {
         autoScroll.bind(autoScrollButton.selectedProperty());
         chatVersionLabel.textProperty().bind(Bindings.concat("Chat Version: ", chatVersion.asString()));
+        startListRefresher();
     }
 
     public BooleanProperty autoUpdatesProperty() {

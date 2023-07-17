@@ -32,9 +32,6 @@ public class ChatAreaRefresher extends TimerTask {
     @Override
     public void run() {
 
-        if (!shouldUpdate.get()) {
-            return;
-        }
 
         final int finalRequestNumber = ++requestNumber;
 
