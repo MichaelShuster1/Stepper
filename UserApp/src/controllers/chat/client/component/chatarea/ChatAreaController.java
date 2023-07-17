@@ -1,4 +1,4 @@
-package controllers.chat;
+package controllers.chat.client.component.chatarea;
 
 import chat.client.component.api.HttpStatusUpdate;
 import chat.client.component.chatarea.model.ChatLinesWithVersion;
