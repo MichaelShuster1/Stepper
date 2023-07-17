@@ -41,7 +41,6 @@ public class LoginController {
     @FXML
     private Label errorLabel;
 
-    private EngineApi engine;
 
     private Stage primaryStage;
 
@@ -49,9 +48,6 @@ public class LoginController {
 
 
 
-    public void setEngine(EngineApi engine) {
-        this.engine = engine;
-    }
 
     @FXML
     public void initialize() {
@@ -59,10 +55,6 @@ public class LoginController {
         errorLabel.textProperty().bind(errorMessageProperty);
     }
 
-
-    public void setModel(Manager manager) {
-        this.engine = manager;
-    }
 
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;

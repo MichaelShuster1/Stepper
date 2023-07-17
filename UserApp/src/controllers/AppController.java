@@ -2,6 +2,7 @@ package controllers;
 
 import controllers.flowdefinition.DefinitionController;
 import controllers.history.HistoryController;
+import controllers.login.LoginController;
 import dto.*;
 import elementlogic.ElementLogic;
 import enginemanager.EngineApi;
@@ -12,8 +13,11 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -21,6 +25,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Modality;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
@@ -30,6 +35,7 @@ import utils.Constants;
 import utils.HttpClientUtil;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -195,12 +201,16 @@ public class AppController {
             alert.showAndWait().ifPresent(result -> {
                 if (result == ButtonType.OK) {
                     //definitionComponentController.StopFlowRefresher();
-                    stopUpdatesRefresher();
-                    primaryStage.close();
-                    HttpClientUtil.shutdown();
+                    shutDownMainScreen();
                 }
             });
         });
+    }
+
+    private void shutDownMainScreen() {
+        stopUpdatesRefresher();
+        primaryStage.close();
+        HttpClientUtil.shutdown();
     }
 
 
@@ -325,6 +335,63 @@ public class AppController {
 
     public void stopUpdatesRefresher(){
         timer.cancel();
+    }
+
+    @FXML
+    public void logOutClick(ActionEvent actionEvent){
+        String finalUrl = HttpUrl
+                .parse(Constants.FULL_SERVER_PATH + "/logout")
+                .newBuilder()
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                HttpClientUtil.showErrorAlert(Constants.CONNECTION_ERROR, AppController.this);
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if(response.code()==200){
+                    Platform.runLater(() -> {
+                      shutDownMainScreen();
+                      try {switchToLogin();}
+                      catch (Exception e) {}
+                    });
+                }
+                else
+                    HttpClientUtil.errorMessage(response.body(), AppController.this);
+
+                if(response.body()!=null)
+                    response.body().close();
+            }
+        });
+    }
+
+    public void switchToLogin() throws IOException {
+
+        URL resource =getClass().getResource("/resources/fxml/Login.fxml");
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(resource);
+
+        Parent root = loader.load(resource.openStream());
+        LoginController controller = loader.getController();
+        controller.setPrimaryStage(primaryStage);
+
+        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+        double widthFraction = 0.3;
+        double heightFraction = 0.4;
+        double desiredWidth = screenBounds.getWidth() * widthFraction;
+        double desiredHeight = screenBounds.getHeight() * heightFraction;
+
+        Scene scene = new Scene(root,desiredWidth,desiredHeight);
+        Image icon = new Image(getClass().getResource("/resources/pictures/Icon.png").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/resources/css/Default.css").toExternalForm());
+        primaryStage.getIcons().add(icon);
+        primaryStage.setTitle("Stepper");
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 
 }

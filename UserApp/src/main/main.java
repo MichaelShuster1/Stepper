@@ -27,7 +27,6 @@ public class main extends Application {
         loader.setLocation(resource);
         Parent root = loader.load(resource.openStream());
         LoginController controller = loader.getController();
-        controller.setModel(new Manager());
         controller.setPrimaryStage(primaryStage);
 
 
