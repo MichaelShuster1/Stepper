@@ -1,4 +1,4 @@
-package controllers.chat.client.component.chatarea.model;
+package controllers.chat.model;
 
 public class SingleChatLine {
     private long time;

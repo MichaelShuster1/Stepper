@@ -1,6 +1,6 @@
-package controllers.chat.client.component.chatarea;
+package controllers.chat;
 
-import controllers.chat.client.component.chatarea.model.ChatLinesWithVersion;
+import controllers.chat.model.ChatLinesWithVersion;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import okhttp3.Call;
@@ -32,10 +32,6 @@ public class ChatAreaRefresher extends TimerTask {
     @Override
     public void run() {
 
-        if (!shouldUpdate.get()) {
-            return;
-        }
-
         final int finalRequestNumber = ++requestNumber;
 
         //noinspection ConstantConditions
@@ -47,6 +43,8 @@ public class ChatAreaRefresher extends TimerTask {
                 .toString();
 
 
+
+
         HttpClientUtil.runAsync(finalUrl, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
@@ -54,12 +52,13 @@ public class ChatAreaRefresher extends TimerTask {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (response.isSuccessful()) {
+                if (response.code()==200) {
                     String rawBody = response.body().string();
                     ChatLinesWithVersion chatLinesWithVersion = Constants.GSON_INSTANCE.fromJson(rawBody, ChatLinesWithVersion.class);
                     chatlinesConsumer.accept(chatLinesWithVersion);
-                } else {
                 }
+                if(response.body()!=null)
+                    response.body().close();
             }
         });
 

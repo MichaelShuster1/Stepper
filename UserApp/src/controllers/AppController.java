@@ -1,20 +1,15 @@
 package controllers;
 
-import controllers.chat.client.component.chatarea.ChatAreaController;
+import controllers.chat.ChatAreaController;
 import controllers.flowdefinition.DefinitionController;
 import controllers.history.HistoryController;
 import controllers.login.LoginController;
 import dto.*;
 import elementlogic.ElementLogic;
-import enginemanager.EngineApi;
-import enginemanager.Manager;
 import controllers.flowexecution.ExecutionController;
 import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -39,7 +34,6 @@ import utils.HttpClientUtil;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
-import java.util.function.Predicate;
 
 public class AppController {
 
@@ -147,8 +141,12 @@ public class AppController {
             popupStage.initOwner(primaryStage);
 
             // Set the pop-up content
-            Scene popupScene = new Scene(popupRoot);
-            popupStage.setScene(popupScene);
+            Scene chat = new Scene(popupRoot);
+            popupStage.setScene(chat);
+
+            popupStage.setOnCloseRequest(event -> {
+                chatAreaController.stopListRefresher();
+            });
 
             // Show the pop-up window
             popupStage.showAndWait();

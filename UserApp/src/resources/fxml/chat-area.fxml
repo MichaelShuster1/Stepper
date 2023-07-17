@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<GridPane hgap="3.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" stylesheets="@/resources/css/chat-area.css" vgap="3.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.chat.client.component.chatarea.ChatAreaController">
+<GridPane hgap="3.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" stylesheets="@/resources/css/chat-area.css" vgap="3.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.chat.ChatAreaController">
   <columnConstraints>
     <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" />
     <ColumnConstraints hgrow="NEVER" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" />
@@ -29,7 +29,7 @@
             <Label id="chat-version-label" fx:id="chatVersionLabel" layoutX="285.0" layoutY="6.0" text="Chat version" AnchorPane.rightAnchor="0.0" />
          </children>
       </AnchorPane>
-      <TextArea fx:id="mainChatLinesTextArea" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
+      <TextArea fx:id="mainChatLinesTextArea" editable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
          <font>
             <Font size="16.0" />
          </font>
