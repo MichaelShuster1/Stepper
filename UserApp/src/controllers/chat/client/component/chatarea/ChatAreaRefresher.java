@@ -1,8 +1,8 @@
 package controllers.chat.client.component.chatarea;
 
-import chat.client.component.chatarea.model.ChatLinesWithVersion;
-import chat.client.util.Constants;
-import chat.client.util.http.HttpClientUtil;
+import controllers.chat.client.component.chatarea.model.ChatLinesWithVersion;
+import controllers.chat.client.util.Constants;
+import controllers.chat.client.util.http.HttpClientUtil;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import okhttp3.Call;
@@ -15,12 +15,13 @@ import java.io.IOException;
 import java.util.TimerTask;
 import java.util.function.Consumer;
 
-import static chat.client.util.Constants.GSON_INSTANCE;
+import static controllers.chat.client.util.Constants.GSON_INSTANCE;
 
 public class ChatAreaRefresher extends TimerTask {
 
     private final Consumer<String> httpRequestLoggerConsumer;
     private final Consumer<ChatLinesWithVersion> chatlinesConsumer;
+
     private final IntegerProperty chatVersion;
     private final BooleanProperty shouldUpdate;
     private int requestNumber;

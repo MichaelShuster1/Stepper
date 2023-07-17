@@ -1,6 +1,6 @@
 package controllers;
 
-import controllers.chat.ChatAreaController;
+import controllers.chat.client.component.chatarea.ChatAreaController;
 import controllers.flowdefinition.DefinitionController;
 import controllers.history.HistoryController;
 import controllers.login.LoginController;

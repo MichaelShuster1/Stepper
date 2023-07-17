@@ -1,9 +1,9 @@
 package controllers.chat.client.component.chatarea;
 
-import chat.client.component.api.HttpStatusUpdate;
-import chat.client.component.chatarea.model.ChatLinesWithVersion;
-import chat.client.util.Constants;
-import chat.client.util.http.HttpClientUtil;
+import controllers.chat.client.component.api.HttpStatusUpdate;
+import controllers.chat.client.component.chatarea.model.ChatLinesWithVersion;
+import controllers.chat.client.util.Constants;
+import controllers.chat.client.util.http.HttpClientUtil;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
@@ -26,15 +26,14 @@ import java.io.IOException;
 import java.util.Timer;
 import java.util.stream.Collectors;
 
-import static chat.client.util.Constants.*;
+import static controllers.chat.client.util.Constants.*;
 
 public class ChatAreaController implements Closeable {
 
     private final IntegerProperty chatVersion;
     private final BooleanProperty autoScroll;
     private final BooleanProperty autoUpdate;
-
-    //private HttpStatusUpdate httpStatusUpdate;
+    private HttpStatusUpdate httpStatusUpdate;
     private ChatAreaRefresher chatAreaRefresher;
     private Timer timer;
 
