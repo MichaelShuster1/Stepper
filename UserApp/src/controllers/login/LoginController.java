@@ -15,6 +15,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import okhttp3.*;
@@ -51,6 +53,15 @@ public class LoginController {
     public void initialize() {
         loginButton.disableProperty().bind(userNameField.textProperty().isEmpty());
         errorLabel.textProperty().bind(errorMessageProperty);
+
+
+        userNameField.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                event.consume(); // Prevent the default behavior of adding a new line
+                // Custom action to perform when Enter key is pressed
+                userLogin(new ActionEvent());
+            }
+        });
     }
 
 
