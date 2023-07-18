@@ -72,7 +72,6 @@ public class ExecutionController {
 
     private AppController appController;
 
-    private Stage primaryStage;
 
     private List<Button> mandatoryInputButtons;
 
@@ -119,7 +118,6 @@ public class ExecutionController {
 
     public void setStage(Stage stage)
     {
-        primaryStage=stage;
         elementLogic=new ElementLogic(elementChoiceView,elementDetailsView,stage);
         elementLogic.setTableOpacity(0.0);
         choiceBoxView.setOpacity(0.0);

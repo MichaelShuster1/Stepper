@@ -2,7 +2,6 @@ package controllers.chat;
 
 import controllers.AppController;
 import controllers.chat.model.ChatLinesWithVersion;
-import controllers.flowexecution.ExecutionController;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
@@ -14,8 +13,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.HttpUrl;
@@ -147,8 +144,6 @@ public class ChatAreaController {
 
 
     public void close()  {
-        //chatVersion.set(0);
-        //chatLineTextArea.clear();
         if (chatAreaRefresher != null && timer != null) {
             chatAreaRefresher.cancel();
             timer.cancel();
