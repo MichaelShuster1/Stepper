@@ -78,7 +78,15 @@ public class HttpCall extends Step{
         if(method==null)
             method="GET";
 
-        String finalUrl=protocol+"://"+address+"/"+resource;
+        String finalUrl;
+
+        if(resource.startsWith("/")){
+            finalUrl=protocol+"://"+address+resource;
+        }
+        else {
+            finalUrl=protocol+"://"+address+"/"+resource;
+        }
+
         Request request=buildRequest(finalUrl,method,body);
 
         OkHttpClient httpClient=new OkHttpClient();
