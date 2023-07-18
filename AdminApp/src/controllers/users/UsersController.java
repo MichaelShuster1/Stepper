@@ -160,7 +160,7 @@ public class UsersController {
                             alert.setTitle("Message");
                             if (primaryStage.getScene().getStylesheets().size() != 0)
                                 alert.getDialogPane().getStylesheets().add(primaryStage.getScene().getStylesheets().get(0));
-                            alert.setContentText("the user: " + selectedUserName + " has logged out of the system");
+                            alert.setContentText("The user: " + selectedUserName + " has logged out of the system");
                             alert.showAndWait();
                         }
                     }

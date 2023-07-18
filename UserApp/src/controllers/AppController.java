@@ -190,7 +190,7 @@ public class AppController {
     }
 
 
-    private void logOutClick(){
+    private void sendLogoutRequest(Boolean switchToLogin, boolean shutDownHttp) {
         String finalUrl = HttpUrl
                 .parse(Constants.FULL_SERVER_PATH + "/logout")
                 .newBuilder()
@@ -207,10 +207,12 @@ public class AppController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if(response.code()==200){
                     Platform.runLater(() -> {
-                        shutDownMainScreen(false);
+                        shutDownMainScreen(shutDownHttp);
                         HttpClientUtil.removeCookiesOf(Constants.BASE_DOMAIN);
-                        try {switchToLogin();}
-                        catch (Exception e) {}
+                        if(switchToLogin) {
+                            try {switchToLogin();}
+                            catch (Exception e) {}
+                        }
                     });
                 }
                 else
@@ -220,6 +222,11 @@ public class AppController {
                     response.body().close();
             }
         });
+
+    }
+
+    private void logOutClick(){
+       sendLogoutRequest(true,false);
     }
 
 
@@ -303,7 +310,7 @@ public class AppController {
             alert.showAndWait().ifPresent(result -> {
                 if (result == ButtonType.OK) {
                     //definitionComponentController.StopFlowRefresher();
-                    shutDownMainScreen(true);
+                    sendLogoutRequest(false,true);
                 }
             });
         });

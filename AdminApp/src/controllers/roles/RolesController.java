@@ -359,6 +359,8 @@ public class RolesController {
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
         // Wait for dialog response
+        if(appController.getPrimaryStage().getScene().getStylesheets().size()!=0)
+            dialog.getDialogPane().getStylesheets().add(appController.getPrimaryStage().getScene().getStylesheets().get(0));
         dialog.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
                 // Process form data here

@@ -1,10 +1,10 @@
-#send-button {
+#chat-send-button {
     -fx-text-fill: PURPLE;
     -fx-font-size: 20px;
     -fx-font-weight: BOLD;
 }
 
-.toggle-action-button {
+.chat-toggle-action-button {
     -fx-text-fill: GREEN;
     -fx-font-size: 14px;
     -fx-font-weight: BOLD;
@@ -17,6 +17,6 @@
 }
 
 
-#background {
+#chat-background {
     -fx-background-color: #e6e6e6;
 }

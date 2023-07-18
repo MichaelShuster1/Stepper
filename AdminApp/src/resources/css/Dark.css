@@ -94,9 +94,5 @@ Text {
     -fx-alignment: CENTER;
 }
 
-#chat-background {
-    -fx-background-color: -fx-base;
-}
-
 
 

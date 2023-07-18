@@ -16,10 +16,12 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import okhttp3.*;
+import styles.Styles;
 import utils.Constants;
 import utils.HttpClientUtil;
 
@@ -64,6 +66,9 @@ public class AppController {
     @FXML
     private TabPane tabPaneView;
 
+    @FXML
+    private ChoiceBox<String> styleChoiceView;
+
     private Stage primaryStage;
 
     private Timer timer;
@@ -76,6 +81,9 @@ public class AppController {
         initRolesController();
         historyComponentController.setAppController(this);
         statisticsComponentController.setAppController(this);
+        styleChoiceView.getItems().addAll(Styles.getStyles());
+        styleChoiceView.setValue(Styles.DEFAULT.toString());
+        styleChoiceView.setOnAction(e->setStyle());
         setTab(3);
         StartUpdatesRefresher();
 
@@ -291,6 +299,26 @@ public class AppController {
         alert.setTitle("Message");
         alert.setContentText("the xml file was loaded successfully");
         alert.showAndWait();
+    }
+
+    private void setStyle() {
+        String choice= styleChoiceView.getValue();
+        primaryStage.getScene().getStylesheets().clear();
+        switch (Styles.valueOf(choice))
+        {
+            case DARK:
+                primaryStage.getScene().getStylesheets().add(
+                        getClass().getResource("/resources/css/Dark.css").toExternalForm());
+                break;
+            case MIDNIGHT:
+                primaryStage.getScene().getStylesheets().add(
+                        getClass().getResource("/resources/css/Midnight.css").toExternalForm());
+                break;
+            case DEFAULT:
+                primaryStage.getScene().getStylesheets().add(
+                        getClass().getResource("/resources/css/Default.css").toExternalForm());
+                break;
+        }
     }
 
 
