@@ -22,110 +22,106 @@
    <content>
       <StackPane>
          <children>
-            <StackPane>
-               <children>
-                  <BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0">
-                     <top>
-                        <VBox alignment="TOP_CENTER" prefWidth="100.0" BorderPane.alignment="CENTER">
+            <BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0">
+               <top>
+                  <VBox alignment="TOP_CENTER" prefWidth="100.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <StackPane VBox.vgrow="NEVER">
                            <children>
-                              <StackPane VBox.vgrow="NEVER">
+                              <HBox alignment="TOP_CENTER">
                                  <children>
-                                    <HBox alignment="TOP_CENTER">
-                                       <children>
-                                          <ImageView fx:id="stepperLogo" fitHeight="150.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                <Image url="@../pictures/blackLogo.png" />
-                                             </image>
-                                          </ImageView>
-                                       </children>
-                                    </HBox>
-                                    <Button fx:id="logout" mnemonicParsing="false" text="log out" StackPane.alignment="TOP_RIGHT">
-                                       <StackPane.margin>
-                                          <Insets right="10.0" top="5.0" />
-                                       </StackPane.margin>
-                                    </Button>
+                                    <ImageView fx:id="stepperLogo" fitHeight="150.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../pictures/blackLogo.png" />
+                                       </image>
+                                    </ImageView>
                                  </children>
-                              </StackPane>
-                              <HBox fx:id="userDetailsView" alignment="BASELINE_LEFT" spacing="15.0" VBox.vgrow="NEVER">
-                                 <children>
-                                    <Label fx:id="userName" alignment="BASELINE_LEFT" text="Name:" HBox.hgrow="ALWAYS">
-                                       <font>
-                                          <Font size="14.0" />
-                                       </font>
-                                       <HBox.margin>
-                                          <Insets />
-                                       </HBox.margin>
-                                    </Label>
-                                    <Label fx:id="isManager" alignment="BASELINE_LEFT" text="Is Manager:">
-                                       <font>
-                                          <Font size="14.0" />
-                                       </font>
-                                       <HBox.margin>
-                                          <Insets left="10.0" />
-                                       </HBox.margin>
-                                    </Label>
-                                    <Label fx:id="userRoles" text="Assigned Roles:">
-                                       <font>
-                                          <Font size="14.0" />
-                                       </font>
-                                       <HBox.margin>
-                                          <Insets left="10.0" />
-                                       </HBox.margin>
-                                    </Label>
-                                    <Hyperlink fx:id="hyperlink" disable="true" text="Roles" visible="false">
-                                       <HBox.margin>
-                                          <Insets left="-10.0" />
-                                       </HBox.margin>
-                                    </Hyperlink>
-                                    <Label maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
-                                    <RadioButton fx:id="animationsRadioButtonVIew" mnemonicParsing="false" text="Animations" />
-                                    <Label text="Style:" />
-                                    <ChoiceBox fx:id="styleChoiceView" prefWidth="150.0">
-                                       <HBox.margin>
-                                          <Insets right="10.0" />
-                                       </HBox.margin>
-                                    </ChoiceBox>
-                                 </children>
-                                 <VBox.margin>
-                                    <Insets left="10.0" />
-                                 </VBox.margin>
                               </HBox>
+                              <Button fx:id="logout" mnemonicParsing="false" text="log out" StackPane.alignment="TOP_RIGHT">
+                                 <StackPane.margin>
+                                    <Insets right="10.0" top="5.0" />
+                                 </StackPane.margin>
+                              </Button>
                            </children>
-                        </VBox>
-                     </top>
-                     <center>
-                        <TabPane fx:id="tabPaneView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" nodeOrientation="RIGHT_TO_LEFT" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
-                          <tabs>
-                              <Tab text="Executions History">
-                                 <content>
-                                    <fx:include fx:id="historyComponent" source="History.fxml" />
-                                 </content>
-                              </Tab>
-                            <Tab fx:id="executionTabView" text="Flows Execution">
-                                 <content>
-                                    <fx:include fx:id="executionComponent" source="Execution.fxml" />
-                                 </content>
-                            </Tab>
-                              <Tab text="Flows Definition">
-                                 <content>
-                                    <fx:include fx:id="definitionComponent" source="Definition.fxml" HBox.hgrow="ALWAYS" />
-                                 </content>
-                              </Tab>
-                          </tabs>
-                           <BorderPane.margin>
-                              <Insets top="10.0" />
-                           </BorderPane.margin>
-                        </TabPane>
-                     </center>
-                  </BorderPane>
-                  <Button fx:id="chatButton" disable="true" mnemonicParsing="false" text="chat" visible="false" StackPane.alignment="BOTTOM_LEFT">
-                     <StackPane.margin>
-                        <Insets bottom="5.0" left="5.0" />
-                     </StackPane.margin>
-                  </Button>
-                  <fx:include fx:id="chatComponent" maxHeight="200.0" maxWidth="200.0" source="chat-area.fxml" StackPane.alignment="BOTTOM_LEFT" />
-               </children>
-            </StackPane>
+                        </StackPane>
+                        <HBox fx:id="userDetailsView" alignment="BASELINE_LEFT" spacing="15.0" VBox.vgrow="NEVER">
+                           <children>
+                              <Label fx:id="userName" alignment="BASELINE_LEFT" text="Name:" HBox.hgrow="ALWAYS">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                              </Label>
+                              <Label fx:id="isManager" alignment="BASELINE_LEFT" text="Is Manager:">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets left="10.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <Label fx:id="userRoles" text="Assigned Roles:">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets left="10.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <Hyperlink fx:id="hyperlink" disable="true" text="Roles" visible="false">
+                                 <HBox.margin>
+                                    <Insets left="-10.0" />
+                                 </HBox.margin>
+                              </Hyperlink>
+                              <Label maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                              <RadioButton fx:id="animationsRadioButtonVIew" mnemonicParsing="false" text="Animations" />
+                              <Label text="Style:" />
+                              <ChoiceBox fx:id="styleChoiceView" prefWidth="150.0">
+                                 <HBox.margin>
+                                    <Insets right="10.0" />
+                                 </HBox.margin>
+                              </ChoiceBox>
+                           </children>
+                           <VBox.margin>
+                              <Insets left="10.0" />
+                           </VBox.margin>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </top>
+               <center>
+                  <TabPane fx:id="tabPaneView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" nodeOrientation="RIGHT_TO_LEFT" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+                    <tabs>
+                        <Tab text="Executions History">
+                           <content>
+                              <fx:include fx:id="historyComponent" source="History.fxml" />
+                           </content>
+                        </Tab>
+                      <Tab fx:id="executionTabView" text="Flows Execution">
+                           <content>
+                              <fx:include fx:id="executionComponent" source="Execution.fxml" />
+                           </content>
+                      </Tab>
+                        <Tab text="Flows Definition">
+                           <content>
+                              <fx:include fx:id="definitionComponent" source="Definition.fxml" HBox.hgrow="ALWAYS" />
+                           </content>
+                        </Tab>
+                    </tabs>
+                     <BorderPane.margin>
+                        <Insets top="10.0" />
+                     </BorderPane.margin>
+                  </TabPane>
+               </center>
+            </BorderPane>
+            <Button fx:id="chatButton" disable="true" mnemonicParsing="false" text="chat" visible="false" StackPane.alignment="BOTTOM_LEFT">
+               <StackPane.margin>
+                  <Insets bottom="5.0" left="5.0" />
+               </StackPane.margin>
+            </Button>
+            <fx:include fx:id="chatComponent" maxHeight="200.0" maxWidth="200.0" source="chat-area.fxml" StackPane.alignment="BOTTOM_LEFT" />
          </children>
       </StackPane>
    </content>
