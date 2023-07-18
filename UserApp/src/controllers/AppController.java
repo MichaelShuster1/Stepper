@@ -160,8 +160,8 @@ public class AppController {
 
 
     private void displayChat(){
-        chatComponent.maxHeightProperty().bind(Bindings.multiply(primaryStage.widthProperty(), 0.25));
-        chatComponent.maxWidthProperty().bind(Bindings.multiply(primaryStage.heightProperty(), 0.35));
+        chatComponent.maxHeightProperty().bind(Bindings.multiply(primaryStage.heightProperty(), 0.35));
+        chatComponent.maxWidthProperty().bind(Bindings.multiply(primaryStage.widthProperty(), 0.25));
 
         chatComponent.setVisible(true);
         chatComponent.setDisable(false);
