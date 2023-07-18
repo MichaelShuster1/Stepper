@@ -6,7 +6,6 @@
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.RadioButton?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.image.Image?>
@@ -17,8 +16,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AppController">
-   <content>
+
+<StackPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AppController">
+   <children>
       <StackPane>
          <children>
             <BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0">
@@ -39,11 +39,6 @@
                               <Button fx:id="logout" mnemonicParsing="false" text="log out" StackPane.alignment="TOP_RIGHT">
                                  <StackPane.margin>
                                     <Insets right="10.0" top="5.0" />
-                                 </StackPane.margin>
-                              </Button>
-                              <Button fx:id="chatButton" mnemonicParsing="false" text="chat" StackPane.alignment="TOP_LEFT">
-                                 <StackPane.margin>
-                                    <Insets left="5.0" top="5.0" />
                                  </StackPane.margin>
                               </Button>
                            </children>
@@ -120,7 +115,13 @@
                   </TabPane>
                </center>
             </BorderPane>
+            <Button fx:id="chatButton" disable="true" mnemonicParsing="false" text="chat" visible="false" StackPane.alignment="BOTTOM_LEFT">
+               <StackPane.margin>
+                  <Insets bottom="5.0" left="5.0" />
+               </StackPane.margin>
+            </Button>
+            <fx:include fx:id="chatComponent" maxHeight="200.0" maxWidth="200.0" source="chat-area.fxml" StackPane.alignment="BOTTOM_LEFT" />
          </children>
       </StackPane>
-   </content>
-</ScrollPane>
+   </children>
+</StackPane>

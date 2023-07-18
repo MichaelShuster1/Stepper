@@ -8,10 +8,12 @@ import dto.*;
 import elementlogic.ElementLogic;
 import controllers.flowexecution.ExecutionController;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
@@ -23,6 +25,7 @@ import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import progress.ProgressTracker;
@@ -55,7 +58,11 @@ public class AppController {
     @FXML
     private HistoryController historyComponentController;
 
+    @FXML
+    private StackPane chatComponent;
 
+    @FXML
+    private ChatAreaController chatComponentController;
 
     @FXML
     private TabPane tabPaneView;
@@ -95,6 +102,8 @@ public class AppController {
 
     private Timer timer;
 
+    private boolean isChatOpen;
+
 
 
     @FXML
@@ -103,13 +112,15 @@ public class AppController {
         executionComponentController.bindAnimationBooleanProperty(animationsRadioButtonVIew.selectedProperty());
         definitionComponentController.setAppController(this);
         historyComponentController.setAppController(this);
+        chatComponentController.setAppController(this);
         styleChoiceView.getItems().addAll(Styles.getStyles());
         styleChoiceView.setValue(Styles.DEFAULT.toString());
         styleChoiceView.setOnAction(e->setStyle());
         setTab(2);
 
         logout.setOnMouseClicked(e -> logOutClick());
-        chatButton.setOnMouseClicked(e->openChatRoom());
+        chatButton.setOnMouseClicked(e->displayChat());
+        isChatOpen=false;
 
         tabPaneView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
             @Override
@@ -121,40 +132,66 @@ public class AppController {
                             executionComponentController.clearTab();
                     }
                 }
+                if (newTab!=null){
+                    String tabTitle =newTab.getText();
+                    if(tabTitle.equals("Flows Definition")){
+                        if(isChatOpen) {
+                            chatComponentController.close();
+                            closeChat();
+                            isChatOpen=true;
+                        }
+                        chatButton.setVisible(false);
+                        chatButton.setDisable(true);
+                    }
+                    else {
+                        if (isChatOpen) {
+                            chatComponentController.startListRefresher();
+                            displayChat();
+                        }
+                        else
+                        {
+                            chatButton.setVisible(true);
+                            chatButton.setDisable(false);
+                        }
+                    }
+
+                }
             }
         });
     }
 
 
-    private void openChatRoom(){
-        try {
-            // Load the pop-up FXML file
-            FXMLLoader popupLoader = new FXMLLoader(getClass().getResource("/resources/fxml/chat-area.fxml"));
-            GridPane popupRoot = popupLoader.load();
 
-            ChatAreaController chatAreaController=popupLoader.getController();
+    private void displayChat(){
+        chatComponent.maxHeightProperty().bind(Bindings.multiply(primaryStage.widthProperty(), 0.25));
+        chatComponent.maxWidthProperty().bind(Bindings.multiply(primaryStage.heightProperty(), 0.35));
 
-            // Create a new stage for the pop-up window
-            Stage popupStage = new Stage();
-            popupStage.setTitle("Chat Room");
-            popupStage.initModality(Modality.APPLICATION_MODAL);
-            popupStage.initOwner(primaryStage);
+        chatComponent.setVisible(true);
+        chatComponent.setDisable(false);
 
-            // Set the pop-up content
-            Scene chat = new Scene(popupRoot);
-            popupStage.setScene(chat);
+        chatButton.setVisible(false);
+        chatButton.setDisable(true);
 
-            popupStage.setOnCloseRequest(event -> {
-                chatAreaController.close();
-            });
-
-            // Show the pop-up window
-
-            popupStage.showAndWait();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        chatComponentController.startListRefresher();
+        isChatOpen=true;
     }
+
+    public void closeChat(){
+        chatComponent.maxHeightProperty().unbind();
+        chatComponent.maxWidthProperty().unbind();
+
+        chatComponent.setMaxHeight(0);
+        chatComponent.setMaxWidth(0);
+
+        chatComponent.setVisible(false);
+        chatComponent.setDisable(true);
+
+        chatButton.setVisible(true);
+        chatButton.setDisable(false);
+
+        isChatOpen=false;
+    }
+
 
     private void logOutClick(){
         String finalUrl = HttpUrl
@@ -280,6 +317,7 @@ public class AppController {
         primaryStage.close();
         if(shutDownClient)
             HttpClientUtil.shutdown();
+        chatComponentController.close();
     }
 
 

@@ -2,45 +2,49 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<GridPane hgap="3.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" stylesheets="@/resources/css/chat-area.css" vgap="3.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.chat.ChatAreaController">
-  <columnConstraints>
-    <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" />
-    <ColumnConstraints hgrow="NEVER" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" />
-  </columnConstraints>
-  <rowConstraints>
-    <RowConstraints vgrow="NEVER" />
-    <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
-    <RowConstraints vgrow="NEVER" />
-  </rowConstraints>
+<StackPane id="background" disable="true" stylesheets="@/resources/css/chat-area.css" visible="false" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.chat.ChatAreaController">
    <children>
-      <Button id="send-button" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#sendButtonClicked" text="SEND" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-      <AnchorPane maxWidth="1.7976931348623157E308" GridPane.columnSpan="2">
+      <GridPane hgap="3.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" vgap="3.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" />
+          <ColumnConstraints hgrow="NEVER" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints vgrow="NEVER" />
+          <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
+          <RowConstraints vgrow="NEVER" />
+        </rowConstraints>
          <children>
-            <ToggleButton fx:id="autoScrollButton" mnemonicParsing="false" selected="true" styleClass="toggle-action-button" text="Auto Scroll" AnchorPane.leftAnchor="0.0" />
-            <Label id="chat-version-label" fx:id="chatVersionLabel" layoutX="285.0" layoutY="6.0" text="Chat version" AnchorPane.rightAnchor="0.0" />
+            <Button id="send-button" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#sendButtonClicked" text="SEND" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <AnchorPane maxWidth="1.7976931348623157E308" GridPane.columnSpan="2">
+               <children>
+                  <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#closeChatCLick" text="Close" AnchorPane.rightAnchor="0.0" />
+                  <ToggleButton fx:id="autoScrollButton" mnemonicParsing="false" selected="true" styleClass="toggle-action-button" text="Auto Scroll" AnchorPane.leftAnchor="0.0" />
+               </children>
+            </AnchorPane>
+            <TextArea fx:id="mainChatLinesTextArea" editable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </TextArea>
+            <TextArea fx:id="chatLineTextArea" maxHeight="50.0" maxWidth="1.7976931348623157E308" minHeight="50.0" prefHeight="50.0" promptText="Say Something..." GridPane.rowIndex="2">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </TextArea>
          </children>
-      </AnchorPane>
-      <TextArea fx:id="mainChatLinesTextArea" editable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </TextArea>
-      <TextArea fx:id="chatLineTextArea" maxHeight="50.0" maxWidth="1.7976931348623157E308" minHeight="50.0" prefHeight="50.0" promptText="Say Something..." GridPane.rowIndex="2">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </TextArea>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </GridPane>
    </children>
-   <padding>
-      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-   </padding>
-</GridPane>
+</StackPane>

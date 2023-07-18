@@ -2,13 +2,14 @@ package controllers.flowexecution;
 
 
 import controllers.AppController;
+import controllers.chat.ChatAreaController;
 import datadefinition.DataType;
 import dto.*;
 import elementlogic.ElementLogic;
-import enginemanager.EngineApi;
 import javafx.animation.FadeTransition;
 import javafx.animation.RotateTransition;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
@@ -71,6 +72,8 @@ public class ExecutionController {
 
     private AppController appController;
 
+    private Stage primaryStage;
+
     private List<Button> mandatoryInputButtons;
 
     private List<Button> optionalInputButtons;
@@ -116,6 +119,7 @@ public class ExecutionController {
 
     public void setStage(Stage stage)
     {
+        primaryStage=stage;
         elementLogic=new ElementLogic(elementChoiceView,elementDetailsView,stage);
         elementLogic.setTableOpacity(0.0);
         choiceBoxView.setOpacity(0.0);

@@ -1,6 +1,8 @@
 package controllers.chat;
 
+import controllers.AppController;
 import controllers.chat.model.ChatLinesWithVersion;
+import controllers.flowexecution.ExecutionController;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
@@ -12,6 +14,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.HttpUrl;
@@ -37,10 +41,13 @@ public class ChatAreaController {
     @FXML
     private TextArea mainChatLinesTextArea;
 
+    private AppController appController;
+
     private final IntegerProperty chatVersion;
     private final BooleanProperty autoScroll;
     private ChatAreaRefresher chatAreaRefresher;
     private Timer timer;
+
 
 
     public ChatAreaController() {
@@ -51,7 +58,6 @@ public class ChatAreaController {
     @FXML
     public void initialize() {
         autoScroll.bind(autoScrollButton.selectedProperty());
-        startListRefresher();
         mainChatLinesTextArea.setWrapText(true);
 
         chatLineTextArea.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
@@ -95,6 +101,16 @@ public class ChatAreaController {
     }
 
 
+    @FXML
+    void closeChatCLick(ActionEvent event) {
+        close();
+        appController.closeChat();
+    }
+
+    public void setAppController(AppController appController) {
+        this.appController = appController;
+    }
+
     private void updateChatLines(ChatLinesWithVersion chatLinesWithVersion) {
         if (chatLinesWithVersion.getVersion() != chatVersion.get()) {
             String deltaChatLines = chatLinesWithVersion
@@ -122,20 +138,22 @@ public class ChatAreaController {
     }
 
     public void startListRefresher() {
-        chatAreaRefresher = new ChatAreaRefresher(
-                chatVersion,
-                this::updateChatLines);
-        timer = new Timer();
-        timer.schedule(chatAreaRefresher, 0, REFRESH_RATE);
+        if(chatAreaRefresher==null&&timer==null) {
+            chatAreaRefresher = new ChatAreaRefresher(chatVersion, this::updateChatLines);
+            timer = new Timer();
+            timer.schedule(chatAreaRefresher, 0, REFRESH_RATE);
+        }
     }
 
 
     public void close()  {
-        chatVersion.set(0);
-        chatLineTextArea.clear();
+        //chatVersion.set(0);
+        //chatLineTextArea.clear();
         if (chatAreaRefresher != null && timer != null) {
             chatAreaRefresher.cancel();
             timer.cancel();
+            chatAreaRefresher=null;
+            timer=null;
         }
     }
 
