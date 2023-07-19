@@ -31,12 +31,12 @@
                   <ToggleButton fx:id="autoScrollButton" mnemonicParsing="false" selected="true" styleClass="chat-toggle-action-button" text="Auto Scroll" AnchorPane.leftAnchor="0.0" />
                </children>
             </AnchorPane>
-            <TextArea fx:id="mainChatLinesTextArea" editable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
+            <TextArea id="chat-general-text" fx:id="mainChatLinesTextArea" editable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
                <font>
                   <Font size="16.0" />
                </font>
             </TextArea>
-            <TextArea fx:id="chatLineTextArea" maxHeight="50.0" maxWidth="1.7976931348623157E308" minHeight="50.0" prefHeight="50.0" promptText="Say Something..." GridPane.rowIndex="2">
+            <TextArea id="chat-type-area" fx:id="chatLineTextArea" maxHeight="50.0" maxWidth="1.7976931348623157E308" minHeight="50.0" prefHeight="50.0" promptText="Say Something..." GridPane.rowIndex="2">
                <font>
                   <Font size="14.0" />
                </font>
