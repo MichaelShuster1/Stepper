@@ -30,6 +30,9 @@ public class UsersController {
     private ListView<UserInfoDTO> usersListView;
     @FXML
     private VBox userSelectedView;
+
+    @FXML
+    private Button saveBtn;
     private AppController appController;
     private Timer timer;
     private List<CheckBox> checkBoxes;
@@ -59,11 +62,16 @@ public class UsersController {
 
         checkBoxes=new ArrayList<>();
         checkBoxManager=new CheckBox("Manager");
+        saveBtn.setDisable(true);
 
         usersListView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (selectionListenerEnabled) {
-                if (newSelection != null)
+                if (newSelection != null) {
+                    saveBtn.setDisable(false);
                     rowClick();
+                }
+                else
+                    saveBtn.setDisable(true);
             }
         });
     }
@@ -150,11 +158,13 @@ public class UsersController {
                             usersListView.getSelectionModel().select(index);
                             found=true;
                             updateTwoFirstLines(user);
+                            saveBtn.setDisable(false);
                         }
                         index++;
                     }
                     if(!found){
                         userSelectedView.getChildren().clear();
+                        saveBtn.setDisable(true);
                         if(appController.CurrentTab()!=null&&appController.CurrentTab()==3) {
                             Alert alert = new Alert(Alert.AlertType.INFORMATION);
                             alert.setTitle("Message");
