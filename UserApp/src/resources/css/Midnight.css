@@ -379,15 +379,15 @@ Text {
 
 
 #chat-background {
-    -fx-background-color: -swatch-500;
+    -fx-background-color: -swatch-100;
 }
 
 #chat-general-text {
-    -fx-background-color: -swatch-200;
+    -fx-background-color: -swatch-100;
 }
 
 #chat-type-area {
-    -fx-background-color: -swatch-200;
+    -fx-background-color: -swatch-100;
 }
 
 

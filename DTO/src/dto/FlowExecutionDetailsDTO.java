@@ -20,13 +20,13 @@ public class FlowExecutionDetailsDTO implements Serializable {
         this.userDetails=userDetails;
     }
 
-    public FlowExecutionDetailsDTO(String name, String id, String activationTime) {
+    public FlowExecutionDetailsDTO(String name, String id, String activationTime,UserDetailsDTO userDetails) {
         this.name = name;
         this.id = id;
         this.activationTime = activationTime;
         stateAfterRun = null;
         runTime = null;
-        this.userDetails=null;
+        this.userDetails=userDetails;
     }
 
     public FlowExecutionDetailsDTO(FlowExecutionDetailsDTO other)
