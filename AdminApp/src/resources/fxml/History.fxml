@@ -7,7 +7,6 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
@@ -38,9 +37,6 @@
                      </content>
                   </ScrollPane>
                </center>
-               <bottom>
-                  <HBox alignment="CENTER" minHeight="60.0" BorderPane.alignment="CENTER" />
-               </bottom>
             </BorderPane>
             <VBox alignment="CENTER" GridPane.rowSpan="2">
                <children>

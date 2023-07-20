@@ -120,8 +120,17 @@ public class HistoryController {
     {
         Platform.runLater(() -> {
             historyVersion = historyVersion + flowExecutionDTOList.size();
-        for(FlowExecutionDTO flowExecutionDTO : flowExecutionDTOList)
-            addRow(flowExecutionDTO);
+            tableData.addAll(0,flowExecutionDTOList);
+
+            /*
+            if(tableData.size()==0){
+                tableData.addAll(0,flowExecutionDTOList);
+            }
+            else{
+                flowExecutionDTOList.forEach(this::addRow);
+            }
+            */
+
         });
     }
 

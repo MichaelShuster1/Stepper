@@ -14,6 +14,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -101,20 +102,18 @@ public class AppController {
 
     private boolean isChatOpen;
 
+    ListView<String> rolesListView;
+
 
 
     @FXML
     public void initialize() {
-        executionComponentController.setAppController(this);
-        executionComponentController.bindAnimationBooleanProperty(animationsRadioButtonVIew.selectedProperty());
-        definitionComponentController.setAppController(this);
-        historyComponentController.setAppController(this);
-        chatComponentController.setAppController(this);
-        styleChoiceView.getItems().addAll(Styles.getStyles());
-        styleChoiceView.setValue(Styles.DEFAULT.toString());
-        styleChoiceView.setOnAction(e->setStyle());
+        initControllers();
+        initStyleChoiceView();
         setTab(2);
 
+        initRolesListView();
+        initHyperLink();
         logout.setOnMouseClicked(e -> logOutClick());
         chatButton.setOnMouseClicked(e->displayChat());
         isChatOpen=false;
@@ -157,6 +156,32 @@ public class AppController {
         });
     }
 
+    private void initRolesListView() {
+        rolesListView=new ListView<>();
+        rolesListView.setOrientation(Orientation.VERTICAL);
+    }
+
+    private void initStyleChoiceView() {
+        styleChoiceView.getItems().addAll(Styles.getStyles());
+        styleChoiceView.setValue(Styles.DEFAULT.toString());
+        styleChoiceView.setOnAction(e->setStyle());
+    }
+
+    private void initControllers() {
+        executionComponentController.setAppController(this);
+        executionComponentController.bindAnimationBooleanProperty(animationsRadioButtonVIew.selectedProperty());
+        definitionComponentController.setAppController(this);
+        historyComponentController.setAppController(this);
+        chatComponentController.setAppController(this);
+    }
+
+    private void initHyperLink() {
+        hyperlink.setOnMouseClicked(e -> {
+            Platform.runLater(()->ElementLogic.showNewPopUp(rolesListView, primaryStage));
+        });
+
+        HBox.setMargin(hyperlink, new Insets(0, 0, 0, -10));
+    }
 
 
     private void displayChat(){
@@ -189,6 +214,17 @@ public class AppController {
         isChatOpen=false;
     }
 
+    
+    private void setRolesListView(Set<String> roles){
+        int counter=1;
+        rolesListView.getItems().clear();
+        for(String role:roles)
+        {
+            rolesListView.getItems().add(counter+"."+role);
+            counter++;
+        }
+    }
+    
 
     private void sendLogoutRequest(Boolean switchToLogin, boolean shutDownHttp) {
         String finalUrl = HttpUrl
@@ -415,27 +451,21 @@ public class AppController {
                 {
                     hyperlink.setDisable(false);
                     hyperlink.setVisible(true);
-                    ListView<String> listView = ElementLogic.createListView(Arrays.asList(roles.toArray()));
-                    hyperlink.setOnMouseClicked(e -> ElementLogic.showNewPopUp(listView, primaryStage));
-                    HBox.setMargin(hyperlink, new Insets(0, 0, 0, -10));
+                    setRolesListView(roles);
                 }
                 else {
+                    resetRolesListView();
                     hyperlink.setDisable(true);
                     hyperlink.setVisible(false);
                 }
-
-
-                /*
-                userDetailsView.getChildren().remove(hyperlink);
-                String text = roles.toString()
-                        .replace("[", " ")
-                        .replace("]", " ");
-                userRoles.setText("Assigned Roles: " + text);
-                */
             }
         });
     }
 
+    private void resetRolesListView() {
+        rolesListView.getItems().clear();
+        rolesListView.setPlaceholder(new Label("no roles assigned"));
+    }
 
     public void startUpdatesRefresher(){
         UpdatesRefresher updatesRefresher = new UpdatesRefresher(definitionComponentController::fillTableData,

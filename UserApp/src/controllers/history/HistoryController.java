@@ -103,7 +103,8 @@ public class HistoryController {
             if (newSelection != null) {
                 FlowExecutionDTO flowExecutionDTO=historyTableView.getSelectionModel().getSelectedItem();
                 reRunButton.setDisable(!appController.canRunFlow(flowExecutionDTO.getName()));
-                checkIfContinuationsAvailable(flowExecutionDTO);
+                continuationButton.setDisable(false);
+                //checkIfContinuationsAvailable(flowExecutionDTO);
                 elementLogic.setElementDetailsView(flowExecutionDTO);
             } else {
                 reRunButton.setDisable(true);
@@ -148,10 +149,13 @@ public class HistoryController {
                 if(response.code()==200 && response.body()!=null){
                     ContinutionMenuDTO continutionMenuDTO = Constants.GSON_INSTANCE.fromJson(response.body().string(), ContinutionMenuDTO.class);
                     Platform.runLater(() -> {
-                        if (continutionMenuDTO != null)
-                            continuationButton.setDisable(false);
-                        else
-                            continuationButton.setDisable(true);
+                        if (continutionMenuDTO != null){
+                            //continuationButton.setDisable(false);
+                        }
+                        else{
+                            //continuationButton.setDisable(true);
+                        }
+
                     });
                 }
                 else {
@@ -288,7 +292,6 @@ public class HistoryController {
     @FXML
     void openContinuationPopUp(ActionEvent event) {
         FlowExecutionDTO flowExecutionDTO = historyTableView.getSelectionModel().getSelectedItem();
-        TextInputDialog inputDialog =getNewTextInputDialog();
         String finalUrl = HttpUrl
                 .parse(Constants.FULL_SERVER_PATH + "/continuation")
                 .newBuilder()
@@ -308,35 +311,20 @@ public class HistoryController {
                 if(response.code()==200 && response.body()!=null){
                     ContinutionMenuDTO continutionMenuDTO = Constants.GSON_INSTANCE.fromJson(response.body().string(), ContinutionMenuDTO.class);
                     Platform.runLater(() -> {
-                        Optional<String> result = Optional.empty();
-                        ChoiceBox<String> continuationChoice = new ChoiceBox<>();
-                        if(continutionMenuDTO != null)
-                              continuationChoice.getItems().addAll(continutionMenuDTO.getTargetFlows());
-                        continuationChoice.setStyle("-fx-pref-width: 200px;");
-
-                        HBox hbox = new HBox(10, new Label("Available Continuations:"), continuationChoice);
-                        hbox.setAlignment(Pos.CENTER);
-                        inputDialog.getDialogPane().setContent(hbox);
-
-                        inputDialog.setResultConverter(dialogButton -> {
-                            if (dialogButton == ButtonType.OK) {
-                                String selectedOption = continuationChoice.getValue();
-                                return selectedOption;
-                            }
-                            return null;
-                        });
-
-                        Button submitButton=(Button) inputDialog.getDialogPane().lookupButton(ButtonType.OK);
-
-                        continuationChoice.valueProperty().addListener((observable, oldValue, newValue) -> {
-                            submitButton.setDisable(newValue == null);
-                        });
-
-                        result = inputDialog.showAndWait();
-                        if(result.isPresent())
+                        if(continutionMenuDTO!=null)
+                            showContinutionMenu(continutionMenuDTO,flowExecutionDTO);
+                        else
                         {
-                            String targetName= result.get();
-                            continueToFlow(targetName, flowExecutionDTO.getId());
+                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                            alert.setTitle("Message");
+                            alert.setHeaderText(null);
+
+                            // Set the content of the alert
+                            alert.setContentText("No available continuations found for the current flow execution\n " +
+                                    "with your current permissions in the system");
+
+                            // Show the alert and wait for the user's response
+                            alert.showAndWait();
                         }
                     });
                 }
@@ -347,6 +335,41 @@ public class HistoryController {
                     response.body().close();
             }
         });
+    }
+
+    private void showContinutionMenu(ContinutionMenuDTO continutionMenuDTO,FlowExecutionDTO flowExecutionDTO){
+        TextInputDialog inputDialog =getNewTextInputDialog();
+        Optional<String> result = Optional.empty();
+        ChoiceBox<String> continuationChoice = new ChoiceBox<>();
+        if(continutionMenuDTO != null)
+            continuationChoice.getItems().addAll(continutionMenuDTO.getTargetFlows());
+        continuationChoice.setStyle("-fx-pref-width: 200px;");
+
+
+        HBox hbox = new HBox(10, new Label("Available Continuations:"), continuationChoice);
+        hbox.setAlignment(Pos.CENTER);
+        inputDialog.getDialogPane().setContent(hbox);
+
+        inputDialog.setResultConverter(dialogButton -> {
+            if (dialogButton == ButtonType.OK) {
+                String selectedOption = continuationChoice.getValue();
+                return selectedOption;
+            }
+            return null;
+        });
+
+        Button submitButton=(Button) inputDialog.getDialogPane().lookupButton(ButtonType.OK);
+
+        continuationChoice.valueProperty().addListener((observable, oldValue, newValue) -> {
+            submitButton.setDisable(newValue == null);
+        });
+
+        result = inputDialog.showAndWait();
+        if(result.isPresent())
+        {
+            String targetName= result.get();
+            continueToFlow(targetName, flowExecutionDTO.getId());
+        }
     }
 
     private TextInputDialog getNewTextInputDialog()

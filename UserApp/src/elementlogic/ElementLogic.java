@@ -243,6 +243,9 @@ public class ElementLogic {
         if(primaryStage.getScene().getStylesheets().size()!=0)
             scene.getStylesheets().add(primaryStage.getScene().getStylesheets().get(0));
         stage.setScene(scene);
+        stage.setOnCloseRequest(event -> {
+            scene.setRoot(new VBox());
+        });
         stage.show();
     }
 
