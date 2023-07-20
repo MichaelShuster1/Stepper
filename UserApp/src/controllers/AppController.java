@@ -474,6 +474,13 @@ public class AppController {
         primaryStage.show();
     }
 
+    public void validateRerunButton() {
+        String flowName = historyComponentController.getSelectedFlowName();
+        if(flowName!=null &&!canRunFlow(flowName))
+            historyComponentController.setRerunButtonDisable(true);
+        else if(flowName != null && canRunFlow(flowName))
+            historyComponentController.setRerunButtonDisable(false);
+    }
 }
 
 

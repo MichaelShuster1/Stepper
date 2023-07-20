@@ -95,6 +95,7 @@ public class DefinitionController {
                     selectedFlowDetails.getChildren().clear();
             }
             selectionListenerEnabled = true;
+            appController.validateRerunButton();
             appController.checkIfCurrentFlowValidInExecution();
      });
     }

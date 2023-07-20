@@ -409,4 +409,16 @@ public class HistoryController {
         });
     }
 
+    public String getSelectedFlowName() {
+        FlowExecutionDTO flowExecutionDTO = historyTableView.getSelectionModel().getSelectedItem();
+        if(flowExecutionDTO != null)
+            return flowExecutionDTO.getName();
+        else
+            return null;
+    }
+
+
+    public void setRerunButtonDisable(boolean b) {
+        reRunButton.setDisable(b);
+    }
 }
