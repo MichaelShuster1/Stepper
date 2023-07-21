@@ -358,6 +358,19 @@ public class RolesController {
         // Add buttons to the dialog
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
+        Button okButton=(Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+
+        okButton.setDisable(true);
+
+        nameTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            okButton.setDisable(newValue.trim().isEmpty() || descriptionTextField.getText().trim().isEmpty());
+        });
+
+        descriptionTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            okButton.setDisable(newValue.trim().isEmpty() || nameTextField.getText().trim().isEmpty());
+        });
+
+
         // Wait for dialog response
         if(appController.getPrimaryStage().getScene().getStylesheets().size()!=0)
             dialog.getDialogPane().getStylesheets().add(appController.getPrimaryStage().getScene().getStylesheets().get(0));
