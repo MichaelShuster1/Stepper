@@ -369,9 +369,11 @@ public class StatisticsController {
             }
 
             NumberAxis yAxis = (NumberAxis) graph.getYAxis();
-            if(yAxis.getUpperBound()!=max+2) {
-                yAxis.setUpperBound(max + 2);
+
+            if(yAxis.getUpperBound()!=(max+2.0)) {
+                yAxis.setUpperBound(max + 2.0);
             }
+
         }
         else
             setAvgRunTimeGraph(statistics,graph);

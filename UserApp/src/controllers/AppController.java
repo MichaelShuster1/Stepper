@@ -277,6 +277,7 @@ public class AppController {
         if(flowName!=null &&!canRunFlow(flowName))
         {
             executionComponentController.clearTab();
+            progressTracker.resetCurrentFlowId();
             if(tabPaneView.getSelectionModel().getSelectedIndex()==1) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Message");

@@ -15,6 +15,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.MapValueFactory;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -53,10 +54,19 @@ public class ElementLogic {
         stateColumnView.setCellValueFactory(new PropertyValueFactory<>("stateAfterRun"));
 
         stepsTableView.getColumns().addAll(stepColumnView,stateColumnView);
-        //stepsTableView.setOnMouseClicked(e->rowClick(new ActionEvent()));
+
         stepsTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         elementChoiceView.getChildren().add(stepsTableView);
         VBox.setVgrow(stepsTableView, Priority.ALWAYS);
+
+
+        stepsTableView.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                rowSelect();
+            }
+        });
+
+
         stepsTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
                 rowSelect();
@@ -108,6 +118,7 @@ public class ElementLogic {
     private void rowSelect()
     {
         if(!stepsTableView.getSelectionModel().isEmpty()) {
+
             elementDetailsView.getChildren().clear();
             StepExecutionDTO stepExecutionDTO=stepsTableView.getSelectionModel().getSelectedItem();
             StepExtensionDTO stepExtensionDTO =stepExecutionDTO.getStepExtensionDTO();
