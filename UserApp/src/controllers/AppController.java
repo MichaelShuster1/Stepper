@@ -263,6 +263,8 @@ public class AppController {
 
     private void logOutClick(){
        sendLogoutRequest(true,false);
+       progressTracker.resetCurrentFlowId();
+       progressTracker=null;
     }
 
 
@@ -347,6 +349,8 @@ public class AppController {
                 if (result == ButtonType.OK) {
                     //definitionComponentController.StopFlowRefresher();
                     sendLogoutRequest(false,true);
+                    progressTracker.resetCurrentFlowId();
+                    progressTracker=null;
                 }
             });
         });
