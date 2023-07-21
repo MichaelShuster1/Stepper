@@ -61,7 +61,7 @@ public class FlowExecution implements  Runnable {
     @Override
     public void run()
     {
-        Long startTime = System.currentTimeMillis();
+        long startTime = System.currentTimeMillis();
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
         formatter.format(new Date());
         activationTime = formatter.format(new Date());

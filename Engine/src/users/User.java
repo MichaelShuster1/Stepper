@@ -190,8 +190,10 @@ public class User {
 
     public void removeFlowAppearance(String flowName) {
         flowsAppearance.compute(flowName, (k, v) -> v == null ? 0 : v - 1);
-        if(flowsAppearance.get(flowName) == 0)
+        if(flowsAppearance.get(flowName) == 0) {
             removeFlow(flowName);
+            flowsAppearance.remove(flowName);
+        }
     }
 
     public List<FlowExecutionDTO> getFlowsHistoryDelta(int historyVersion)
