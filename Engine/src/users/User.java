@@ -137,7 +137,16 @@ public class User {
             for (String flowName : flows)
                 addFlowAppearance(flowName);
             roles.put(role.getName(), role);
-            role.addUser(name);
+            if(role.getName().equals("All Flows")) {
+                if (isAllFlows)
+                    role.addUser(name);
+            }
+            else
+                role.addUser(name);
+        }
+        else if(role.getName().equals("All Flows")) {
+            if (isAllFlows)
+                   role.addUser(name);
         }
     }
 

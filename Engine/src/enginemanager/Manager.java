@@ -424,6 +424,8 @@ public class Manager implements EngineApi, Serializable {
                 user.setAllFlows(false);
                 if(!user.isManager())
                     user.removeRole(roleManager.getRole(roleName));
+                else
+                    roleManager.getRole(roleName).removeUser(user.getName());
             }
             else
                user.removeRole(roleManager.getRole(roleName));
@@ -437,9 +439,9 @@ public class Manager implements EngineApi, Serializable {
 
         for(String roleName: roleNames) {
             if (!roleName.equals("Manager")) {
-                user.addRole(roleManager.getRole(roleName));
                 if(roleName.equals("All Flows"))
                     user.setAllFlows(true);
+                user.addRole(roleManager.getRole(roleName));
             }
             else {
                 if(!user.isManager()) {
