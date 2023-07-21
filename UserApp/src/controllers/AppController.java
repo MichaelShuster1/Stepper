@@ -283,7 +283,8 @@ public class AppController {
                 alert.setTitle("Message");
                 if(primaryStage.getScene().getStylesheets().size()!=0)
                     alert.getDialogPane().getStylesheets().add(primaryStage.getScene().getStylesheets().get(0));
-                alert.setContentText("The permission to run the flow: "+flowName+"\n Has been taken away from you by the admin");
+                alert.setContentText("The permission to run the flow: "+flowName+"\n Has been taken away from you by the admin. \n If a flow was in progress," +
+                        " you will be able to see its execution details in the history tab once the flow is finished.");
                 alert.showAndWait();
             }
         }
