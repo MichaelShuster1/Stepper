@@ -322,8 +322,7 @@ public class HistoryController {
                             if(appController.getPrimaryStage().getScene().getStylesheets().size()!=0)
                                 alert.getDialogPane().getStylesheets().add(appController.getPrimaryStage().getScene().getStylesheets().get(0));
                             // Set the content of the alert
-                            alert.setContentText("No available continuations found for the current flow execution " +
-                                    "with your current permissions in the system.");
+                            alert.setContentText("No available continuations found for the selected flow.");
 
                             // Show the alert and wait for the user's response
                             alert.showAndWait();

@@ -1,7 +1,7 @@
 package elementlogic;
 
-import datadefinition.DataType;
-import datadefinition.Relation;
+import utils.DataType;
+import utils.Relation;
 import dto.*;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;

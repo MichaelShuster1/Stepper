@@ -3,7 +3,6 @@ package controllers.history;
 import controllers.AppController;
 import dto.FlowExecutionDTO;
 import elementlogic.ElementLogic;
-import enginemanager.EngineApi;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -37,7 +36,6 @@ public class HistoryController {
 
     private AppController appController;
 
-    private EngineApi engine;
 
 
     private TableView<FlowExecutionDTO> historyTableView;
@@ -102,9 +100,6 @@ public class HistoryController {
         elementLogic=new ElementLogic(elementChoiceView,elementDetailsView,stage);
     }
 
-    public void setEngine(EngineApi engine) {
-        this.engine = engine;
-    }
 
 
     @FXML

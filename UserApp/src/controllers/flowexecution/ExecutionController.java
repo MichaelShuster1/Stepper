@@ -3,7 +3,7 @@ package controllers.flowexecution;
 
 import controllers.AppController;
 import controllers.chat.ChatAreaController;
-import datadefinition.DataType;
+import utils.DataType;
 import dto.*;
 import elementlogic.ElementLogic;
 import javafx.animation.FadeTransition;

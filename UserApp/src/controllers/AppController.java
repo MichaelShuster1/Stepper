@@ -217,10 +217,21 @@ public class AppController {
     
     private void setRolesListView(Set<String> roles){
         int counter=1;
+        String selected = null;
+        if(rolesListView.getSelectionModel().getSelectedItem() != null) {
+            selected = rolesListView.getSelectionModel().getSelectedItem();
+            int dotIndex = selected.indexOf(".");
+            if (dotIndex != -1)
+              selected = selected.substring(dotIndex + 1);
+        }
         rolesListView.getItems().clear();
         for(String role:roles)
         {
             rolesListView.getItems().add(counter+"."+role);
+            if(selected != null) {
+                if (selected.equals(role))
+                    rolesListView.getSelectionModel().select(counter - 1);
+            }
             counter++;
         }
     }
@@ -283,7 +294,7 @@ public class AppController {
                 alert.setTitle("Message");
                 if(primaryStage.getScene().getStylesheets().size()!=0)
                     alert.getDialogPane().getStylesheets().add(primaryStage.getScene().getStylesheets().get(0));
-                alert.setContentText("The permission to run the flow: "+flowName+"\n Has been taken away from you by the admin. \n If a flow was in progress," +
+                alert.setContentText("The permission to run the flow: "+flowName+"\n Has been taken away from you by the admin. \n If the flow was in progress," +
                         " you will be able to see its execution details in the history tab once the flow is finished.");
                 alert.showAndWait();
             }
@@ -470,7 +481,7 @@ public class AppController {
 
     private void resetRolesListView() {
         rolesListView.getItems().clear();
-        rolesListView.setPlaceholder(new Label("no roles assigned"));
+        rolesListView.setPlaceholder(new Label("No roles assigned"));
     }
 
     public void startUpdatesRefresher(){

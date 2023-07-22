@@ -358,7 +358,7 @@ public class StatisticsController {
                 double newAvgRunTime=statisticsUnit.getAverageRunTime();
                 double currentAvgRunTime = -1.0;
 
-                currentAvgRunTime = currentData.get(i).getYValue().intValue();
+                currentAvgRunTime = currentData.get(i).getYValue().doubleValue();
 
                 if (currentAvgRunTime != newAvgRunTime) {
                         currentData.get(i).setYValue(newAvgRunTime);
