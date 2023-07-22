@@ -341,6 +341,10 @@ public class ExecutionController {
             submitButton.setDisable(newValue.trim().isEmpty());
         });
 
+
+        if(appController.getPrimaryStage().getScene().getStylesheets().size()!=0)
+            dialog.getDialogPane().getStylesheets().add(appController.getPrimaryStage().getScene().getStylesheets().get(0));
+
         // Set the result converter to handle the user input
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == ButtonType.OK) {

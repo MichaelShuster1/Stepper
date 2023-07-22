@@ -4,8 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import datadefinition.DataType;
-import datadefinition.Relation;
 import utils.DataType;
 import utils.Relation;
 import dto.*;
