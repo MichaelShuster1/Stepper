@@ -1,6 +1,5 @@
 package datadefinition;
 
-import dto.DataDefintionDTO;
 
 import java.io.Serializable;
 

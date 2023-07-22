@@ -379,6 +379,9 @@ Text {
     -fx-alignment: CENTER;
 }
 
+.text-area .content {
+    -fx-background-color: -swatch-gray;
+}
 
 
 

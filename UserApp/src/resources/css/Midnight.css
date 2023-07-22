@@ -390,6 +390,13 @@ Text {
     -fx-background-color: -swatch-100;
 }
 
+.text-area .content {
+    -fx-background-color: -swatch-gray;
+}
+
+
+
+
 
 
 

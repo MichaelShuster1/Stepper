@@ -678,7 +678,7 @@ public class Manager implements EngineApi, Serializable {
     @Override
     public void doContinuation(User user, FlowExecution flowExecution, String targetName) {
         String sourceFlowName = flowExecution.getName();
-        Flow sourceFlow = user.getFlows().get(sourceFlowName);
+        Flow sourceFlow = flows.get(flowNames2Index.get(sourceFlowName));
         Continuation continuation = sourceFlow.getContinuation(targetName);
         user.getFlows().get(targetName).clearFlowInputsData();
         user.getFlows().get(targetName).applyContinuation(flowExecution, continuation);
