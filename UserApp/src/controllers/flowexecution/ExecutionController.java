@@ -307,11 +307,50 @@ public class ExecutionController {
                 result = getStringInputFromUser(inputDialog, inputDefaultName);
                 break;
             case JSON:
-                inputDialog.setContentText("Please enter the json here:");
-                result = inputDialog.showAndWait();
+                result=getJsonInputFromUser();
                 break;
         }
 
+        return result;
+    }
+
+    private Optional<String> getJsonInputFromUser(){
+        Optional<String> result = Optional.empty();
+        Dialog<String> dialog = new Dialog<>();
+        dialog.setTitle("Json Input Dialog");
+
+        // Create a TextArea
+        TextArea textArea = new TextArea();
+        textArea.setPrefRowCount(10); // Set the preferred number of rows
+        textArea.setPrefColumnCount(50); // Set the preferred number of columns
+
+        // Add the TextArea to the dialog content
+        VBox vbox = new VBox(new Label("Please enter your json body below:"), textArea);
+        dialog.getDialogPane().setContent(vbox);
+
+        // Add buttons to the dialog (OK and Cancel)
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        Button submitButton=(Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+        submitButton.setText("Submit");
+
+        submitButton.setDisable(true);
+
+
+        textArea.textProperty().addListener((observable, oldValue, newValue) -> {
+            submitButton.setDisable(newValue.trim().isEmpty());
+        });
+
+        // Set the result converter to handle the user input
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == ButtonType.OK) {
+                return textArea.getText(); // Return the content of the TextArea on OK button press
+            }
+            return null;
+        });
+
+        // Show the dialog and wait for user input
+        result=dialog.showAndWait();
         return result;
     }
 
