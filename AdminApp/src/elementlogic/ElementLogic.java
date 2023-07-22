@@ -1,5 +1,11 @@
 package elementlogic;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import datadefinition.DataType;
+import datadefinition.Relation;
 import utils.DataType;
 import utils.Relation;
 import dto.*;
@@ -172,13 +178,18 @@ public class ElementLogic {
 
         Hyperlink hyperlink=new Hyperlink(value);
 
-        switch (value)
+        switch (DataType.valueOf(value.toUpperCase()))
         {
-            case "Relation":
+            case RELATION:
                 hyperlink.setOnMouseClicked(e->relationPopUp((Relation) data));
                 break;
-            case "List":
+            case LIST:
                 hyperlink.setOnMouseClicked(e->listPopUp((List<Object>) data));
+                break;
+            case JSON:
+                Gson gson=new GsonBuilder().setPrettyPrinting().create();
+                JsonElement jsonElement = JsonParser.parseString(data.toString());
+                hyperlink.setOnMouseClicked(e->textAreaPopUp(gson.toJson(jsonElement)));
                 break;
         }
 
@@ -229,7 +240,8 @@ public class ElementLogic {
             Object data=dataExecutionDTO.getData();
 
             if(data!=null) {
-                if(type.equals(DataType.RELATION.toString())||type.equals(DataType.LIST.toString()))
+                if( type.equals(DataType.RELATION.toString()) || type.equals(DataType.LIST.toString())
+                        || type.equals(DataType.JSON.toString()) )
                     addKeyHyperLinkValueLine(name,type,data);
                 else
                     addKeyValueLine(name+": ",data.toString());
@@ -283,12 +295,7 @@ public class ElementLogic {
     private void listPopUp(List<Object> data)
     {
         if(data.size()==0) {
-            Label label =new Label("empty list");
-            label.setAlignment(Pos.CENTER);
-            label.setFont(Font.font("System", FontWeight.BOLD,15));
-            BorderPane borderPane =new BorderPane();
-            borderPane.setCenter(label);
-            showNewPopUp(borderPane);
+            showEmptyPopUp("empty list");
         }
         else
             showNewPopUp(createListView(data));
@@ -306,6 +313,37 @@ public class ElementLogic {
             counter++;
         }
         return  listView;
+    }
+
+    private void textAreaPopUp(String json) {
+        if(json==null||json.isEmpty()){
+            showEmptyPopUp("empty json");
+        }
+        else {
+            showNewPopUp(createTextAreaPopUp(json));
+        }
+
+    }
+
+    private StackPane createTextAreaPopUp(String json) {
+        TextArea textArea = new TextArea(json);
+        textArea.setPrefRowCount(10); // Set the preferred number of rows
+        textArea.setPrefColumnCount(50); // Set the preferred number of columns
+        textArea.setEditable(false);
+
+        // Create a layout pane to hold the TextArea
+        StackPane root = new StackPane();
+        root.getChildren().add(textArea);
+        return  root;
+    }
+
+    private void showEmptyPopUp(String text) {
+        Label label =new Label(text);
+        label.setAlignment(Pos.CENTER);
+        label.setFont(Font.font("System", FontWeight.BOLD,15));
+        BorderPane borderPane =new BorderPane();
+        borderPane.setCenter(label);
+        showNewPopUp(borderPane);
     }
 
 
@@ -394,7 +432,8 @@ public class ElementLogic {
             addKeyValueLine("Name: " , output.getName());
             addKeyValueLine("Type: " , output.getType());
             if (output.getData() != null) {
-                if(output.getType().equals("List") || output.getType().equals("Relation")) {
+                if(output.getType().equals("List") || output.getType().equals("Relation")
+                        || output.getType().equals("Json"))  {
                     addKeyHyperLinkValueLine("Data",output.getType(),output.getData());
                     addKeyValueLine("" ,"\n");
                 }

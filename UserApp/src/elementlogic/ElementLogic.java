@@ -2,6 +2,12 @@ package elementlogic;
 
 import utils.DataType;
 import utils.Relation;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import datadefinition.DataType;
+import datadefinition.Relation;
 import dto.*;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
@@ -28,16 +34,16 @@ import java.util.List;
 import java.util.Map;
 
 public class ElementLogic {
-    private VBox elementChoiceView;
-    private VBox elementDetailsView;
-    private Stage primaryStage;
+    private final VBox elementChoiceView;
+    private final VBox elementDetailsView;
+    private final Stage primaryStage;
     private FlowExecutionDTO flowExecutionDTO;
 
-    private TableView<StepExecutionDTO> stepsTableView;
+    private final TableView<StepExecutionDTO> stepsTableView;
 
-    private TableColumn<StepExecutionDTO,String> stepColumnView;
+    private final TableColumn<StepExecutionDTO,String> stepColumnView;
 
-    private TableColumn<StepExecutionDTO,String> stateColumnView;
+    private final TableColumn<StepExecutionDTO,String> stateColumnView;
     boolean tableClicked;
 
 
@@ -60,6 +66,15 @@ public class ElementLogic {
         stepsTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         elementChoiceView.getChildren().add(stepsTableView);
         VBox.setVgrow(stepsTableView, Priority.ALWAYS);
+
+
+        stepsTableView.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                rowSelect();
+            }
+        });
+
+
         stepsTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
                 rowSelect();
@@ -164,13 +179,18 @@ public class ElementLogic {
 
         Hyperlink hyperlink=new Hyperlink(value);
 
-        switch (value)
+        switch (DataType.valueOf(value.toUpperCase()))
         {
-            case "Relation":
+            case RELATION:
                 hyperlink.setOnMouseClicked(e->relationPopUp((Relation) data));
                 break;
-            case "List":
+            case LIST:
                 hyperlink.setOnMouseClicked(e->listPopUp((List<Object>) data));
+                break;
+            case JSON:
+                Gson gson=new GsonBuilder().setPrettyPrinting().create();
+                JsonElement jsonElement = JsonParser.parseString(data.toString());
+                hyperlink.setOnMouseClicked(e->textAreaPopUp(gson.toJson(jsonElement)));
                 break;
         }
 
@@ -181,6 +201,7 @@ public class ElementLogic {
 
         elementDetailsView.getChildren().add(hBox);
     }
+
 
     private void addKeyProgressIndicator(String name)
     {
@@ -221,7 +242,8 @@ public class ElementLogic {
             Object data=dataExecutionDTO.getData();
 
             if(data!=null) {
-                if(type.equals(DataType.RELATION.toString())||type.equals(DataType.LIST.toString()))
+                if( type.equals(DataType.RELATION.toString()) || type.equals(DataType.LIST.toString())
+                        || type.equals(DataType.JSON.toString()) )
                     addKeyHyperLinkValueLine(name,type,data);
                 else
                     addKeyValueLine(name+": ",data.toString());
@@ -278,16 +300,45 @@ public class ElementLogic {
     private void listPopUp(List<Object> data)
     {
         if(data.size()==0) {
-            Label label =new Label("empty list");
-            label.setAlignment(Pos.CENTER);
-            label.setFont(Font.font("System", FontWeight.BOLD,15));
-            BorderPane borderPane =new BorderPane();
-            borderPane.setCenter(label);
-            showNewPopUp(borderPane,primaryStage);
+            showEmptyPopUp("empty list");
         }
         else
             showNewPopUp(createListView(data),primaryStage);
     }
+
+
+    private void textAreaPopUp(String json) {
+        if(json==null||json.isEmpty()){
+            showEmptyPopUp("empty json");
+        }
+        else {
+            showNewPopUp(createTextAreaPopUp(json),primaryStage);
+        }
+
+    }
+
+    private StackPane createTextAreaPopUp(String json) {
+        TextArea textArea = new TextArea(json);
+        textArea.setPrefRowCount(10); // Set the preferred number of rows
+        textArea.setPrefColumnCount(50); // Set the preferred number of columns
+        textArea.setEditable(false);
+
+        // Create a layout pane to hold the TextArea
+        StackPane root = new StackPane();
+        root.getChildren().add(textArea);
+        return  root;
+    }
+
+    private void showEmptyPopUp(String text) {
+        Label label =new Label(text);
+        label.setAlignment(Pos.CENTER);
+        label.setFont(Font.font("System", FontWeight.BOLD,15));
+        BorderPane borderPane =new BorderPane();
+        borderPane.setCenter(label);
+        showNewPopUp(borderPane,primaryStage);
+    }
+
+
 
 
     public static ListView<String> createListView(List<Object> list)
@@ -387,7 +438,7 @@ public class ElementLogic {
             addKeyValueLine("Name: " , output.getName());
             addKeyValueLine("Type: " , output.getType());
             if (output.getData() != null) {
-                if(output.getType().equals("List") || output.getType().equals("Relation")) {
+                if(output.getType().equals("List") || output.getType().equals("Relation") || output.getType().equals("Json")) {
                     addKeyHyperLinkValueLine("Data",output.getType(),output.getData());
                     addKeyValueLine("" ,"\n");
                 }
