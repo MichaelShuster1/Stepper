@@ -2,10 +2,11 @@ package utils;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
-import datadefinition.DataType;
-import datadefinition.Relation;
 import dto.AvailableFlowDTO;
 import dto.DataExecutionDTO;
+import data.Relation;
+import enums.DataType;
+
 
 import java.awt.*;
 import java.io.File;

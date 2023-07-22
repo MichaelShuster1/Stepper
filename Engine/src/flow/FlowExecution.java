@@ -4,8 +4,7 @@ import datadefinition.Input;
 import datadefinition.Output;
 import dto.*;
 import enginemanager.Manager;
-import hardcodeddata.HCSteps;
-import javafx.concurrent.Task;
+import utils.StepsUtils;
 import javafx.util.Pair;
 import step.State;
 import step.Step;
@@ -41,7 +40,7 @@ public class FlowExecution implements  Runnable {
         List<Step> definitionSteps = flowDefinition.getSteps();
         for(int i = 0; i< definitionSteps.size(); i++) {
             Step currStep = definitionSteps.get(i);
-            Step newStep = HCSteps.CreateStep(currStep.getDefaultName(), currStep.getName(), currStep.isContinueIfFailing());
+            Step newStep = StepsUtils.CreateStep(currStep.getDefaultName(), currStep.getName(), currStep.isContinueIfFailing());
             newStep.setNameToInputIndex(currStep.getNameToInputIndex());
             newStep.setNameToOutputIndex(currStep.getNameToOutputIndex());
             List<Input> currStepInputs =  currStep.getInputs();

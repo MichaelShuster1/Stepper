@@ -2,14 +2,12 @@ package controllers.flowexecution;
 
 
 import controllers.AppController;
-import controllers.chat.ChatAreaController;
-import utils.DataType;
 import dto.*;
 import elementlogic.ElementLogic;
+import enums.DataType;
 import javafx.animation.FadeTransition;
 import javafx.animation.RotateTransition;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;

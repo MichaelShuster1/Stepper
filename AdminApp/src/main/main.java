@@ -1,7 +1,6 @@
 package main;
 
 import controllers.AppController;
-import enginemanager.Manager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;

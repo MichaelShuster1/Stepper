@@ -6,7 +6,7 @@ import flow.Flow;
 import flow.FlowExecution;
 import flow.FlowHistory;
 import generated.*;
-import hardcodeddata.HCSteps;
+import utils.StepsUtils;
 import roles.Role;
 import roles.RoleManager;
 import step.*;
@@ -142,7 +142,7 @@ public class Manager implements EngineApi, Serializable {
             flows = flowList;
             setFlowsContinuations(continuationMap);
             flowsStatistics = statisticsMap;
-            stepsStatistics = HCSteps.getStatisticsMap();
+            stepsStatistics = StepsUtils.getStatisticsMap();
         }
         else {
             i = flows.size();
@@ -381,7 +381,7 @@ public class Manager implements EngineApi, Serializable {
         if (step.isContinueIfFailing() != null)
             continueIfFailing = true;
 
-        newStep=HCSteps.CreateStep(name,finalName,continueIfFailing);
+        newStep= StepsUtils.CreateStep(name,finalName,continueIfFailing);
 
         if(newStep==null) {
             throw new StepNameNotExistException("In the flow named: " + currentFlow.getName()
