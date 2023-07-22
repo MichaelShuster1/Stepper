@@ -2,8 +2,6 @@ package controllers.login;
 
 import controllers.AppController;
 import dto.ResultDTO;
-import enginemanager.EngineApi;
-import enginemanager.Manager;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;

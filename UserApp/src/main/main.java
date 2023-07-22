@@ -2,7 +2,6 @@ package main;
 
 import controllers.AppController;
 import controllers.login.LoginController;
-import enginemanager.Manager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;

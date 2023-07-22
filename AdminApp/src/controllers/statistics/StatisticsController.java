@@ -3,7 +3,7 @@ package controllers.statistics;
 import controllers.AppController;
 import dto.StatisticsDTO;
 import dto.StatisticsUnitDTO;
-import hardcodeddata.HCSteps;
+import enums.HCSteps;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

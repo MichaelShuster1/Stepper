@@ -5,7 +5,7 @@
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
           <element id="module-output" name="ServerApp" />
-          <element id="module-output" name="DTO" />
+          <element id="module-output" name="Utils" />
           <element id="module-output" name="engine" />
         </element>
         <element id="directory" name="lib">

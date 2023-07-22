@@ -4,15 +4,13 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import datadefinition.*;
 import dto.*;
-import hardcodeddata.HCSteps;
+import utils.StepsUtils;
 import initialvalue.InitialValue;
-import step.State;
 import step.Step;
 import exception.*;
 import javafx.util.Pair;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -71,7 +69,7 @@ public class Flow implements Serializable {
         List<Step> definitionSteps = other.getSteps();
         for(int i = 0; i< definitionSteps.size(); i++) {
             Step currStep = definitionSteps.get(i);
-            Step newStep = HCSteps.CreateStep(currStep.getDefaultName(), currStep.getName(), currStep.isContinueIfFailing());
+            Step newStep = StepsUtils.CreateStep(currStep.getDefaultName(), currStep.getName(), currStep.isContinueIfFailing());
             newStep.setNameToInputIndex(currStep.getNameToInputIndex());
             newStep.setNameToOutputIndex(currStep.getNameToOutputIndex());
             List<Input> currStepInputs =  currStep.getInputs();

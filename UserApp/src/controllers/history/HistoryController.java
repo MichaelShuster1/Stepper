@@ -3,7 +3,6 @@ package controllers.history;
 import controllers.AppController;
 import dto.*;
 import elementlogic.ElementLogic;
-import enginemanager.EngineApi;
 import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
