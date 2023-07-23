@@ -796,5 +796,11 @@ public class Manager implements EngineApi, Serializable {
         return roleManager.removeRole(roleName);
     }
 
-
+    @Override
+    public void restoreUserHistory(User user) {
+        List<FlowHistory> historylist = flowsHistory.stream()
+                .filter(FlowHistory -> FlowHistory.getFullData().getUserDetails().getUserName().equals(user.getName()))
+                .collect(Collectors.toList());
+        user.addFlowHistoryList(historylist);
+    }
 }

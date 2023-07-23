@@ -76,4 +76,6 @@ public interface EngineApi {
     List<FlowExecutionDTO> getFlowsHistoryDeltaFromUser(int historyVersion, User user);
 
     int getHistoryVersion();
+
+    public void restoreUserHistory(User user);
 }

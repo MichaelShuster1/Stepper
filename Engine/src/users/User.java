@@ -227,4 +227,10 @@ public class User {
         return flows.containsKey(flowName);
     }
 
+    public void addFlowHistoryList(List<FlowHistory> flowHistoryList) {
+        synchronized (flowsHistory) {
+            flowsHistory.addAll(flowHistoryList);
+        }
+    }
+
 }

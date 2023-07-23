@@ -1,11 +1,14 @@
 package servlets;
 
 import dto.ResultDTO;
+import enginemanager.EngineApi;
+import enginemanager.Manager;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import users.User;
 import users.UserManager;
 import utils.Constants;
 import utils.ServletUtils;
@@ -22,6 +25,7 @@ public class LoginServlet extends HttpServlet {
 
         String usernameFromSession = SessionUtils.getUsername(request);
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
+        EngineApi engine = (Manager) getServletContext().getAttribute(Constants.FLOW_MANAGER);
 
         if (usernameFromSession == null) { //user is not logged in yet
 
@@ -49,14 +53,22 @@ public class LoginServlet extends HttpServlet {
                     else {
                         //add the new user to the users list
                         Object usersLock=getServletContext().getAttribute(Constants.USERS_LOCK);
+                        User user;
                         synchronized (usersLock) {
                             userManager.addUser(usernameFromParameter);
+                            user = userManager.getUser(usernameFromParameter);
                         }
                         //set the username in a session so it will be available on each request
                         //the true parameter means that if a session object does not exists yet
                         //create a new one
                         request.getSession(true).setAttribute("username", usernameFromParameter);
-                        response.setStatus(HttpServletResponse.SC_OK);
+                        try {
+                            engine.restoreUserHistory(user);
+                            response.setStatus(HttpServletResponse.SC_OK);
+                        }
+                        catch (Exception e) {
+                            ServletUtils.returnBadRequest(response);
+                        }
                     }
                 }
             }
