@@ -1,5 +1,6 @@
 package step;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonParser;
 import datadefinition.*;
 
@@ -31,7 +32,8 @@ public class ToJson extends Step{
 
         // Check if the JSON is in valid format
         try {
-            jsonParser.parse(content);
+            Gson gson = new Gson();
+            Object o = gson.fromJson(content, Object.class);
             addLineToLog("Content is JSON string. Converting it to json…");
             summaryLine = "Step ended successfully, converted the string to JSON";
             outputs.get(0).setData(content);

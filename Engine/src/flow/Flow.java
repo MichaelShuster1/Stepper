@@ -1,5 +1,6 @@
 package flow;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import datadefinition.*;
@@ -404,11 +405,9 @@ public class Flow implements Serializable {
                 input.setData(rawData);
                 break;
             case "DataJson":
-                JsonParser jsonParser = new JsonParser();
                 try {
-                    JsonElement jsonElement = jsonParser.parse(rawData);
-                    if (jsonElement.isJsonPrimitive())
-                        throw new RuntimeException();
+                    Gson gson = new Gson();
+                    Object o = gson.fromJson(rawData, Object.class);
                     input.setData(rawData);
                 } catch (Exception e) {
                    message = "Input processing failed due to: "

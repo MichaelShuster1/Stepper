@@ -183,9 +183,12 @@ public class ElementLogic {
                 hyperlink.setOnMouseClicked(e->listPopUp((List<Object>) data));
                 break;
             case JSON:
-                Gson gson=new GsonBuilder().setPrettyPrinting().create();
-                JsonElement jsonElement = JsonParser.parseString(data.toString());
-                hyperlink.setOnMouseClicked(e->textAreaPopUp(gson.toJson(jsonElement)));
+                try {
+                    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                    JsonElement jsonElement = JsonParser.parseString(data.toString());
+                    hyperlink.setOnMouseClicked(e -> textAreaPopUp(gson.toJson(jsonElement)));
+                }
+                catch (Exception e) {}
                 break;
         }
 
