@@ -3,7 +3,7 @@ Developed as part of Aviad Cohen's Java course at the Academic College of Tel-Av
 
 The Stepper is a workflow\pipeline system that enables assembling different	scenarios (called flows) from common components (called steps), including executing them and	producing required results.
 
-This is a continuation of the [Stepper-Desktop](https://github.com/IgalKa/Stepper-Desktop) version. 
+This is a continuation of the [Stepper-Desktop](https://github.com/MichaelShuster1/Stepper-Desktop) version. 
 
 The project now includes components that manages users and permissions, serving multiple clients concurrently and collection information and statistics on their progress.
 
@@ -69,7 +69,7 @@ While users can execute different flows and see their results, the admin is resp
 * View the flows full definition information by selecting a specific flow from the table.
 * Select the desired flow for execution and click on "Execute flow" to proceed to the execution screen
   
-![Definition screen](https://github.com/IgalKa/Stepper/blob/master/gifs/Definition-screen.gif)
+![Definition screen](https://github.com/MichaelShuster1/Stepper/blob/master/gifs/Definition-screen.gif)
 
 #### Flows execution screen
 * This screen allows the user to execute the selected flow.
@@ -82,7 +82,7 @@ While users can execute different flows and see their results, the admin is resp
 * Once the flow finishes its execution, it is possible to rerun the flow or apply continuation (if available) by the respective buttons that become available.
 * Access the chat feature by clicking on the chat button in the bottom left.
   
-![Execution screen](https://github.com/IgalKa/Stepper/blob/master/gifs/Execution-screen.gif)
+![Execution screen](https://github.com/MichaelShuster1/Stepper/blob/master/gifs/Execution-screen.gif)
 
 #### Executions history screen
 * This screen allows the user to view all his past completed executions (or all completed executions in the system if the user is a manager).
@@ -91,11 +91,11 @@ While users can execute different flows and see their results, the admin is resp
 * If the flow have a defined continuation it is possible to apply the continuation by clicking on "Continuation options".
 * Access the chat feature by clicking on the chat button in the bottom left.
   
-![History screen](https://github.com/IgalKa/Stepper/blob/master/gifs/History-screen.gif)
+![History screen](https://github.com/MichaelShuster1/Stepper/blob/master/gifs/History-screen.gif)
 
 #### Chat
 The chat is available in the flows execution or executions history screens.
-![Chat interface](https://github.com/IgalKa/Stepper/blob/master/gifs/Chat-interface.gif)
+![Chat interface](https://github.com/MichaelShuster1/Stepper/blob/master/gifs/Chat-interface.gif)
 
 
 
@@ -113,7 +113,7 @@ There can only be one active Administrator client at any given time.
 * Click on a username to view the selected user's information in the right section of the screen.
 * Edit the assigned roles of the selected user by checking/unchecking the checkboxes near the wanted roles names and clicking the save button (there is also an option to make a user a manager).
   
-![Users screen](https://github.com/IgalKa/Stepper/blob/master/gifs/Users-screen.gif)
+![Users screen](https://github.com/MichaelShuster1/Stepper/blob/master/gifs/Users-screen.gif)
 
 #### Roles management screen
 * This screen allows the adming to view and manage the roles in the system.
@@ -123,7 +123,7 @@ There can only be one active Administrator client at any given time.
 * Add new roles to the system by clicking on the new button and filling the required information.
 * Delete an existing role by selecting it in the list and clicking the delete button.
   
-![Roles screen](https://github.com/IgalKa/Stepper/blob/master/gifs/Roles-screen.gif)
+![Roles screen](https://github.com/MichaelShuster1/Stepper/blob/master/gifs/Roles-screen.gif)
 
 
 #### Executions history screen
@@ -138,7 +138,7 @@ For demonstration see user's client execution history section.
 * View how many times and how much time on average it took for each step/flow to execute.
 * View the statistics data in graph view by clicking on the buttons at the bottom.
   
-![Statistics screen](https://github.com/IgalKa/Stepper-Desktop/blob/master/gifs/Statistics-screen.gif)
+![Statistics screen](https://github.com/MichaelShuster1/Stepper-Desktop/blob/master/gifs/Statistics-screen.gif)
 
 
 # Server
