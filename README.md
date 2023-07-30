@@ -134,4 +134,4 @@ The Stepper Engine and most of its logic is located within the server.
 
 ## Authors
 
-This project was made by [Igal Kaminski](https://www.github.com/igalKa) & [Michael Shuster](https://github.com/MichaelShuster1)
+This project was made by  [Michael Shuster](https://github.com/MichaelShuster1) & [Igal Kaminski](https://www.github.com/igalKa) 
